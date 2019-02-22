@@ -1,7 +1,4 @@
-﻿using System;
-using System.IO;
-
-namespace StartMenuProtector.Control
+﻿namespace StartMenuProtector.Control
 {
     public static class StartMenuSentinel
     {

@@ -1,5 +1,4 @@
 using System;
-using System.IO;
 using StartMenuProtector.IO;
 
 namespace StartMenuProtector.Data

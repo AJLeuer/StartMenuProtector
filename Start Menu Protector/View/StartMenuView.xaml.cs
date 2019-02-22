@@ -1,29 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using StartMenuProtector;
 using StartMenuProtector.Data;
 using StartMenuProtector.IO;
 
-namespace StartMenuProtector
+namespace StartMenuProtector.View
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Interaction logic for StartMenuView.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class StartMenuView : UserControl 
     {
         public ObservableCollection<ShortcutLocation> Locations { get; set; } = new ObservableCollection<ShortcutLocation> { ShortcutLocation.System, ShortcutLocation.User };
 
@@ -31,14 +17,13 @@ namespace StartMenuProtector
 
         public EnhancedDirectoryInfo CurrentShortcutsDirectory = StartMenuShortcuts.SystemStartMenuShortcuts;
         
-        public MainWindow()
+        public StartMenuView()
         {
             InitializeComponent();
             this.DataContext = this;
-            
             PopulateStartMenuTreeView();
         }
-
+        
         private void CurrentShortcutsLocationChanged(object sender, SelectionChangedEventArgs @event)
         {
             var selectedLocation = (sender as ListBox)?.SelectedItem;
@@ -52,6 +37,7 @@ namespace StartMenuProtector
                     CurrentShortcutsDirectory = StartMenuShortcuts.UserStartMenuShortcuts;
                     break;
             }
+            
             PopulateStartMenuTreeView();
         }
 
@@ -70,7 +56,7 @@ namespace StartMenuProtector
             }
         }
     }
-
+    
     public enum ShortcutLocation
     {
         System, 
