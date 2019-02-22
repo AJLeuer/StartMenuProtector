@@ -27,7 +27,7 @@ namespace StartMenuProtector.IO
             this.FileSystemItem = fileSystemItem;
         }
 
-        public override void Delete() {}
+        public override void Delete() { FileSystemItem.Delete(); }
     }
 
     public class EnhancedDirectoryInfo : EnhancedFileSystemInfo
@@ -59,6 +59,21 @@ namespace StartMenuProtector.IO
             get { return (FileSystemItem as DirectoryInfo).GetDirectoriesEnhanced(); }
         }
     }
+    
+    public class EnhancedFileInfo : EnhancedFileSystemInfo
+    {
+        public EnhancedFileInfo(FileInfo file) : 
+            base(file)
+        {
+            
+        }
+
+        public EnhancedFileInfo(string path) : 
+            this(new FileInfo(path))
+        {
+            
+        }
+    }
 
     public static class DirectoryInfoExtensions
     {
@@ -76,6 +91,20 @@ namespace StartMenuProtector.IO
             return enhancedDirectories.ToArray();
         }
         
+        public static EnhancedFileInfo[] GetFilesEnhanced(this DirectoryInfo directoryInfo)
+        {
+            FileInfo[] files = directoryInfo.GetFiles();
+            var enhancedFiles = new List<EnhancedFileInfo>();
+            
+            foreach (FileInfo file in files)
+            {
+                var enhancedFile = new EnhancedFileInfo(file);
+                enhancedFiles.Add(enhancedFile);
+            }
+
+            return enhancedFiles.ToArray();
+        }
+        
         public static FileSystemInfo[] GetContents(this DirectoryInfo directoryInfo)
         {
             var contents = new List<FileSystemInfo>();
@@ -85,7 +114,7 @@ namespace StartMenuProtector.IO
                 contents.Add(directory);
             }
 
-            foreach (FileSystemInfo file in directoryInfo.GetFiles())
+            foreach (FileSystemInfo file in directoryInfo.GetFilesEnhanced())
             {
                 contents.Add(file);
             }
