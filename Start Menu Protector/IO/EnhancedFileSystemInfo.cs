@@ -3,61 +3,69 @@ using System.IO;
 
 namespace StartMenuProtector.IO
 {
-    public class EnhancedDirectoryInfo : FileSystemInfo
+    public abstract class EnhancedFileSystemInfo : FileSystemInfo
     {
-        private DirectoryInfo Directory;
+        protected FileSystemInfo FileSystemItem { get; set; }
 
         public override string Name
         {
-            get { return Directory.Name; }
+            get { return FileSystemItem.Name; }
         }
         
         public override string FullName
         {
-            get { return Directory.FullName; }
+            get { return FileSystemItem.FullName; }
         }
         
         public override bool Exists
         {
-            get { return Directory.Exists; }
+            get { return FileSystemItem.Exists; }
         }
         
-        public FileSystemInfo[] Contents
+        public EnhancedFileSystemInfo(FileSystemInfo fileSystemItem)
         {
-            get { return Directory.GetContents(); }
-        }
-        
-        public FileInfo[] Files
-        {
-            get { return Directory.GetFiles(); }
+            this.FileSystemItem = fileSystemItem;
         }
 
-        public EnhancedDirectoryInfo[] Directories
-        {
-            get { return Directory.GetDirectoriesEnhanced(); }
-        }
-        
-        public EnhancedDirectoryInfo(DirectoryInfo directory)
-        {
-            this.Directory = directory;
-        }
+        public override void Delete() {}
+    }
 
-        public EnhancedDirectoryInfo(string path) :
-            this(new DirectoryInfo(path))
+    public class EnhancedDirectoryInfo : EnhancedFileSystemInfo
+    {
+        public EnhancedDirectoryInfo(DirectoryInfo directory) : 
+            base(directory)
         {
             
         }
 
-        public override void Delete() {}
+        public EnhancedDirectoryInfo(string path) : 
+            this(new DirectoryInfo(path))
+        {
+            
+        }
+        
+        public FileSystemInfo[] Contents
+        {
+            get { return (FileSystemItem as DirectoryInfo).GetContents(); }
+        }
+        
+        public FileInfo[] Files
+        {
+            get { return (FileSystemItem as DirectoryInfo)?.GetFiles(); }
+        }
 
+        public EnhancedFileSystemInfo[] Directories
+        {
+            get { return (FileSystemItem as DirectoryInfo).GetDirectoriesEnhanced(); }
+        }
     }
 
     public static class DirectoryInfoExtensions
     {
-        public static EnhancedDirectoryInfo[] GetDirectoriesEnhanced(this DirectoryInfo directoryInfo)
+        public static EnhancedFileSystemInfo[] GetDirectoriesEnhanced(this DirectoryInfo directoryInfo)
         {
             DirectoryInfo[] directories = directoryInfo.GetDirectories();
-            var enhancedDirectories = new List<EnhancedDirectoryInfo>();
+            var enhancedDirectories = new List<EnhancedFileSystemInfo>();
             
             foreach (DirectoryInfo directory in directories)
             {

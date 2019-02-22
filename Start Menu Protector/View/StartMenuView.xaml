@@ -9,7 +9,7 @@
              mc:Ignorable="d">
     
     <UserControl.Resources>
-        <HierarchicalDataTemplate DataType="{x:Type IO:EnhancedDirectoryInfo}" ItemsSource="{Binding Path=Contents}">
+        <HierarchicalDataTemplate DataType="{x:Type IO:EnhancedFileSystemInfo}" ItemsSource="{Binding Path=Contents}">
             <TextBlock Text="{Binding Path=Name}" ToolTip="{Binding Path=FullName}" />
         </HierarchicalDataTemplate>
 

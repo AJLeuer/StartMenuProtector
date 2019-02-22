@@ -15,7 +15,7 @@ namespace StartMenuProtector.View
 
         public ObservableCollection<FileSystemInfo> StartMenuContents { get; set; } = new ObservableCollection<FileSystemInfo>();
 
-        public EnhancedDirectoryInfo CurrentShortcutsDirectory = StartMenuShortcuts.SystemStartMenuShortcuts;
+        public EnhancedDirectoryInfo CurrentShortcutsDirectory = ActiveStartMenuShortcuts.SystemStartMenuShortcuts;
         
         public StartMenuView()
         {
@@ -28,13 +28,13 @@ namespace StartMenuProtector.View
         {
             var selectedLocation = (sender as ListBox)?.SelectedItem;
             
-            switch (selectedLocation is ShortcutLocation ? (ShortcutLocation) selectedLocation : ShortcutLocation.System)
+            switch (selectedLocation as ShortcutLocation? ?? ShortcutLocation.System)
             {
                 case ShortcutLocation.System:
-                    CurrentShortcutsDirectory = StartMenuShortcuts.SystemStartMenuShortcuts;
+                    CurrentShortcutsDirectory = ActiveStartMenuShortcuts.SystemStartMenuShortcuts;
                     break;
                 case ShortcutLocation.User:
-                    CurrentShortcutsDirectory = StartMenuShortcuts.UserStartMenuShortcuts;
+                    CurrentShortcutsDirectory = ActiveStartMenuShortcuts.UserStartMenuShortcuts;
                     break;
             }
             
@@ -45,14 +45,9 @@ namespace StartMenuProtector.View
         {
             StartMenuContents.Clear();
             
-            foreach (FileSystemInfo file in CurrentShortcutsDirectory.Files)
+            foreach (FileSystemInfo item in CurrentShortcutsDirectory.Contents)
             {
-                StartMenuContents.Add(file);         
-            }
-            
-            foreach (FileSystemInfo directory in CurrentShortcutsDirectory.Directories)
-            {
-                StartMenuContents.Add(directory);         
+                StartMenuContents.Add(item);         
             }
         }
     }
