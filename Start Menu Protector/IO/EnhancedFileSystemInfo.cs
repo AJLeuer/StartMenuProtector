@@ -1,5 +1,9 @@
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using StartMenuProtector.Util;
 
 namespace StartMenuProtector.IO
 {
@@ -62,10 +66,15 @@ namespace StartMenuProtector.IO
     
     public class EnhancedFileInfo : EnhancedFileSystemInfo
     {
+        private static ImageSourceConverter ImageConverter = new ImageSourceConverter();
+
+        public BitmapImage Icon { get; }
+
         public EnhancedFileInfo(FileInfo file) : 
             base(file)
         {
-            
+            Bitmap icon = System.Drawing.Icon.ExtractAssociatedIcon(FullName).ToBitmap();
+            Icon = icon.ConvertToImageSource();
         }
 
         public EnhancedFileInfo(string path) : 

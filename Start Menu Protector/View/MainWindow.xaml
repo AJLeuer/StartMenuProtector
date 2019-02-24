@@ -9,7 +9,6 @@
         xmlns:view="clr-namespace:StartMenuProtector.View"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
-    
-    <view:StartMenuView>
-    </view:StartMenuView>
+
+    <view:StartMenuView/>
 </Window>

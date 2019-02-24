@@ -1,8 +1,11 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Windows.Controls;
+using System.Windows.Media;
 using StartMenuProtector.Data;
 using StartMenuProtector.IO;
+using StartMenuProtector.View;
 
 namespace StartMenuProtector.View
 {
@@ -16,7 +19,19 @@ namespace StartMenuProtector.View
         public ObservableCollection<FileSystemInfo> StartMenuContents { get; set; } = new ObservableCollection<FileSystemInfo>();
 
         public EnhancedDirectoryInfo CurrentShortcutsDirectory = ActiveStartMenuShortcuts.SystemStartMenuShortcuts;
-        
+
+        private (StartMenuDataItem, Border) selectedStartMenuItem = new ValueTuple<StartMenuDataItem, Border>();
+        private (StartMenuDataItem, Border) SelectedStartMenuItem
+        {
+            get { return selectedStartMenuItem; }
+            set
+            {
+                selectedStartMenuItem.Item1?.Deselected();
+                selectedStartMenuItem = value;
+                selectedStartMenuItem.Item1.Selected();
+            }
+        }
+
         public StartMenuView()
         {
             InitializeComponent();
@@ -50,8 +65,23 @@ namespace StartMenuProtector.View
                 StartMenuContents.Add(item);         
             }
         }
+
+        private void UpdateSelectedItem(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            var newSelectedStartMenuItem = this.SelectedStartMenuItem;
+            switch (sender)
+            {
+                case StartMenuDataItem startMenuItem:
+                    newSelectedStartMenuItem.Item1 = startMenuItem;
+                    break;
+                case Border border:
+                    newSelectedStartMenuItem.Item2 = border;
+                    break;
+            }
+            SelectedStartMenuItem = newSelectedStartMenuItem;
+        }
     }
-    
+
     public enum ShortcutLocation
     {
         System, 
