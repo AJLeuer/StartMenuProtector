@@ -20,8 +20,8 @@ namespace StartMenuProtector.View
 
         public EnhancedDirectoryInfo CurrentShortcutsDirectory = ActiveStartMenuShortcuts.SystemStartMenuShortcuts;
 
-        private (StartMenuDataItem, Border) selectedStartMenuItem = new ValueTuple<StartMenuDataItem, Border>();
-        private (StartMenuDataItem, Border) SelectedStartMenuItem
+        private (StartMenuItem, Border) selectedStartMenuItem = new ValueTuple<StartMenuItem, Border>();
+        private (StartMenuItem, Border) SelectedStartMenuItem
         {
             get { return selectedStartMenuItem; }
             set
@@ -71,7 +71,7 @@ namespace StartMenuProtector.View
             var newSelectedStartMenuItem = this.SelectedStartMenuItem;
             switch (sender)
             {
-                case StartMenuDataItem startMenuItem:
+                case StartMenuItem startMenuItem:
                     newSelectedStartMenuItem.Item1 = startMenuItem;
                     break;
                 case Border border:
