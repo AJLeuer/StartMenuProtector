@@ -11,13 +11,13 @@
              mc:Ignorable="d">
 
     <UserControl.Resources>
-        <HierarchicalDataTemplate x:Name="Directory" DataType="{x:Type IO:EnhancedDirectoryInfo}" ItemsSource="{Binding Path=Contents}">
+        <HierarchicalDataTemplate DataType="{x:Type IO:EnhancedDirectoryInfo}" ItemsSource="{Binding Path=Contents}">
             <TextBlock Text="{Binding Path=Name}" ToolTip="{Binding Path=FullName}" />
         </HierarchicalDataTemplate>
 
         <DataTemplate x:Name="File" DataType="{x:Type IO:EnhancedFileInfo}">
             <Border BorderThickness="2" BorderBrush="{x:Static view:StartMenuView.OutlineColor}" CornerRadius="4" Margin="0,2.5,0,2.5" MouseDown="UpdateSelectedItem">
-                <view:StartMenuItem File="{Binding}" IconSource="{Binding Path=Icon}" SelectionBackgroundColor="{x:Static view:StartMenuView.SelectionBackgroundGradient}" LastChildFill="true" ClipToBounds="True"  MouseDown="UpdateSelectedItem"/>
+                <view:StartMenuItem File="{Binding}" SelectionBackgroundColor="{x:Static view:StartMenuView.SelectionBackgroundGradient}" LastChildFill="true" ClipToBounds="True"  MouseDown="UpdateSelectedItem"/>
             </Border>
         </DataTemplate>
     </UserControl.Resources>
