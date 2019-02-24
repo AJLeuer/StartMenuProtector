@@ -3,16 +3,13 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:local="clr-namespace:StartMenuProtector"
-             xmlns:io="clr-namespace:System.IO;assembly=mscorlib"
              xmlns:IO="clr-namespace:StartMenuProtector.IO"
              xmlns:view="clr-namespace:StartMenuProtector.View"
-             xmlns:configuration="clr-namespace:StartMenuProtector.Configuration"
              mc:Ignorable="d">
 
     <UserControl.Resources>
         <HierarchicalDataTemplate DataType="{x:Type IO:EnhancedDirectoryInfo}" ItemsSource="{Binding Path=Contents}">
-            <TextBlock Text="{Binding Path=Name}" ToolTip="{Binding Path=FullName}" />
+            <view:StartMenuItem File="{Binding}" SelectionBackgroundColor="{x:Static view:StartMenuView.SelectionBackgroundGradient}" LastChildFill="true" ClipToBounds="True"  MouseDown="UpdateSelectedItem"/>
         </HierarchicalDataTemplate>
 
         <DataTemplate x:Name="File" DataType="{x:Type IO:EnhancedFileInfo}">
