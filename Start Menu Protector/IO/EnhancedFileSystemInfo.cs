@@ -15,6 +15,15 @@ namespace StartMenuProtector.IO
         {
             get { return FileSystemItem.Name; }
         }
+
+        public string PrettyName
+        {
+            get
+            {
+                ushort baseNameLength = (ushort)(FileSystemItem.Name.Length - FileSystemItem.Extension.Length);
+                return FileSystemItem.Name.Substring(0, baseNameLength);
+            }
+        }
         
         public override string FullName
         {

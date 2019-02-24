@@ -9,7 +9,9 @@
 
     <UserControl.Resources>
         <HierarchicalDataTemplate DataType="{x:Type IO:EnhancedDirectoryInfo}" ItemsSource="{Binding Path=Contents}">
-            <view:StartMenuItem File="{Binding}" SelectionBackgroundColor="{x:Static view:StartMenuView.SelectionBackgroundGradient}" LastChildFill="true" ClipToBounds="True"  MouseDown="UpdateSelectedItem"/>
+            <Border BorderThickness="2" BorderBrush="{x:Static view:StartMenuView.OutlineColor}" CornerRadius="4" Margin="0,2.5,0,2.5" MouseDown="UpdateSelectedItem">
+                <view:StartMenuItem File="{Binding}" SelectionBackgroundColor="{x:Static view:StartMenuView.SelectionBackgroundGradient}" LastChildFill="true" ClipToBounds="True"  MouseDown="UpdateSelectedItem"/>
+            </Border>
         </HierarchicalDataTemplate>
 
         <DataTemplate x:Name="File" DataType="{x:Type IO:EnhancedFileInfo}">

@@ -35,6 +35,7 @@ namespace StartMenuProtector.View
             this.Background = DefaultBackgroundColor;
             Image = new Image { Margin = new Thickness(left: 5, top: 5, right: 2.5, bottom: 5)};
             TextBlock = new TextBlock { FontSize = Config.FontSize, Foreground = TextColor, Margin = new Thickness(left: 2.5, top: 5, right: 5, bottom: 5), VerticalAlignment = VerticalAlignment.Center};
+            
             this.Children.Add(Image);
             this.Children.Add(TextBlock);
         }
@@ -57,7 +58,7 @@ namespace StartMenuProtector.View
             {
                 Image.Source = ((EnhancedFileInfo) File).Icon;
             }
-            TextBlock.Text = File.Name;
+            TextBlock.Text = File.PrettyName;
             TextBlock.ToolTip = File.FullName;
         }
         
