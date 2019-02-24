@@ -11,20 +11,13 @@
              mc:Ignorable="d">
 
     <UserControl.Resources>
-        <LinearGradientBrush x:Key="SelectionBackgroundGradient" EndPoint="0.5,1" MappingMode="RelativeToBoundingBox" StartPoint="0.5,0">
-            <GradientStop Color="{x:Static configuration:Config.SelectionBackgroundColor}" Offset="0"/>
-            <GradientStop Color="#FF4877AA" Offset="1"/>
-            <GradientStop Color="#FF4C8DD3" Offset="0.535"/>
-        </LinearGradientBrush>
-        
         <HierarchicalDataTemplate DataType="{x:Type IO:EnhancedDirectoryInfo}" ItemsSource="{Binding Path=Contents}">
             <TextBlock Text="{Binding Path=Name}" ToolTip="{Binding Path=FullName}" />
         </HierarchicalDataTemplate>
 
         <DataTemplate DataType="{x:Type IO:EnhancedFileInfo}">
-            <Border BorderThickness="2" BorderBrush="{StaticResource SelectionBackgroundGradient}" CornerRadius="4" MouseDown="UpdateSelectedItem">
-                <view:StartMenuItem Text="{Binding Path=Name}" IconSource="{Binding Path=Icon}" SelectionBackgroundColor="{StaticResource SelectionBackgroundGradient}" LastChildFill="true" HorizontalAlignment="Stretch" ClipToBounds="True"  MouseDown="UpdateSelectedItem">
-                    <!-- <Image Source="{Binding Path=Icon}" Stretch="None"></Image> -->
+            <Border BorderThickness="2" BorderBrush="{x:Static view:StartMenuView.OutlineColor}" CornerRadius="4" MouseDown="UpdateSelectedItem">
+                <view:StartMenuItem Text="{Binding Path=Name}" IconSource="{Binding Path=Icon}" SelectionBackgroundColor="{x:Static view:StartMenuView.SelectionBackgroundGradient}" LastChildFill="true" HorizontalAlignment="Stretch" ClipToBounds="True"  MouseDown="UpdateSelectedItem">
                 </view:StartMenuItem>
             </Border>
         </DataTemplate>
