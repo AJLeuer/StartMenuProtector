@@ -25,10 +25,10 @@ namespace StartMenuProtector.View
         public StartMenuItem()
         {
             this.Background = DefaultBackgroundColor;
-            TextBlock = new TextBlock { Text = this.Text, FontSize = Config.FontSize, Foreground = TextColor };
-            Image = new Image { Source = this.IconSource, Stretch = Stretch.None };
-            this.Children.Add(TextBlock);
+            Image = new Image { Source = this.IconSource, Margin = new Thickness(left: 5, top: 5, right: 2.5, bottom: 5)};
+            TextBlock = new TextBlock { Text = this.Text, FontSize = Config.FontSize, Foreground = TextColor, Margin = new Thickness(left: 2.5, top: 5, right: 5, bottom: 5), VerticalAlignment = VerticalAlignment.Center};
             this.Children.Add(Image);
+            this.Children.Add(TextBlock);
         }
 
         public void Selected()

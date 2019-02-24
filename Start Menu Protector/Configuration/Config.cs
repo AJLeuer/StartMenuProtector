@@ -4,7 +4,7 @@ namespace StartMenuProtector.Configuration
 {
     public static class Config
     {
-        public const ushort FontSize = 16;
+        public const ushort FontSize = 18;
         public static readonly Color TextColor = Colors.Black;
         public static readonly Color BackgroundColor = Colors.White;
         public static readonly Color OutlineColor = Colors.LightGray;

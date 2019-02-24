@@ -16,15 +16,15 @@
         </HierarchicalDataTemplate>
 
         <DataTemplate DataType="{x:Type IO:EnhancedFileInfo}">
-            <Border BorderThickness="2" BorderBrush="{x:Static view:StartMenuView.OutlineColor}" CornerRadius="4" MouseDown="UpdateSelectedItem">
-                <view:StartMenuItem Text="{Binding Path=Name}" IconSource="{Binding Path=Icon}" SelectionBackgroundColor="{x:Static view:StartMenuView.SelectionBackgroundGradient}" LastChildFill="true" HorizontalAlignment="Stretch" ClipToBounds="True"  MouseDown="UpdateSelectedItem">
+            <Border BorderThickness="2" BorderBrush="{x:Static view:StartMenuView.OutlineColor}" CornerRadius="4" Margin="0,2.5,0,2.5" MouseDown="UpdateSelectedItem">
+                <view:StartMenuItem Text="{Binding Path=Name}" IconSource="{Binding Path=Icon}" SelectionBackgroundColor="{x:Static view:StartMenuView.SelectionBackgroundGradient}" LastChildFill="true" ClipToBounds="True"  MouseDown="UpdateSelectedItem">
                 </view:StartMenuItem>
             </Border>
         </DataTemplate>
     </UserControl.Resources>
 
     <Grid Margin="24,24,24,24">
-        <ListBox Name="StartMenuShortcutsLocationSelection" SelectionChanged="CurrentShortcutsLocationChanged" Background="WhiteSmoke" Width="172" ItemsSource="{Binding Locations, Mode=TwoWay}" FontSize="20" VerticalAlignment="Stretch" HorizontalAlignment="Left"/>
+        <ListBox Name="StartMenuShortcutsLocationSelection" Background="WhiteSmoke" Width="172" ItemsSource="{Binding Locations, Mode=TwoWay}" FontSize="20" VerticalAlignment="Stretch" HorizontalAlignment="Left" SelectionChanged="CurrentShortcutsLocationChanged" />
         <TreeView Name="StartMenuDirectoryTreeView" ItemsSource="{Binding StartMenuContents}" Margin="172,0,0,0">
             <TreeView.Resources>
                 <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}"
