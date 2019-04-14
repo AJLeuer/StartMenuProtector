@@ -13,8 +13,7 @@ namespace StartMenuProtectorTest
 
             controller.UpdateCurrentShortcuts(StartMenuShortcutsLocation.System);
 
-            Assert.AreEqual(SystemState.ActiveStartMenuShortcuts[StartMenuShortcutsLocation.System],
-                controller.CurrentShortcutsDirectory);
+            Assert.AreEqual(SystemState.ActiveStartMenuShortcuts[StartMenuShortcutsLocation.System], controller.CurrentShortcutsDirectory);
         }
     }
 }

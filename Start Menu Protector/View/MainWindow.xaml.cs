@@ -10,7 +10,7 @@ namespace StartMenuProtector.View
         public MainWindow()
         {
             InitializeComponent();
-            this.DataContext = this;
+            DataContext = this;
         }
     }
 }

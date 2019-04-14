@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-using Start_Menu_Protector.Data;
 using StartMenuProtector.Configuration;
 using StartMenuProtector.Control;
 using StartMenuProtector.Data;
-using StartMenuProtector.View;
 
 namespace StartMenuProtector.View
 {
@@ -34,7 +31,7 @@ namespace StartMenuProtector.View
         
         public ObservableCollection<StartMenuShortcutsLocation> Locations { get; set; } = new ObservableCollection<StartMenuShortcutsLocation> { StartMenuShortcutsLocation.System, StartMenuShortcutsLocation.User };
                 
-        private (StartMenuItem, Border) selectedStartMenuItem = new ValueTuple<StartMenuItem, Border>();
+        private (StartMenuItem, Border) selectedStartMenuItem;
         private (StartMenuItem, Border) SelectedStartMenuItem 
         {
             get { return selectedStartMenuItem; }

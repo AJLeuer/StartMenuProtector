@@ -1,6 +1,5 @@
 using System.Collections.ObjectModel;
 using System.IO;
-using Start_Menu_Protector.Data;
 using StartMenuProtector.Data;
 
 namespace StartMenuProtector.Control

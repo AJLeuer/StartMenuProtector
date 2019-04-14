@@ -1,11 +1,10 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
-using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using StartMenuProtector.Util;
 
-namespace Start_Menu_Protector.Data
+namespace StartMenuProtector.Data
 {
     public abstract class EnhancedFileSystemInfo : FileSystemInfo
     {
@@ -75,15 +74,18 @@ namespace Start_Menu_Protector.Data
     
     public class EnhancedFileInfo : EnhancedFileSystemInfo
     {
-        private static ImageSourceConverter ImageConverter = new ImageSourceConverter();
-
         public BitmapImage Icon { get; }
 
         public EnhancedFileInfo(FileInfo file) : 
             base(file)
         {
-            Bitmap icon = System.Drawing.Icon.ExtractAssociatedIcon(FullName).ToBitmap();
+            Bitmap icon = System.Drawing.Icon.ExtractAssociatedIcon(FullName)?.ToBitmap();
             Icon = icon.ConvertToImageSource();
+        }
+
+        public sealed override string FullName
+        {
+            get { return base.FullName; }
         }
 
         public EnhancedFileInfo(string path) : 

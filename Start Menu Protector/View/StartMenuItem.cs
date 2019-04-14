@@ -1,8 +1,7 @@
-using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-using Start_Menu_Protector.Data;
+using StartMenuProtector.Data;
 using StartMenuProtector.Configuration;
 
 namespace StartMenuProtector.View
@@ -64,8 +63,10 @@ namespace StartMenuProtector.View
         
         private static void UpdateFile(DependencyObject startMenuDataItem, DependencyPropertyChangedEventArgs updatedValue)
         {
-            var self = startMenuDataItem as StartMenuItem;
-            self.File = (EnhancedFileSystemInfo) updatedValue.NewValue;
+            if (startMenuDataItem is StartMenuItem self)
+            {
+                self.File = (EnhancedFileSystemInfo) updatedValue.NewValue;
+            }
         }
 
     }
