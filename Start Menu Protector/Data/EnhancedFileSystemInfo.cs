@@ -5,42 +5,42 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using StartMenuProtector.Util;
 
-namespace StartMenuProtector.IO
+namespace Start_Menu_Protector.Data
 {
     public abstract class EnhancedFileSystemInfo : FileSystemInfo
     {
-        protected FileSystemInfo FileSystemItem { get; set; }
+        protected FileSystemInfo OriginalFileSystemInfo { get; set; }
 
         public override string Name
         {
-            get { return FileSystemItem.Name; }
+            get { return OriginalFileSystemInfo.Name; }
         }
 
         public string PrettyName
         {
             get
             {
-                ushort baseNameLength = (ushort)(FileSystemItem.Name.Length - FileSystemItem.Extension.Length);
-                return FileSystemItem.Name.Substring(0, baseNameLength);
+                ushort baseNameLength = (ushort)(OriginalFileSystemInfo.Name.Length - OriginalFileSystemInfo.Extension.Length);
+                return OriginalFileSystemInfo.Name.Substring(0, baseNameLength);
             }
         }
         
         public override string FullName
         {
-            get { return FileSystemItem.FullName; }
+            get { return OriginalFileSystemInfo.FullName; }
         }
         
         public override bool Exists
         {
-            get { return FileSystemItem.Exists; }
+            get { return OriginalFileSystemInfo.Exists; }
         }
         
-        public EnhancedFileSystemInfo(FileSystemInfo fileSystemItem)
+        protected EnhancedFileSystemInfo(FileSystemInfo originalFileSystemInfo)
         {
-            this.FileSystemItem = fileSystemItem;
+            this.OriginalFileSystemInfo = originalFileSystemInfo;
         }
 
-        public override void Delete() { FileSystemItem.Delete(); }
+        public override void Delete() { OriginalFileSystemInfo.Delete(); }
     }
 
     public class EnhancedDirectoryInfo : EnhancedFileSystemInfo
@@ -59,17 +59,17 @@ namespace StartMenuProtector.IO
         
         public FileSystemInfo[] Contents
         {
-            get { return (FileSystemItem as DirectoryInfo).GetContents(); }
+            get { return (OriginalFileSystemInfo as DirectoryInfo).GetContents(); }
         }
         
         public FileInfo[] Files
         {
-            get { return (FileSystemItem as DirectoryInfo)?.GetFiles(); }
+            get { return (OriginalFileSystemInfo as DirectoryInfo)?.GetFiles(); }
         }
 
         public EnhancedFileSystemInfo[] Directories
         {
-            get { return (FileSystemItem as DirectoryInfo).GetDirectoriesEnhanced(); }
+            get { return (OriginalFileSystemInfo as DirectoryInfo).GetDirectoriesEnhanced(); }
         }
     }
     

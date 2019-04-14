@@ -5,7 +5,6 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:StartMenuProtector"
         xmlns:io="clr-namespace:System.IO;assembly=mscorlib"
-        xmlns:IO="clr-namespace:StartMenuProtector.IO"
         xmlns:view="clr-namespace:StartMenuProtector.View"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">

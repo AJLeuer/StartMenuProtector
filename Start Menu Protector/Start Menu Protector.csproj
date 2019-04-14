@@ -60,6 +60,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Configuration\Config.cs" />
+    <Compile Include="Data\EnhancedFileSystemInfo.cs" />
     <Compile Include="Util\Util.cs" />
     <Compile Include="View\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
@@ -74,8 +75,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Control\StartMenuSentinel.cs" />
-    <Compile Include="Data\ActiveStartMenuShortcuts.cs" />
-    <Compile Include="IO\EnhancedFileSystemInfo.cs" />
+    <Compile Include="Data\SystemState.cs" />
     <Page Include="View\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

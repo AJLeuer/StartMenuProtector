@@ -4,9 +4,9 @@ using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using Start_Menu_Protector.Data;
 using StartMenuProtector.Configuration;
 using StartMenuProtector.Data;
-using StartMenuProtector.IO;
 using StartMenuProtector.View;
 
 namespace StartMenuProtector.View
@@ -31,11 +31,10 @@ namespace StartMenuProtector.View
             }
         };
         
-        public ObservableCollection<ShortcutLocation> Locations { get; set; } = new ObservableCollection<ShortcutLocation> { ShortcutLocation.System, ShortcutLocation.User };
-
+        public ObservableCollection<StartMenuShortcutsLocation> Locations { get; set; } = new ObservableCollection<StartMenuShortcutsLocation> { StartMenuShortcutsLocation.System, StartMenuShortcutsLocation.User };
         public ObservableCollection<FileSystemInfo> StartMenuContents { get; set; } = new ObservableCollection<FileSystemInfo>();
 
-        public EnhancedDirectoryInfo CurrentShortcutsDirectory = ActiveStartMenuShortcuts.SystemStartMenuShortcuts;
+        public EnhancedDirectoryInfo CurrentShortcutsDirectory = SystemState.ActiveStartMenuShortcuts[StartMenuShortcutsLocation.System];
 
         private (StartMenuItem, Border) selectedStartMenuItem = new ValueTuple<StartMenuItem, Border>();
         private (StartMenuItem, Border) SelectedStartMenuItem 
@@ -67,17 +66,10 @@ namespace StartMenuProtector.View
         private void CurrentShortcutsLocationChanged(object sender, SelectionChangedEventArgs @event)
         {
             var selectedLocation = (sender as ListBox)?.SelectedItem;
-            
-            switch (selectedLocation as ShortcutLocation? ?? ShortcutLocation.System)
-            {
-                case ShortcutLocation.System:
-                    CurrentShortcutsDirectory = ActiveStartMenuShortcuts.SystemStartMenuShortcuts;
-                    break;
-                case ShortcutLocation.User:
-                    CurrentShortcutsDirectory = ActiveStartMenuShortcuts.UserStartMenuShortcuts;
-                    break;
-            }
-            
+            StartMenuShortcutsLocation startMenuStartMenuShortcutsLocation = selectedLocation is StartMenuShortcutsLocation ? (StartMenuShortcutsLocation) selectedLocation : StartMenuShortcutsLocation.System;
+
+            CurrentShortcutsDirectory = SystemState.ActiveStartMenuShortcuts[startMenuStartMenuShortcutsLocation];
+
             PopulateStartMenuTreeView();
         }
 
@@ -105,11 +97,5 @@ namespace StartMenuProtector.View
             }
             SelectedStartMenuItem = newSelectedStartMenuItem;
         }
-    }
-
-    public enum ShortcutLocation
-    {
-        System, 
-        User
     }
 }
