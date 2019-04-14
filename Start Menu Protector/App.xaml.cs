@@ -8,6 +8,7 @@ namespace StartMenuProtector
     {
         public StartMenuViewController Controller { get; } = new StartMenuViewController();
         public StartMenuView View { get; private set; }
+        
         protected override void OnStartup(StartupEventArgs e)
         {
             MainWindow = new MainWindow();

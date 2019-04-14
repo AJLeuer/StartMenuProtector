@@ -5,6 +5,8 @@ VisualStudioVersion = 16.0.28606.126
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Start Menu Protector", "Start Menu Protector\Start Menu Protector.csproj", "{B1119568-5108-4F62-9917-DF733E05CB85}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Start Menu Protector Test", "Start Menu Protector Test\Start Menu Protector Test.csproj", "{F77AE142-4BD1-469E-B380-B118950EDA5E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,14 @@ Global
 		{B1119568-5108-4F62-9917-DF733E05CB85}.Release|Any CPU.Build.0 = Release|Any CPU
 		{B1119568-5108-4F62-9917-DF733E05CB85}.Release|x64.ActiveCfg = Release|Any CPU
 		{B1119568-5108-4F62-9917-DF733E05CB85}.Release|x64.Build.0 = Release|Any CPU
+		{F77AE142-4BD1-469E-B380-B118950EDA5E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F77AE142-4BD1-469E-B380-B118950EDA5E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F77AE142-4BD1-469E-B380-B118950EDA5E}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{F77AE142-4BD1-469E-B380-B118950EDA5E}.Debug|x64.Build.0 = Debug|Any CPU
+		{F77AE142-4BD1-469E-B380-B118950EDA5E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F77AE142-4BD1-469E-B380-B118950EDA5E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F77AE142-4BD1-469E-B380-B118950EDA5E}.Release|x64.ActiveCfg = Release|Any CPU
+		{F77AE142-4BD1-469E-B380-B118950EDA5E}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
