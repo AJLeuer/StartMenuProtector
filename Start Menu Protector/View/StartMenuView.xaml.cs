@@ -6,6 +6,7 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using Start_Menu_Protector.Data;
 using StartMenuProtector.Configuration;
+using StartMenuProtector.Control;
 using StartMenuProtector.Data;
 using StartMenuProtector.View;
 
@@ -32,10 +33,7 @@ namespace StartMenuProtector.View
         };
         
         public ObservableCollection<StartMenuShortcutsLocation> Locations { get; set; } = new ObservableCollection<StartMenuShortcutsLocation> { StartMenuShortcutsLocation.System, StartMenuShortcutsLocation.User };
-        public ObservableCollection<FileSystemInfo> StartMenuContents { get; set; } = new ObservableCollection<FileSystemInfo>();
-
-        public EnhancedDirectoryInfo CurrentShortcutsDirectory = SystemState.ActiveStartMenuShortcuts[StartMenuShortcutsLocation.System];
-
+                
         private (StartMenuItem, Border) selectedStartMenuItem = new ValueTuple<StartMenuItem, Border>();
         private (StartMenuItem, Border) SelectedStartMenuItem 
         {
@@ -55,12 +53,22 @@ namespace StartMenuProtector.View
                 }
             }
         }
+        public StartMenuViewController Controller { get; set; }
+
+        public EnhancedDirectoryInfo CurrentShortcutsDirectory
+        {
+            get { return Controller.CurrentShortcutsDirectory; }
+        }
+
+        public ObservableCollection<FileSystemInfo> StartMenuContents
+        {
+            get { return Controller.StartMenuContents; }
+        }
 
         public StartMenuView()
         {
             InitializeComponent();
-            this.DataContext = this;
-            PopulateStartMenuTreeView();
+            DataContext = this;
         }
         
         private void CurrentShortcutsLocationChanged(object sender, SelectionChangedEventArgs @event)
@@ -68,19 +76,7 @@ namespace StartMenuProtector.View
             var selectedLocation = (sender as ListBox)?.SelectedItem;
             StartMenuShortcutsLocation startMenuStartMenuShortcutsLocation = selectedLocation is StartMenuShortcutsLocation ? (StartMenuShortcutsLocation) selectedLocation : StartMenuShortcutsLocation.System;
 
-            CurrentShortcutsDirectory = SystemState.ActiveStartMenuShortcuts[startMenuStartMenuShortcutsLocation];
-
-            PopulateStartMenuTreeView();
-        }
-
-        private void PopulateStartMenuTreeView()
-        {
-            StartMenuContents.Clear();
-            
-            foreach (FileSystemInfo item in CurrentShortcutsDirectory.Contents)
-            {
-                StartMenuContents.Add(item);         
-            }
+            Controller.UpdateCurrentShortcuts(startMenuStartMenuShortcutsLocation);
         }
 
         private void UpdateSelectedItem(object sender, System.Windows.Input.MouseButtonEventArgs e)
