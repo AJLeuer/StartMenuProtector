@@ -1,6 +1,8 @@
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
+using System.Security.AccessControl;
 using System.Windows.Media.Imaging;
 using StartMenuProtector.Util;
 
@@ -8,42 +10,50 @@ namespace StartMenuProtector.Data
 {
     public abstract class EnhancedFileSystemInfo : FileSystemInfo
     {
-        protected FileSystemInfo OriginalFileSystemInfo { get; set; }
+        protected FileSystemInfo OriginalFileSystemItem { get; set; }
 
         public override string Name
         {
-            get { return OriginalFileSystemInfo.Name; }
+            get { return OriginalFileSystemItem.Name; }
         }
 
         public string PrettyName
         {
             get
             {
-                ushort baseNameLength = (ushort)(OriginalFileSystemInfo.Name.Length - OriginalFileSystemInfo.Extension.Length);
-                return OriginalFileSystemInfo.Name.Substring(0, baseNameLength);
+                ushort baseNameLength = (ushort)(OriginalFileSystemItem.Name.Length - OriginalFileSystemItem.Extension.Length);
+                return OriginalFileSystemItem.Name.Substring(0, baseNameLength);
             }
         }
         
         public override string FullName
         {
-            get { return OriginalFileSystemInfo.FullName; }
+            get { return OriginalFileSystemItem.FullName; }
         }
         
         public override bool Exists
         {
-            get { return OriginalFileSystemInfo.Exists; }
+            get { return OriginalFileSystemItem.Exists; }
         }
         
-        protected EnhancedFileSystemInfo(FileSystemInfo originalFileSystemInfo)
+        protected EnhancedFileSystemInfo(FileSystemInfo originalFileSystemItem)
         {
-            this.OriginalFileSystemInfo = originalFileSystemInfo;
+            this.OriginalFileSystemItem = originalFileSystemItem;
         }
 
-        public override void Delete() { OriginalFileSystemInfo.Delete(); }
+        public override void Delete() { OriginalFileSystemItem.Delete(); }
+
+        public abstract void Copy(DirectoryInfo destination);
     }
 
     public class EnhancedDirectoryInfo : EnhancedFileSystemInfo
     {
+
+        protected DirectoryInfo Self
+        {
+            get { return OriginalFileSystemItem as DirectoryInfo; }
+        }
+        
         public EnhancedDirectoryInfo(DirectoryInfo directory) : 
             base(directory)
         {
@@ -58,23 +68,53 @@ namespace StartMenuProtector.Data
         
         public FileSystemInfo[] Contents
         {
-            get { return (OriginalFileSystemInfo as DirectoryInfo).GetContents(); }
+            get { return Self.GetContents(); }
         }
         
-        public FileInfo[] Files
+        public EnhancedFileInfo[] Files
         {
-            get { return (OriginalFileSystemInfo as DirectoryInfo)?.GetFiles(); }
+            get { return Self.GetFilesEnhanced(); }
         }
 
-        public EnhancedFileSystemInfo[] Directories
+        public EnhancedDirectoryInfo[] Directories
         {
-            get { return (OriginalFileSystemInfo as DirectoryInfo).GetDirectoriesEnhanced(); }
+            get { return Self.GetDirectoriesEnhanced(); }
+        }
+        
+        /// <summary>
+        /// Recursively copies this directory inside of the directory given by destination 
+        /// </summary>
+        /// <param name="destination">The directory to copy into</param>
+        public override void Copy(DirectoryInfo destination)
+        {
+            String pathOfCopy = Path.Combine(destination.FullName, Name);
+            DirectoryInfo directoryCopy = Directory.Exists(pathOfCopy) ? new DirectoryInfo(pathOfCopy) : Directory.CreateDirectory(pathOfCopy);
+
+            DirectorySecurity security = Self.GetAccessControl();
+            security.SetAccessRuleProtection(true, true);
+            directoryCopy.SetAccessControl(security);
+
+            EnhancedFileSystemInfo[] contents = Self.GetContents();
+            
+            foreach (EnhancedFileSystemInfo itemToCopy in contents)
+            {
+                itemToCopy.Copy(directoryCopy);
+            }
         }
     }
     
     public class EnhancedFileInfo : EnhancedFileSystemInfo
     {
+        protected FileInfo Self
+        {
+            get { return OriginalFileSystemItem as FileInfo; }
+        }
         public BitmapImage Icon { get; }
+        
+        public sealed override string FullName
+        {
+            get { return base.FullName; }
+        }
 
         public EnhancedFileInfo(FileInfo file) : 
             base(file)
@@ -83,24 +123,35 @@ namespace StartMenuProtector.Data
             Icon = icon.ConvertToImageSource();
         }
 
-        public sealed override string FullName
-        {
-            get { return base.FullName; }
-        }
-
         public EnhancedFileInfo(string path) : 
             this(new FileInfo(path))
         {
             
         }
+        
+        
+        public override void Copy(DirectoryInfo destination)
+        {
+            String pathOfCopy = Path.Combine(destination.FullName, Name);
+            
+            FileSecurity originalSecurity = Self.GetAccessControl();
+            originalSecurity.SetAccessRuleProtection(true, true);
+
+            Self.CopyTo(pathOfCopy, true);
+
+            var fileCopy = new FileInfo(pathOfCopy);
+
+            // ReSharper disable once AssignNullToNotNullAttribute
+            fileCopy.SetAccessControl(originalSecurity);
+        }
     }
 
     public static class DirectoryInfoExtensions
     {
-        public static EnhancedFileSystemInfo[] GetDirectoriesEnhanced(this DirectoryInfo directoryInfo)
+        public static EnhancedDirectoryInfo[] GetDirectoriesEnhanced(this DirectoryInfo directoryInfo)
         {
             DirectoryInfo[] directories = directoryInfo.GetDirectories();
-            var enhancedDirectories = new List<EnhancedFileSystemInfo>();
+            var enhancedDirectories = new List<EnhancedDirectoryInfo>();
             
             foreach (DirectoryInfo directory in directories)
             {
@@ -125,16 +176,16 @@ namespace StartMenuProtector.Data
             return enhancedFiles.ToArray();
         }
         
-        public static FileSystemInfo[] GetContents(this DirectoryInfo directoryInfo)
+        public static EnhancedFileSystemInfo[] GetContents(this DirectoryInfo directoryInfo)
         {
-            var contents = new List<FileSystemInfo>();
+            var contents = new List<EnhancedFileSystemInfo>();
 
-            foreach (FileSystemInfo directory in directoryInfo.GetDirectoriesEnhanced())
+            foreach (EnhancedDirectoryInfo directory in directoryInfo.GetDirectoriesEnhanced())
             {
                 contents.Add(directory);
             }
 
-            foreach (FileSystemInfo file in directoryInfo.GetFilesEnhanced())
+            foreach (EnhancedFileInfo file in directoryInfo.GetFilesEnhanced())
             {
                 contents.Add(file);
             }
