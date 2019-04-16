@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Security.AccessControl;
+using System.Security.Principal;
 using System.Windows.Media.Imaging;
 using StartMenuProtector.Util;
+using static StartMenuProtector.Configuration.Config;
 
 namespace StartMenuProtector.Data
 {
@@ -12,7 +14,7 @@ namespace StartMenuProtector.Data
     {
         protected FileSystemInfo OriginalFileSystemItem { get; set; }
 
-        public override string Name
+        public override string Name 
         {
             get { return OriginalFileSystemItem.Name; }
         }
@@ -89,6 +91,8 @@ namespace StartMenuProtector.Data
             get { return OriginalFileSystemItem.LastWriteTimeUtc; }
         }
 
+        public abstract OwnerType OwnerType { get; }
+
         protected EnhancedFileSystemInfo(FileSystemInfo originalFileSystemItem)
         {
             OriginalFileSystemItem = originalFileSystemItem;
@@ -111,6 +115,16 @@ namespace StartMenuProtector.Data
             get { return OriginalFileSystemItem as DirectoryInfo; }
         }
         
+        public override OwnerType OwnerType
+        {
+            get
+            {
+                DirectorySecurity security = Self.GetAccessControl();
+                IdentityReference owner = security.GetOwner(typeof(SecurityIdentifier)).Translate(typeof(NTAccount));
+                return owner.Value;
+            }
+        }
+        
         public EnhancedDirectoryInfo(DirectoryInfo directory) : 
             base(directory)
         {
@@ -128,12 +142,12 @@ namespace StartMenuProtector.Data
             get { return Self.GetContents(); }
         }
         
-        public EnhancedFileInfo[] Files
+        public EnhancedFileInfo[] Files 
         {
             get { return Self.GetFilesEnhanced(); }
         }
 
-        public EnhancedDirectoryInfo[] Directories
+        public EnhancedDirectoryInfo[] Directories 
         {
             get { return Self.GetDirectoriesEnhanced(); }
         }
@@ -155,22 +169,44 @@ namespace StartMenuProtector.Data
             
             foreach (EnhancedFileSystemInfo itemToCopy in contents)
             {
-                itemToCopy.Copy(directoryCopy);
+                if (IgnoredFileOwnerTypes.Contains(itemToCopy.OwnerType) == false)
+                {
+                    itemToCopy.Copy(directoryCopy);
+                }
             }
         }
     }
     
     public class EnhancedFileInfo : EnhancedFileSystemInfo
     {
-        protected FileInfo Self
+        protected FileInfo Self 
         {
             get { return OriginalFileSystemItem as FileInfo; }
         }
         public BitmapImage Icon { get; }
         
-        public sealed override string Path
+        public sealed override string Path 
         {
             get { return base.Path; }
+        }
+        
+        public override OwnerType OwnerType 
+        {
+            get
+            {
+                FileSecurity security = Self.GetAccessControl();
+                IdentityReference ownerID = security.GetOwner(typeof(SecurityIdentifier));
+                
+                try
+                {
+                    IdentityReference owner = ownerID.Translate(typeof(NTAccount));
+                    return owner.Value;
+                }
+                catch (IdentityNotMappedException)
+                {
+                    return ownerID.Value;
+                }
+            }
         }
 
         public EnhancedFileInfo(FileInfo file) : 
@@ -248,5 +284,53 @@ namespace StartMenuProtector.Data
 
             return contents.ToArray();
         }
+    }
+
+    public class OwnerType
+    {
+        public static System OS { get; } = new System();
+        public static Administrator Admin { get; } = new Administrator();
+
+        public class System : OwnerType 
+        {
+            public const String Name = @"NT AUTHORITY\SYSTEM";
+            public override String Value { get { return Name; } }
+        }
+        
+        public class Administrator : OwnerType
+        {
+            public const String Name = @"BUILTIN\Administrators";
+            public override String Value { get { return Name; } }
+        }
+
+        public virtual String Value { get; }
+        
+        protected OwnerType()
+        {
+        }
+        
+        private OwnerType(string value)
+        {
+            this.Value = value;
+        }
+        
+        public static implicit operator OwnerType(string value)
+        {
+            switch (value)
+            {
+                case System.Name:
+                    return OS;
+                case Administrator.Name:
+                    return Admin;
+                default:
+                    return new OwnerType(value);
+            }
+        }
+        
+        public static implicit operator String(OwnerType type)
+        {
+            return type.Value;
+        }
+        
     }
 }
