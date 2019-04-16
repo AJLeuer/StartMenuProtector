@@ -8,7 +8,7 @@ namespace StartMenuProtector.View
 {
     public class StartMenuItem : DockPanel
     {
-        public static readonly DependencyProperty FileProperty = DependencyProperty.Register(nameof (File), typeof (EnhancedFileSystemInfo), typeof (StartMenuItem), new FrameworkPropertyMetadata(propertyChangedCallback: StartMenuItem.UpdateFile) { BindsTwoWayByDefault = false });
+        public static readonly DependencyProperty FileProperty = DependencyProperty.Register(nameof (File), typeof (EnhancedFileSystemInfo), typeof (StartMenuItem), new FrameworkPropertyMetadata(propertyChangedCallback: UpdateFile) { BindsTwoWayByDefault = false });
 
         public static Brush TextColor { get; set; } = new SolidColorBrush(Config.TextColor);
         public static Brush DefaultBackgroundColor { get; set; } = new SolidColorBrush(Config.BackgroundColor);
@@ -22,7 +22,7 @@ namespace StartMenuProtector.View
             set
             {
                 file = value;
-                updateState();
+                UpdateState();
             }
         }
         
@@ -32,8 +32,8 @@ namespace StartMenuProtector.View
         public StartMenuItem()
         {
             this.Background = DefaultBackgroundColor;
-            Image = new Image { Margin = new Thickness(left: 5, top: 5, right: 2.5, bottom: 5)};
-            TextBlock = new TextBlock { FontSize = Config.FontSize, Foreground = TextColor, Margin = new Thickness(left: 2.5, top: 5, right: 5, bottom: 5), VerticalAlignment = VerticalAlignment.Center};
+            this.Image = new Image { Margin = new Thickness(left: 5, top: 5, right: 2.5, bottom: 5)};
+            this.TextBlock = new TextBlock { FontSize = Config.FontSize, Foreground = TextColor, Margin = new Thickness(left: 2.5, top: 5, right: 5, bottom: 5), VerticalAlignment = VerticalAlignment.Center};
             
             this.Children.Add(Image);
             this.Children.Add(TextBlock);
@@ -41,24 +41,24 @@ namespace StartMenuProtector.View
 
         public void Selected()
         {
-            this.Background = SelectionBackgroundColor;
+            Background = SelectionBackgroundColor;
             TextBlock.Foreground = SelectionTextColor;
         }
         
         public void Deselected()
         {
-            this.Background = DefaultBackgroundColor;
+            Background = DefaultBackgroundColor;
             TextBlock.Foreground = TextColor;
         }
 
-        private void updateState()
+        private void UpdateState()
         {
             if (File is EnhancedFileInfo)
             {
                 Image.Source = ((EnhancedFileInfo) File).Icon;
             }
             TextBlock.Text = File.PrettyName;
-            TextBlock.ToolTip = File.FullName;
+            TextBlock.ToolTip = File.Path;
         }
         
         private static void UpdateFile(DependencyObject startMenuDataItem, DependencyPropertyChangedEventArgs updatedValue)

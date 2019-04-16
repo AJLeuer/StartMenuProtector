@@ -55,11 +55,6 @@ namespace StartMenuProtector.View
         }
         public StartMenuViewController Controller { get; set; }
 
-        public EnhancedDirectoryInfo CurrentShortcutsDirectory
-        {
-            get { return Controller.CurrentShortcutsDirectory; }
-        }
-
         public ObservableCollection<FileSystemInfo> StartMenuContents
         {
             get { return Controller.StartMenuContents; }

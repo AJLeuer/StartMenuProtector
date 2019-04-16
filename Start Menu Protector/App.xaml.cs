@@ -6,14 +6,17 @@ namespace StartMenuProtector
 {
     public partial class App : Application
     {
-        public StartMenuViewController Controller { get; } = new StartMenuViewController();
-        public StartMenuView View { get; private set; }
+        private readonly StartMenuSentinel sentinel = new StartMenuSentinel();
+        private readonly StartMenuViewController controller = new StartMenuViewController();
+        private StartMenuView view;
         
-        protected override void OnStartup(StartupEventArgs e)
+        protected override void OnStartup(StartupEventArgs startup)
         {
+            sentinel.Start();
+            
             MainWindow = new MainWindow();
-            View = ((MainWindow) MainWindow).startMenuView;
-            View.Controller = Controller;
+            view = ((MainWindow) MainWindow).startMenuView;
+            view.Controller = controller;
             
             MainWindow.Show();
         }

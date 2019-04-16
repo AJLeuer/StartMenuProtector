@@ -25,31 +25,88 @@ namespace StartMenuProtector.Data
                 return OriginalFileSystemItem.Name.Substring(0, baseNameLength);
             }
         }
-        
+
+        public virtual string Path
+        {
+            get { return FullName; }
+        }
         public override string FullName
         {
             get { return OriginalFileSystemItem.FullName; }
         }
+
+        public new string Extension 
+        {
+            get
+            {
+                return OriginalFileSystemItem.Extension;
+            }
+        }
+
+        public new FileAttributes Attributes 
+        {
+            get
+            {
+                return OriginalFileSystemItem.Attributes;
+            }
+        }
         
-        public override bool Exists
+        public override bool Exists 
         {
             get { return OriginalFileSystemItem.Exists; }
         }
         
+        public new DateTime CreationTime 
+        {
+            get
+            {
+                return OriginalFileSystemItem.CreationTime;
+            }
+        }
+
+        public DateTime CreationTimeUTC 
+        {
+            get { return OriginalFileSystemItem.CreationTimeUtc; }
+        }
+
+        public new DateTime LastAccessTime
+        {
+            get { return OriginalFileSystemItem.LastAccessTime; }
+        }
+
+        public DateTime LastAccessTimeUTC
+        {
+            get { return OriginalFileSystemItem.LastAccessTimeUtc; }
+        }
+
+        public new DateTime LastWriteTime
+        {
+            get { return OriginalFileSystemItem.LastWriteTime; }
+        }
+
+        public DateTime LastWriteTimeUTC
+        {
+            get { return OriginalFileSystemItem.LastWriteTimeUtc; }
+        }
+
         protected EnhancedFileSystemInfo(FileSystemInfo originalFileSystemItem)
         {
-            this.OriginalFileSystemItem = originalFileSystemItem;
+            OriginalFileSystemItem = originalFileSystemItem;
         }
 
         public override void Delete() { OriginalFileSystemItem.Delete(); }
-
+        
+        /// <summary>
+        /// Copies this item inside of the directory given by destination 
+        /// </summary>
+        /// <param name="destination">The directory to copy into</param>
         public abstract void Copy(DirectoryInfo destination);
     }
 
     public class EnhancedDirectoryInfo : EnhancedFileSystemInfo
     {
 
-        protected DirectoryInfo Self
+        public DirectoryInfo Self
         {
             get { return OriginalFileSystemItem as DirectoryInfo; }
         }
@@ -66,7 +123,7 @@ namespace StartMenuProtector.Data
             
         }
         
-        public FileSystemInfo[] Contents
+        public EnhancedFileSystemInfo[] Contents
         {
             get { return Self.GetContents(); }
         }
@@ -87,7 +144,7 @@ namespace StartMenuProtector.Data
         /// <param name="destination">The directory to copy into</param>
         public override void Copy(DirectoryInfo destination)
         {
-            String pathOfCopy = Path.Combine(destination.FullName, Name);
+            String pathOfCopy = System.IO.Path.Combine(destination.FullName, Name);
             DirectoryInfo directoryCopy = Directory.Exists(pathOfCopy) ? new DirectoryInfo(pathOfCopy) : Directory.CreateDirectory(pathOfCopy);
 
             DirectorySecurity security = Self.GetAccessControl();
@@ -111,15 +168,15 @@ namespace StartMenuProtector.Data
         }
         public BitmapImage Icon { get; }
         
-        public sealed override string FullName
+        public sealed override string Path
         {
-            get { return base.FullName; }
+            get { return base.Path; }
         }
 
         public EnhancedFileInfo(FileInfo file) : 
             base(file)
         {
-            Bitmap icon = System.Drawing.Icon.ExtractAssociatedIcon(FullName)?.ToBitmap();
+            Bitmap icon = System.Drawing.Icon.ExtractAssociatedIcon(Path)?.ToBitmap();
             Icon = icon.ConvertToImageSource();
         }
 
@@ -129,10 +186,9 @@ namespace StartMenuProtector.Data
             
         }
         
-        
         public override void Copy(DirectoryInfo destination)
         {
-            String pathOfCopy = Path.Combine(destination.FullName, Name);
+            String pathOfCopy = System.IO.Path.Combine(destination.FullName, Name);
             
             FileSecurity originalSecurity = Self.GetAccessControl();
             originalSecurity.SetAccessRuleProtection(true, true);
