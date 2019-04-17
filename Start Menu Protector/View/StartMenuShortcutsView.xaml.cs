@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
@@ -65,9 +66,9 @@ namespace StartMenuProtector.View
             DataContext = this;
         }
         
-        private void CurrentShortcutsLocationChanged(object sender, SelectionChangedEventArgs @event)
+        private void CurrentShortcutsLocationChanged(object sender, SelectionChangedEventArgs _)
         {
-            object selectedLocation = (sender as ListBox)?.SelectedItem;
+            var selectedLocation = (sender as ListBox)?.SelectedItem;
             StartMenuShortcutsLocation startMenuStartMenuShortcutsLocation = selectedLocation is StartMenuShortcutsLocation ? (StartMenuShortcutsLocation) selectedLocation : StartMenuShortcutsLocation.System;
 
             Controller.UpdateCurrentShortcuts(startMenuStartMenuShortcutsLocation);

@@ -9,10 +9,10 @@ namespace StartMenuProtector.View
     public class StartMenuItem : DockPanel
     {
         public static readonly DependencyProperty FileProperty = DependencyProperty.Register(nameof (File), typeof (EnhancedFileSystemInfo), typeof (StartMenuItem), new FrameworkPropertyMetadata(propertyChangedCallback: UpdateFile) { BindsTwoWayByDefault = false });
-
-        public static Brush TextColor { get; set; } = new SolidColorBrush(Config.TextColor);
+        
+        public static Brush DefaultTextColor { get; set; } = new SolidColorBrush(Config.TextColor);
         public static Brush DefaultBackgroundColor { get; set; } = new SolidColorBrush(Config.BackgroundColor);
-        public static Brush SelectionTextColor { get; set; } = new SolidColorBrush(Config.SelectionTextColor);
+        public static Brush DefaultSelectionTextColor { get; set; } = new SolidColorBrush(Config.SelectionTextColor);
         public Brush SelectionBackgroundColor { get; set; }
 
         private EnhancedFileSystemInfo file;
@@ -31,9 +31,10 @@ namespace StartMenuProtector.View
 
         public StartMenuItem()
         {
+            this.Focusable = true;
             this.Background = DefaultBackgroundColor;
             this.Image = new Image { Margin = new Thickness(left: 5, top: 5, right: 2.5, bottom: 5)};
-            this.TextBlock = new TextBlock { FontSize = Config.FontSize, Foreground = TextColor, Margin = new Thickness(left: 2.5, top: 5, right: 5, bottom: 5), VerticalAlignment = VerticalAlignment.Center};
+            this.TextBlock = new TextBlock { FontSize = Config.FontSize, Foreground = DefaultTextColor, Margin = new Thickness(left: 2.5, top: 5, right: 5, bottom: 5), VerticalAlignment = VerticalAlignment.Center};
             
             this.Children.Add(Image);
             this.Children.Add(TextBlock);
@@ -42,13 +43,14 @@ namespace StartMenuProtector.View
         public void Selected()
         {
             Background = SelectionBackgroundColor;
-            TextBlock.Foreground = SelectionTextColor;
+            TextBlock.Foreground = DefaultSelectionTextColor;
+            Focus();
         }
         
         public void Deselected()
         {
             Background = DefaultBackgroundColor;
-            TextBlock.Foreground = TextColor;
+            TextBlock.Foreground = DefaultTextColor;
         }
 
         private void UpdateState()
