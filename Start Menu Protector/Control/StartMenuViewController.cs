@@ -17,7 +17,7 @@ namespace StartMenuProtector.Control
         {
             this.DataController = startMenuDataController;
             this.SystemStateController = systemStateController;
-            CurrentShortcutsDirectory = DataController.ActiveProgramShortcuts[StartMenuShortcutsLocation.System];
+            CurrentShortcutsDirectory = DataController.ProgramShortcuts[StartMenuShortcutsLocation.System];
             PopulateStartMenuTreeView();
         }
         
@@ -33,10 +33,8 @@ namespace StartMenuProtector.Control
 
         public void UpdateCurrentShortcuts(StartMenuShortcutsLocation startMenuStartMenuShortcutsLocation)
         {
-            CurrentShortcutsDirectory = DataController.ActiveProgramShortcuts[startMenuStartMenuShortcutsLocation];
+            CurrentShortcutsDirectory = DataController.ProgramShortcuts[startMenuStartMenuShortcutsLocation];
             PopulateStartMenuTreeView();
         }
-        
-
     }
 }

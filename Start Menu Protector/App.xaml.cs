@@ -8,18 +8,27 @@ namespace StartMenuProtector
     {
         private readonly StartMenuSentinel sentinel = new StartMenuSentinel();
         private readonly SystemStateController systemStateController = new SystemStateController();
-        private StartMenuDataController dataController;
-        private StartMenuViewController viewController;
-        private StartMenuView view;
+        private StartMenuDataController activeDataController;
+        private StartMenuDataController savedDataController;
+        private StartMenuViewController activeProgramsViewController;
+        private StartMenuViewController savedProgramsViewController;
+        private StartMenuView activeProgramsView;
+        private StartMenuView savedProgramsView;
         
         protected override void OnStartup(StartupEventArgs startup)
         {
-            dataController = new StartMenuDataController(systemStateController);
-            viewController = new StartMenuViewController(dataController, systemStateController);
+            activeDataController = new ActiveStartMenuDataController(systemStateController);
+            savedDataController = new SavedStartMenuDataController(systemStateController);
+            
+            activeProgramsViewController = new StartMenuViewController(activeDataController, systemStateController);
+            savedProgramsViewController = new StartMenuViewController(savedDataController, systemStateController);
 
             MainWindow = new MainWindow();
-            view = ((MainWindow) MainWindow).startMenuView;
-            view.Controller = viewController;
+            activeProgramsView = ((MainWindow) MainWindow).ActiveProgramShortcutsView;
+            savedProgramsView = ((MainWindow) MainWindow).SavedProgramShortcutsView;
+            
+            activeProgramsView.Controller = activeProgramsViewController;
+            savedProgramsView.Controller = savedProgramsViewController;
             
             MainWindow.Show();
         }
