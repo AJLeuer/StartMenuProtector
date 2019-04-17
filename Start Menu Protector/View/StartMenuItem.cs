@@ -13,6 +13,20 @@ namespace StartMenuProtector.View
         public static Brush DefaultTextColor { get; set; } = new SolidColorBrush(Config.TextColor);
         public static Brush DefaultBackgroundColor { get; set; } = new SolidColorBrush(Config.BackgroundColor);
         public static Brush DefaultSelectionTextColor { get; set; } = new SolidColorBrush(Config.SelectionTextColor);
+        
+        public static Brush DefaultMarkedDeletedBackgroundColor { get; } = new LinearGradientBrush
+        {
+            EndPoint = new Point(0.5, 1),
+            MappingMode = BrushMappingMode.RelativeToBoundingBox,
+            StartPoint = new Point(0.5, 0),
+            GradientStops =
+            {
+                new GradientStop { Color = Config.MarkedDeletedBackgroundColor },
+                new GradientStop { Color = Color.FromArgb(Config.MarkedDeletedBackgroundColor.A, Config.MarkedDeletedBackgroundColor.R, Config.MarkedDeletedBackgroundColor.G, (byte)(Config.MarkedDeletedBackgroundColor.B + 0x08))},
+                new GradientStop { Color = Color.FromArgb(Config.MarkedDeletedBackgroundColor.A, Config.MarkedDeletedBackgroundColor.R, Config.MarkedDeletedBackgroundColor.G, (byte)(Config.MarkedDeletedBackgroundColor.B + 0x0F))}
+            }
+        };
+        
         public Brush SelectionBackgroundColor { get; set; }
 
         private EnhancedFileSystemInfo file;
@@ -51,6 +65,11 @@ namespace StartMenuProtector.View
         {
             Background = DefaultBackgroundColor;
             TextBlock.Foreground = DefaultTextColor;
+        }
+
+        private void MarkAsRemoved()
+        {
+            
         }
 
         private void UpdateState()

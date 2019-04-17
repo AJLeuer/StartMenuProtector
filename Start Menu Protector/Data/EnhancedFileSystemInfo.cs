@@ -5,6 +5,7 @@ using System.IO;
 using System.Security.AccessControl;
 using System.Security.Principal;
 using System.Windows.Media.Imaging;
+using StartMenuProtector.Configuration;
 using StartMenuProtector.Util;
 using static StartMenuProtector.Configuration.Config;
 
@@ -19,6 +20,9 @@ namespace StartMenuProtector.Data
             get { return OriginalFileSystemItem.Name; }
         }
 
+        /// <summary>
+        /// The Name of the item without its file extension
+        /// </summary>
         public string PrettyName
         {
             get
@@ -92,6 +96,46 @@ namespace StartMenuProtector.Data
         }
 
         public abstract OwnerType OwnerType { get; }
+
+        public bool MarkedForExclusion { get; set; } = false;
+        protected bool Valid
+        {
+            get
+            {
+                if (MarkedForExclusion)
+                {
+                    return false;
+                }
+                else if (Filtered)
+                {
+                    return false;
+                }
+                else
+                {
+                    return true;
+                }
+            }
+        }
+
+        public bool Filtered
+        {
+            get
+            {
+                bool filtered = false;
+                
+                foreach (Func<EnhancedFileSystemInfo,bool> filter in FileSystemItemFilters)
+                {
+                    if (filter.Invoke(this))
+                    {
+                        filtered = true;
+                        break;
+                    }
+                }
+
+                return filtered;
+            }
+        }
+
         protected EnhancedFileSystemInfo(FileSystemInfo originalFileSystemItem)
         {
             OriginalFileSystemItem = originalFileSystemItem;
@@ -174,18 +218,18 @@ namespace StartMenuProtector.Data
         /// <param name="destination">The directory to copy into</param>
         public override void Copy(DirectoryInfo destination)
         {
-            String pathOfCopy = System.IO.Path.Combine(destination.FullName, Name);
-            DirectoryInfo directoryCopy = Directory.Exists(pathOfCopy) ? new DirectoryInfo(pathOfCopy) : Directory.CreateDirectory(pathOfCopy);
-
-            DirectorySecurity security = Self.GetAccessControl();
-            security.SetAccessRuleProtection(true, true);
-            directoryCopy.SetAccessControl(security);
-
-            EnhancedFileSystemInfo[] contents = Self.GetContents();
-            
-            foreach (EnhancedFileSystemInfo itemToCopy in contents)
+            if (Valid)
             {
-                if (IgnoredFileOwnerTypes.Contains(itemToCopy.OwnerType) == false)
+                String pathOfCopy = System.IO.Path.Combine(destination.FullName, Name);
+                DirectoryInfo directoryCopy = Directory.Exists(pathOfCopy) ? new DirectoryInfo(pathOfCopy) : Directory.CreateDirectory(pathOfCopy);
+
+                DirectorySecurity security = Self.GetAccessControl();
+                security.SetAccessRuleProtection(true, true);
+                directoryCopy.SetAccessControl(security);
+
+                EnhancedFileSystemInfo[] contents = Self.GetContents();
+            
+                foreach (EnhancedFileSystemInfo itemToCopy in contents)
                 {
                     itemToCopy.Copy(directoryCopy);
                 }
@@ -240,17 +284,20 @@ namespace StartMenuProtector.Data
         
         public override void Copy(DirectoryInfo destination)
         {
-            String pathOfCopy = System.IO.Path.Combine(destination.FullName, Name);
+            if (Valid)
+            {
+                String pathOfCopy = System.IO.Path.Combine(destination.FullName, Name);
             
-            FileSecurity originalSecurity = Self.GetAccessControl();
-            originalSecurity.SetAccessRuleProtection(true, true);
+                FileSecurity originalSecurity = Self.GetAccessControl();
+                originalSecurity.SetAccessRuleProtection(true, true);
 
-            Self.CopyTo(pathOfCopy, true);
+                Self.CopyTo(pathOfCopy, true);
 
-            var fileCopy = new FileInfo(pathOfCopy);
+                var fileCopy = new FileInfo(pathOfCopy);
 
-            // ReSharper disable once AssignNullToNotNullAttribute
-            fileCopy.SetAccessControl(originalSecurity);
+                // ReSharper disable once AssignNullToNotNullAttribute
+                fileCopy.SetAccessControl(originalSecurity);
+            }
         }
     }
 
