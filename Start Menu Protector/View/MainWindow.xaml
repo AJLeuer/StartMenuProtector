@@ -10,12 +10,11 @@
     <Grid>
         <TabControl FontSize="20" HorizontalAlignment="Stretch">
             <TabItem Header="Active" >
-                <view:StartMenuView x:Name="ActiveProgramShortcutsView">
-                </view:StartMenuView>
+                <view:ActiveStartMenuShortcutsView x:Name="ActiveProgramShortcutsView"/>
             </TabItem>
             <TabItem Header="Saved" >
-                <view:StartMenuView x:Name="SavedProgramShortcutsView">
-                </view:StartMenuView>
+                <view:SavedStartMenuShortcutsView x:Name="SavedProgramShortcutsView">
+                </view:SavedStartMenuShortcutsView>
             </TabItem>
         </TabControl>
     </Grid>

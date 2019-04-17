@@ -87,13 +87,15 @@
     <Compile Include="Control\SystemStateController.cs" />
     <Compile Include="Data\EnhancedFileSystemInfo.cs" />
     <Compile Include="Util\Util.cs" />
+    <Compile Include="View\ActiveStartMenuShortcutsView.cs" />
     <Compile Include="View\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="View\SavedStartMenuShortcutsView.cs" />
     <Compile Include="View\StartMenuItem.cs" />
-    <Compile Include="View\StartMenuView.xaml.cs">
-      <DependentUpon>StartMenuView.xaml</DependentUpon>
+    <Compile Include="View\StartMenuShortcutsView.xaml.cs">
+      <DependentUpon>StartMenuShortcutsView.xaml</DependentUpon>
     </Compile>
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
@@ -104,7 +106,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="View\StartMenuView.xaml">
+    <Page Include="View\StartMenuShortcutsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

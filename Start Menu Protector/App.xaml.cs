@@ -12,8 +12,8 @@ namespace StartMenuProtector
         private StartMenuDataController savedDataController;
         private StartMenuViewController activeProgramsViewController;
         private StartMenuViewController savedProgramsViewController;
-        private StartMenuView activeProgramsView;
-        private StartMenuView savedProgramsView;
+        private StartMenuShortcutsView activeProgramsView;
+        private StartMenuShortcutsView savedProgramsView;
         
         protected override void OnStartup(StartupEventArgs startup)
         {

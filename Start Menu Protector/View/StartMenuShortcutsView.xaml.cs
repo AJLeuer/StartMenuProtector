@@ -11,7 +11,7 @@ namespace StartMenuProtector.View
     /// <summary>
     /// Interaction logic for StartMenuView.xaml
     /// </summary>
-    public partial class StartMenuView : UserControl 
+    public abstract partial class StartMenuShortcutsView : UserControl 
     {
         public static Brush OutlineColor { get; set; } = new SolidColorBrush(Config.OutlineColor);
 
@@ -59,7 +59,7 @@ namespace StartMenuProtector.View
             get { return Controller.StartMenuContents; }
         }
 
-        public StartMenuView()
+        public StartMenuShortcutsView()
         {
             InitializeComponent();
             DataContext = this;

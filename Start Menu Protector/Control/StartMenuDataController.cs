@@ -16,7 +16,6 @@ namespace StartMenuProtector.Control
         {
             this.SystemStateController = systemStateController;
         }
-        
     }
 
     public class ActiveStartMenuDataController : StartMenuDataController
