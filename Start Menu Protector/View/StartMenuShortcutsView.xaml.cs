@@ -67,13 +67,13 @@ namespace StartMenuProtector.View
         
         private void CurrentShortcutsLocationChanged(object sender, SelectionChangedEventArgs @event)
         {
-            var selectedLocation = (sender as ListBox)?.SelectedItem;
+            object selectedLocation = (sender as ListBox)?.SelectedItem;
             StartMenuShortcutsLocation startMenuStartMenuShortcutsLocation = selectedLocation is StartMenuShortcutsLocation ? (StartMenuShortcutsLocation) selectedLocation : StartMenuShortcutsLocation.System;
 
             Controller.UpdateCurrentShortcuts(startMenuStartMenuShortcutsLocation);
         }
 
-        private void UpdateSelectedItem(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        private void UpdateSelectedItem(object sender, System.Windows.Input.MouseButtonEventArgs _)
         {
             var newSelectedStartMenuItem = this.SelectedStartMenuItem;
             switch (sender)
@@ -86,6 +86,11 @@ namespace StartMenuProtector.View
                     break;
             }
             SelectedStartMenuItem = newSelectedStartMenuItem;
+        }
+
+        private void SaveCurrentShortcuts(object sender, RoutedEventArgs _)
+        {
+            Controller.SaveCurrentShortcuts();
         }
     }
 }

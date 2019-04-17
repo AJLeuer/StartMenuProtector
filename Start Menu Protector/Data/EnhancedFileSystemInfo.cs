@@ -97,6 +97,23 @@ namespace StartMenuProtector.Data
             OriginalFileSystemItem = originalFileSystemItem;
         }
 
+        public static EnhancedFileSystemInfo Create(FileSystemInfo fileSystemItem)
+        {
+            switch (fileSystemItem)
+            {
+                case EnhancedFileInfo file:
+                    return file;
+                case EnhancedDirectoryInfo directory:
+                    return directory;
+                case FileInfo file:
+                    return new EnhancedFileInfo(file);
+                case DirectoryInfo directory:
+                    return new EnhancedDirectoryInfo(directory);
+                default:
+                    throw new ArgumentException("Unknown subtype of FileSystemInfo");
+            }
+        }
+
         public override void Delete() { OriginalFileSystemItem.Delete(); }
         
         /// <summary>

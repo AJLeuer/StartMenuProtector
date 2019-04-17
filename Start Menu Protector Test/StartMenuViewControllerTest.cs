@@ -47,7 +47,7 @@ namespace StartMenuProtectorTest
         public static void ShouldSetCurrentShortcutsToUsersWhenUserIsSelected()
         {
             var mockDataController = DataControllerMock.Object;
-            var viewController = new StartMenuViewController(mockDataController, MockSystemStateController) { CurrentShortcutsDirectory = ActiveProgramShortcuts[StartMenuShortcutsLocation.User] };
+            var viewController = new StartMenuViewController(mockDataController, MockSystemStateController) { StartMenuStartMenuShortcutsLocation = StartMenuShortcutsLocation.User };
 
             viewController.UpdateCurrentShortcuts(StartMenuShortcutsLocation.System);
 

@@ -11,13 +11,17 @@ namespace StartMenuProtector.Control
         public SystemStateController SystemStateController { get; set; }
         
         public readonly ObservableCollection<FileSystemInfo> StartMenuContents = new ObservableCollection<FileSystemInfo>();
-        public EnhancedDirectoryInfo CurrentShortcutsDirectory { get; set; }
+        public StartMenuShortcutsLocation StartMenuStartMenuShortcutsLocation { get; set; } = StartMenuShortcutsLocation.System;
+
+        public EnhancedDirectoryInfo CurrentShortcutsDirectory
+        {
+            get { return DataController.ProgramShortcuts[StartMenuStartMenuShortcutsLocation]; }
+        }
 
         public StartMenuViewController(StartMenuDataController startMenuDataController, SystemStateController systemStateController)
         {
             this.DataController = startMenuDataController;
             this.SystemStateController = systemStateController;
-            CurrentShortcutsDirectory = DataController.ProgramShortcuts[StartMenuShortcutsLocation.System];
             PopulateStartMenuTreeView();
         }
         
@@ -33,8 +37,13 @@ namespace StartMenuProtector.Control
 
         public void UpdateCurrentShortcuts(StartMenuShortcutsLocation startMenuStartMenuShortcutsLocation)
         {
-            CurrentShortcutsDirectory = DataController.ProgramShortcuts[startMenuStartMenuShortcutsLocation];
+            StartMenuStartMenuShortcutsLocation = startMenuStartMenuShortcutsLocation;
             PopulateStartMenuTreeView();
+        }
+
+        public void SaveCurrentShortcuts()
+        {
+            DataController.SaveProgramShortcuts(StartMenuStartMenuShortcutsLocation, StartMenuContents);
         }
     }
 }
