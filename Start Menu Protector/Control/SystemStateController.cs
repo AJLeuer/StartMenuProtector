@@ -1,7 +1,8 @@
 using System;
 using System.Collections.Generic;
+using StartMenuProtector.Data;
 
-namespace StartMenuProtector.Data
+namespace StartMenuProtector.Control
 {
     public enum StartMenuShortcutsLocation
     {
@@ -9,11 +10,9 @@ namespace StartMenuProtector.Data
         User
     }
     
-    public static class SystemState
+    public class SystemStateController
     {
-        public static Dictionary<StartMenuShortcutsLocation, EnhancedDirectoryInfo> ActiveStartMenuShortcuts;
-
-        static SystemState()
+        public Dictionary<StartMenuShortcutsLocation, EnhancedDirectoryInfo> LoadSystemAndUserStartMenuProgramShortcutsFromDisk()
         {
             String systemStartMenuShortcutsPath = $@"{Environment.GetFolderPath(Environment.SpecialFolder.CommonStartMenu)}\Programs";
             String userStartMenuShortcutsPath = $@"{Environment.GetFolderPath(Environment.SpecialFolder.StartMenu)}\Programs";
@@ -21,13 +20,13 @@ namespace StartMenuProtector.Data
             var systemStartMenuShortcuts = new EnhancedDirectoryInfo(systemStartMenuShortcutsPath);
             var userStartMenuShortcuts = new EnhancedDirectoryInfo(userStartMenuShortcutsPath);
             
-            ActiveStartMenuShortcuts = new Dictionary<StartMenuShortcutsLocation, EnhancedDirectoryInfo>
+            var startMenuProgramShortcuts = new Dictionary<StartMenuShortcutsLocation, EnhancedDirectoryInfo>
             {
                 {StartMenuShortcutsLocation.System, systemStartMenuShortcuts},
                 {StartMenuShortcutsLocation.User, userStartMenuShortcuts}
             };
+
+            return startMenuProgramShortcuts;
         }
-
-
     }
 }

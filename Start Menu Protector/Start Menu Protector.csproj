@@ -82,7 +82,9 @@
     </ApplicationDefinition>
     <Compile Include="Configuration\Config.cs" />
     <Compile Include="Configuration\Globals.cs" />
+    <Compile Include="Control\StartMenuDataController.cs" />
     <Compile Include="Control\StartMenuViewController.cs" />
+    <Compile Include="Control\SystemStateController.cs" />
     <Compile Include="Data\EnhancedFileSystemInfo.cs" />
     <Compile Include="Util\Util.cs" />
     <Compile Include="View\MainWindow.xaml.cs">
@@ -98,7 +100,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Control\StartMenuSentinel.cs" />
-    <Compile Include="Data\SystemState.cs" />
     <Page Include="View\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

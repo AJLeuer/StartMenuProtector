@@ -1,18 +1,23 @@
 using System.Collections.ObjectModel;
 using System.IO;
-using System.Threading.Tasks;
 using StartMenuProtector.Data;
+
 
 namespace StartMenuProtector.Control
 {
     public class StartMenuViewController
     {
-        public Collection<StartMenuShortcutsLocation> Locations { get; set; }
+        public StartMenuDataController DataController { get; set; }
+        public SystemStateController SystemStateController { get; set; }
+        
         public readonly ObservableCollection<FileSystemInfo> StartMenuContents = new ObservableCollection<FileSystemInfo>();
-        public EnhancedDirectoryInfo CurrentShortcutsDirectory = SystemState.ActiveStartMenuShortcuts[StartMenuShortcutsLocation.System];
+        public EnhancedDirectoryInfo CurrentShortcutsDirectory { get; set; }
 
-        public StartMenuViewController()
+        public StartMenuViewController(StartMenuDataController startMenuDataController, SystemStateController systemStateController)
         {
+            this.DataController = startMenuDataController;
+            this.SystemStateController = systemStateController;
+            CurrentShortcutsDirectory = DataController.ActiveProgramShortcuts[StartMenuShortcutsLocation.System];
             PopulateStartMenuTreeView();
         }
         
@@ -28,9 +33,10 @@ namespace StartMenuProtector.Control
 
         public void UpdateCurrentShortcuts(StartMenuShortcutsLocation startMenuStartMenuShortcutsLocation)
         {
-            CurrentShortcutsDirectory = SystemState.ActiveStartMenuShortcuts[startMenuStartMenuShortcutsLocation];
-
+            CurrentShortcutsDirectory = DataController.ActiveProgramShortcuts[startMenuStartMenuShortcutsLocation];
             PopulateStartMenuTreeView();
         }
+        
+
     }
 }

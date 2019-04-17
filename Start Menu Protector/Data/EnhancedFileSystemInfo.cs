@@ -92,7 +92,6 @@ namespace StartMenuProtector.Data
         }
 
         public abstract OwnerType OwnerType { get; }
-
         protected EnhancedFileSystemInfo(FileSystemInfo originalFileSystemItem)
         {
             OriginalFileSystemItem = originalFileSystemItem;
@@ -137,7 +136,7 @@ namespace StartMenuProtector.Data
             
         }
         
-        public EnhancedFileSystemInfo[] Contents
+        public virtual EnhancedFileSystemInfo[] Contents
         {
             get { return Self.GetContents(); }
         }
