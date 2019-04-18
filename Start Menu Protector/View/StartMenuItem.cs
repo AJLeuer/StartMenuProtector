@@ -1,13 +1,17 @@
+using System;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media;
 using StartMenuProtector.Data;
 using StartMenuProtector.Configuration;
 
 namespace StartMenuProtector.View
 {
-    public class StartMenuItem : DockPanel
+    public class StartMenuItem : DockPanel 
     {
+        private static UInt64 IDs = 0;
+        
         public static readonly DependencyProperty FileProperty = DependencyProperty.Register(nameof (File), typeof (EnhancedFileSystemInfo), typeof (StartMenuItem), new FrameworkPropertyMetadata(propertyChangedCallback: UpdateFile) { BindsTwoWayByDefault = false });
         
         public static Brush DefaultTextColor { get; set; } = new SolidColorBrush(Config.TextColor);
@@ -43,22 +47,26 @@ namespace StartMenuProtector.View
         public TextBlock TextBlock { get; set; }
         public Image Image { get; set; }
 
+        public UInt64 ID { get; } = IDs++;
+
         public StartMenuItem()
         {
-            this.Focusable = true;
             this.Background = DefaultBackgroundColor;
             this.Image = new Image { Margin = new Thickness(left: 5, top: 5, right: 2.5, bottom: 5)};
             this.TextBlock = new TextBlock { FontSize = Config.FontSize, Foreground = DefaultTextColor, Margin = new Thickness(left: 2.5, top: 5, right: 5, bottom: 5), VerticalAlignment = VerticalAlignment.Center};
             
             this.Children.Add(Image);
             this.Children.Add(TextBlock);
+            
+            this.KeyDown += MarkAsRemoved;
+            
+            this.Focusable = true;
         }
 
         public void Selected()
         {
             Background = SelectionBackgroundColor;
             TextBlock.Foreground = DefaultSelectionTextColor;
-            Focus();
         }
         
         public void Deselected()
@@ -66,10 +74,21 @@ namespace StartMenuProtector.View
             Background = DefaultBackgroundColor;
             TextBlock.Foreground = DefaultTextColor;
         }
-
-        private void MarkAsRemoved()
+        
+        private void MarkAsRemoved(object sender, KeyEventArgs keyEvent)
         {
-            
+            MarkAsRemoved(keyEvent.Key);
+        }
+
+        public void MarkAsRemoved(Key key)
+        {
+            if ((key == Key.Delete) || (key == Key.Back))
+            {
+                Background = DefaultMarkedDeletedBackgroundColor;
+                TextBlock.Foreground = DefaultSelectionTextColor;
+
+                File.MarkedForExclusion = true;
+            }
         }
 
         private void UpdateState()
@@ -89,6 +108,36 @@ namespace StartMenuProtector.View
                 self.File = (EnhancedFileSystemInfo) updatedValue.NewValue;
             }
         }
+    }
+    
+    /* Code credit StackOverflow user Anvaka:
+       https://stackoverflow.com/questions/1356045/set-focus-on-textbox-in-wpf-from-view-model-c/1356781#1356781 */
+    public static class FocusExtension
+    {
+        public static bool GetIsFocused(DependencyObject obj)
+        {
+            return (bool) obj.GetValue(IsFocusedProperty);
+        }
 
+        public static void SetIsFocused(DependencyObject obj, bool value)
+        {
+            obj.SetValue(IsFocusedProperty, value);
+        }
+
+        public static readonly DependencyProperty IsFocusedProperty =
+            DependencyProperty.RegisterAttached(
+                "IsFocused", typeof (bool), typeof (FocusExtension),
+                new UIPropertyMetadata(false, OnIsFocusedPropertyChanged));
+
+        private static void OnIsFocusedPropertyChanged(
+            DependencyObject d, 
+            DependencyPropertyChangedEventArgs e)
+        {
+            var uie = (UIElement) d;
+            if ((bool) e.NewValue)
+            {
+                uie.Focus(); // Don't care about false values.
+            }
+        }
     }
 }

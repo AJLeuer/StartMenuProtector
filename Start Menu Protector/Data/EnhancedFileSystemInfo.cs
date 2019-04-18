@@ -23,7 +23,7 @@ namespace StartMenuProtector.Data
         /// <summary>
         /// The Name of the item without its file extension
         /// </summary>
-        public string PrettyName
+        public virtual string PrettyName
         {
             get
             {
@@ -272,16 +272,13 @@ namespace StartMenuProtector.Data
         public EnhancedFileInfo(FileInfo file) : 
             base(file)
         {
-            Bitmap icon = System.Drawing.Icon.ExtractAssociatedIcon(Path)?.ToBitmap();
-            Icon = icon.ConvertToImageSource();
+            if (file != null)
+            {
+                Bitmap icon = System.Drawing.Icon.ExtractAssociatedIcon(Path)?.ToBitmap();
+                Icon = icon.ConvertToImageSource();
+            }
         }
 
-        public EnhancedFileInfo(string path) : 
-            this(new FileInfo(path))
-        {
-            
-        }
-        
         public override void Copy(DirectoryInfo destination)
         {
             if (Valid)

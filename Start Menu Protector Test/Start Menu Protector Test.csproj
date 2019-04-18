@@ -62,6 +62,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Data\MockableFileSystemInfo.cs" />
     <Compile Include="StartMenuItemTest.cs" />
     <Compile Include="StartMenuViewControllerTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

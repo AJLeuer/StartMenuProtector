@@ -3,16 +3,10 @@ using Moq;
 using NUnit.Framework;
 using StartMenuProtector.Control;
 using StartMenuProtector.Data;
+using StartMenuProtectorTest.Data;
 
 namespace StartMenuProtectorTest
 {
-    public class MockableEnhancedDirectoryInfo : EnhancedDirectoryInfo
-    {
-        public MockableEnhancedDirectoryInfo() : base(directory: null)
-        {
-        }
-    }
-    
     public static class StartMenuViewControllerTest
     {
         public static SystemStateController MockSystemStateController = new Mock<SystemStateController>().Object;
@@ -20,8 +14,7 @@ namespace StartMenuProtectorTest
         public static Mock<MockableEnhancedDirectoryInfo> SystemProgramsMock = new Mock<MockableEnhancedDirectoryInfo>(); 
         public static Mock<MockableEnhancedDirectoryInfo> UserProgramsMock = new Mock<MockableEnhancedDirectoryInfo>();
         
-        public static Dictionary<StartMenuShortcutsLocation, EnhancedDirectoryInfo> ActiveProgramShortcuts =
-            new Dictionary<StartMenuShortcutsLocation, EnhancedDirectoryInfo>
+        public static Dictionary<StartMenuShortcutsLocation, EnhancedDirectoryInfo> ActiveProgramShortcuts = new Dictionary<StartMenuShortcutsLocation, EnhancedDirectoryInfo>
             {
                 {StartMenuShortcutsLocation.System, SystemProgramsMock.Object},
                 {StartMenuShortcutsLocation.User, UserProgramsMock.Object}
