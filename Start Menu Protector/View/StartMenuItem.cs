@@ -5,6 +5,8 @@ using System.Windows.Input;
 using System.Windows.Media;
 using StartMenuProtector.Data;
 using StartMenuProtector.Configuration;
+using Optional;
+using Optional.Unsafe;
 
 namespace StartMenuProtector.View
 {
@@ -17,7 +19,6 @@ namespace StartMenuProtector.View
         public static Brush DefaultTextColor { get; set; } = new SolidColorBrush(Config.TextColor);
         public static Brush DefaultBackgroundColor { get; set; } = new SolidColorBrush(Config.BackgroundColor);
         public static Brush DefaultSelectionTextColor { get; set; } = new SolidColorBrush(Config.SelectionTextColor);
-        
         public static Brush DefaultMarkedDeletedBackgroundColor { get; } = new LinearGradientBrush
         {
             EndPoint = new Point(0.5, 1),
@@ -33,6 +34,18 @@ namespace StartMenuProtector.View
         
         public Brush SelectionBackgroundColor { get; set; }
 
+        public Option<Border> Border
+        {
+            get
+            {
+                Option<Border> border = (this.Parent is Border) ? Option.Some((Border)Parent) : Option.None<Border>();
+                return border;
+            }
+        }
+        
+        public TextBlock TextBlock { get; set; }
+        public Image Image { get; set; }
+
         private EnhancedFileSystemInfo file;
         public EnhancedFileSystemInfo File
         {
@@ -43,9 +56,6 @@ namespace StartMenuProtector.View
                 UpdateState();
             }
         }
-        
-        public TextBlock TextBlock { get; set; }
-        public Image Image { get; set; }
 
         public UInt64 ID { get; } = IDs++;
 
@@ -67,12 +77,22 @@ namespace StartMenuProtector.View
         {
             Background = SelectionBackgroundColor;
             TextBlock.Foreground = DefaultSelectionTextColor;
+            
+            if (Border.HasValue)
+            {
+                Border.ValueOrFailure().BorderBrush = SelectionBackgroundColor;
+            }
         }
         
         public void Deselected()
         {
             Background = DefaultBackgroundColor;
             TextBlock.Foreground = DefaultTextColor;
+
+            if (Border.HasValue)
+            {
+                Border.ValueOrFailure().BorderBrush = StartMenuShortcutsView.OutlineColor;
+            }
         }
         
         private void MarkAsRemoved(object sender, KeyEventArgs keyEvent)

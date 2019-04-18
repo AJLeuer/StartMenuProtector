@@ -38,19 +38,8 @@ namespace StartMenuProtector.View
             set
             {
                 selectedStartMenuItem.Item1?.Deselected();
-                
-                if (selectedStartMenuItem.Item2 != null)
-                {
-                    selectedStartMenuItem.Item2.BorderBrush = OutlineColor;
-                }
-                
                 selectedStartMenuItem = value;
                 selectedStartMenuItem.Item1?.Selected();
-                
-                if (selectedStartMenuItem.Item2 != null)
-                {
-                    selectedStartMenuItem.Item2.BorderBrush = SelectionBackgroundGradient;
-                }
             }
         }
         public StartMenuViewController Controller { get; set; }
