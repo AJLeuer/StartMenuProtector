@@ -11,19 +11,19 @@ namespace StartMenuProtector.Control
     {
         public SystemStateController SystemStateController { get; set; }
 
-        protected static Dictionary<StartMenuShortcutsLocation, EnhancedDirectoryInfo> ActiveProgramShortcuts { get;} = new Dictionary<StartMenuShortcutsLocation, EnhancedDirectoryInfo> 
+        public static Dictionary<StartMenuShortcutsLocation, EnhancedDirectoryInfo> ActiveStartMenuShortcuts { get; set; } = new Dictionary<StartMenuShortcutsLocation, EnhancedDirectoryInfo> 
         {
             {StartMenuShortcutsLocation.System, ActiveSystemProgramShortcuts}, 
             {StartMenuShortcutsLocation.User, ActiveUserProgramShortcuts}
         };
         
-        public static Dictionary<StartMenuShortcutsLocation, EnhancedDirectoryInfo> SavedProgramShortcuts { get; set; } = new Dictionary<StartMenuShortcutsLocation, EnhancedDirectoryInfo> 
+        public static Dictionary<StartMenuShortcutsLocation, EnhancedDirectoryInfo> SavedStartMenuShortcuts { get; set; } = new Dictionary<StartMenuShortcutsLocation, EnhancedDirectoryInfo> 
         {
-            {StartMenuShortcutsLocation.System, SavedSystemProgramShortcuts}, 
-            {StartMenuShortcutsLocation.User, SavedUserProgramShortcuts}
+            {StartMenuShortcutsLocation.System, SavedSystemStartMenuShortcuts}, 
+            {StartMenuShortcutsLocation.User, SavedUserStartMenuShortcuts}
         };
         
-        public abstract Dictionary<StartMenuShortcutsLocation, EnhancedDirectoryInfo> ProgramShortcuts { get; set; }
+        public abstract Dictionary<StartMenuShortcutsLocation, EnhancedDirectoryInfo> StartMenuShortcuts { get; set; }
 
         public StartMenuDataController(SystemStateController systemStateController)
         {
@@ -38,21 +38,33 @@ namespace StartMenuProtector.Control
         public ActiveStartMenuDataController(SystemStateController systemStateController) 
             : base(systemStateController)
         {
-            new Thread(this.LoadActiveProgramShortcutsState).Start();
+            new Thread(this.LoadCurrentStartMenuData).Start();
         }
 
-        public override Dictionary<StartMenuShortcutsLocation, EnhancedDirectoryInfo> ProgramShortcuts { get; set; } = ActiveProgramShortcuts;
+        public override Dictionary<StartMenuShortcutsLocation, EnhancedDirectoryInfo> StartMenuShortcuts { get; set; } = ActiveStartMenuShortcuts;
+
+        public void LoadCurrentStartMenuData()
+        {
+            ClearOldActiveStartMenuShortcutsFromDisk();
+            LoadCurrentActiveStartMenuShortcutsFromDisk();
+        }
         
-        private void LoadActiveProgramShortcutsState()
+        private void ClearOldActiveStartMenuShortcutsFromDisk()
+        {
+            StartMenuShortcuts[StartMenuShortcutsLocation.System].DeleteContents();
+            StartMenuShortcuts[StartMenuShortcutsLocation.User].DeleteContents();
+        }
+        
+        private void LoadCurrentActiveStartMenuShortcutsFromDisk()
         {
             Dictionary<StartMenuShortcutsLocation, EnhancedDirectoryInfo> startMenuPrograms = SystemStateController.LoadSystemAndUserStartMenuProgramShortcutsFromDisk();
-            startMenuPrograms[StartMenuShortcutsLocation.System].Copy(ProgramShortcuts[StartMenuShortcutsLocation.System]);
-            startMenuPrograms[StartMenuShortcutsLocation.User].Copy(ProgramShortcuts[StartMenuShortcutsLocation.User]);
+            startMenuPrograms[StartMenuShortcutsLocation.System].Copy(StartMenuShortcuts[StartMenuShortcutsLocation.System]);
+            startMenuPrograms[StartMenuShortcutsLocation.User].Copy(StartMenuShortcuts[StartMenuShortcutsLocation.User]);
         }
         
         public override void SaveProgramShortcuts(StartMenuShortcutsLocation location, IEnumerable<FileSystemInfo> startMenuContents)
         {
-            EnhancedDirectoryInfo programShortcutsSaveDirectory = SavedProgramShortcuts[location];
+            EnhancedDirectoryInfo programShortcutsSaveDirectory = SavedStartMenuShortcuts[location];
             
             foreach (var fileSystemItem in startMenuContents)
             {
@@ -71,7 +83,7 @@ namespace StartMenuProtector.Control
             
         }
 
-        public override Dictionary<StartMenuShortcutsLocation, EnhancedDirectoryInfo> ProgramShortcuts { get; set; } = SavedProgramShortcuts;
+        public override Dictionary<StartMenuShortcutsLocation, EnhancedDirectoryInfo> StartMenuShortcuts { get; set; } = SavedStartMenuShortcuts;
 
         public override void SaveProgramShortcuts(StartMenuShortcutsLocation location, IEnumerable<FileSystemInfo> startMenuContents)
         {

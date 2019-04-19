@@ -17,7 +17,7 @@ namespace StartMenuProtector.Configuration
         public static readonly EnhancedDirectoryInfo ActiveUserProgramShortcuts = new EnhancedDirectoryInfo(Directory.CreateDirectory(Path.Combine(ActiveProgramShortcuts.Path, UserShortcutsDirectoryName)));
         
         public static readonly EnhancedDirectoryInfo SavedProgramShortcuts = new EnhancedDirectoryInfo(Directory.CreateDirectory(Path.Combine(StartMenuProtectorAppData.Path, "Saved")));
-        public static readonly EnhancedDirectoryInfo SavedSystemProgramShortcuts = new EnhancedDirectoryInfo(Directory.CreateDirectory(Path.Combine(SavedProgramShortcuts.Path, SystemShortcutsDirectoryName)));
-        public static readonly EnhancedDirectoryInfo SavedUserProgramShortcuts = new EnhancedDirectoryInfo(Directory.CreateDirectory(Path.Combine(SavedProgramShortcuts.Path, UserShortcutsDirectoryName)));
+        public static readonly EnhancedDirectoryInfo SavedSystemStartMenuShortcuts = new EnhancedDirectoryInfo(Directory.CreateDirectory(Path.Combine(SavedProgramShortcuts.Path, SystemShortcutsDirectoryName)));
+        public static readonly EnhancedDirectoryInfo SavedUserStartMenuShortcuts = new EnhancedDirectoryInfo(Directory.CreateDirectory(Path.Combine(SavedProgramShortcuts.Path, UserShortcutsDirectoryName)));
     }
 }

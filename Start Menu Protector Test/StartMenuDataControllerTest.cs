@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using Moq;
@@ -10,29 +11,50 @@ namespace StartMenuProtectorTest
 {
     public static class StartMenuDataControllerTest
     {
-        public static SystemStateController MockSystemStateController = new Mock<SystemStateController>().Object;
+        public static Mock<SystemStateController> SystemStateControllerMock = new Mock<SystemStateController>();
+        public static SystemStateController MockSystemStateController = SystemStateControllerMock.Object;
         public static Mock<MockableEnhancedDirectoryInfo> SystemProgramsMock = new Mock<MockableEnhancedDirectoryInfo>(); 
         public static Mock<MockableEnhancedDirectoryInfo> UserProgramsMock = new Mock<MockableEnhancedDirectoryInfo>();
-        public static Mock<MockableEnhancedFileInfo> MockFileToBeSaved;
+        public static Mock<MockableEnhancedFileInfo> FileToBeSavedMock;
         public static ICollection<FileSystemInfo> FilesToSave;
 
         [SetUp]
         public static void Setup()
         {
-            MockFileToBeSaved = new Mock<MockableEnhancedFileInfo>();
+            FileToBeSavedMock = new Mock<MockableEnhancedFileInfo>();
             
             FilesToSave = new List<FileSystemInfo>
             {
-                MockFileToBeSaved.Object,
-                MockFileToBeSaved.Object,
-                MockFileToBeSaved.Object
+                FileToBeSavedMock.Object,
+                FileToBeSavedMock.Object,
+                FileToBeSavedMock.Object
             };
             
-            StartMenuDataController.SavedProgramShortcuts = new Dictionary<StartMenuShortcutsLocation, EnhancedDirectoryInfo>
+            var startMenuShortcutsFromDisk = new Dictionary<StartMenuShortcutsLocation, EnhancedDirectoryInfo>
             {
                 {StartMenuShortcutsLocation.System, SystemProgramsMock.Object},
                 {StartMenuShortcutsLocation.User, UserProgramsMock.Object}
             };
+            
+            StartMenuDataController.SavedStartMenuShortcuts = new Dictionary<StartMenuShortcutsLocation, EnhancedDirectoryInfo>
+            {
+                {StartMenuShortcutsLocation.System, SystemProgramsMock.Object},
+                {StartMenuShortcutsLocation.User, UserProgramsMock.Object}
+            };
+            
+            StartMenuDataController.ActiveStartMenuShortcuts = new Dictionary<StartMenuShortcutsLocation, EnhancedDirectoryInfo>
+            {
+                {StartMenuShortcutsLocation.System, SystemProgramsMock.Object},
+                {StartMenuShortcutsLocation.User, UserProgramsMock.Object}
+            };
+            
+            SystemProgramsMock.Setup(
+                    (self) => self.FullName)
+                .Returns("");
+            
+            UserProgramsMock.Setup(
+                    (self) => self.FullName)
+                .Returns("");
             
             SystemProgramsMock.Setup(
                     (self) => self.Self)
@@ -42,8 +64,29 @@ namespace StartMenuProtectorTest
                     (self) => self.Self)
                 .Returns((DirectoryInfo) null);
 
-            MockFileToBeSaved.Setup(
+            SystemProgramsMock.Setup((self) => self.DeleteContents());
+
+            UserProgramsMock.Setup((self) => self.DeleteContents());
+
+            FileToBeSavedMock.Setup(
                 (self) => self.Copy(It.IsAny<EnhancedDirectoryInfo>()));
+
+            SystemStateControllerMock.Setup(
+                    (self) => self.LoadSystemAndUserStartMenuProgramShortcutsFromDisk())
+                .Returns(startMenuShortcutsFromDisk);
+        }
+        
+        [Test]
+        public static void ActiveStartMenuDataControllerShouldClearOldActiveStartMenuDataOnStartup()
+        {
+            ActiveStartMenuDataController controller = new ActiveStartMenuDataController(MockSystemStateController);
+
+            controller.LoadCurrentStartMenuData();
+            
+            //ActiveStartMenuController also creates a new thread to run LoadCurrentStartMenuData automatically,
+            //so we may see DeleteContents() called more than once
+            SystemProgramsMock.Verify((self) => self.DeleteContents(), Times.AtLeastOnce);
+            UserProgramsMock.Verify((self) => self.DeleteContents(), Times.AtLeastOnce);
         }
 
         [Test]
@@ -53,7 +96,7 @@ namespace StartMenuProtectorTest
 
             controller.SaveProgramShortcuts(StartMenuShortcutsLocation.System, FilesToSave);
             
-            MockFileToBeSaved.Verify((self) => self.Copy(SystemProgramsMock.Object), Times.Exactly(3));
+            FileToBeSavedMock.Verify((self) => self.Copy(SystemProgramsMock.Object), Times.Exactly(3));
         }
         
         [Test]
@@ -63,8 +106,8 @@ namespace StartMenuProtectorTest
 
             controller.SaveProgramShortcuts(StartMenuShortcutsLocation.User, FilesToSave);
             
-            MockFileToBeSaved.Verify((self) => self.Copy(UserProgramsMock.Object), Times.AtLeastOnce);
-            MockFileToBeSaved.Verify((self) => self.Copy(SystemProgramsMock.Object), Times.Never);
+            FileToBeSavedMock.Verify((self) => self.Copy(UserProgramsMock.Object), Times.AtLeastOnce);
+            FileToBeSavedMock.Verify((self) => self.Copy(SystemProgramsMock.Object), Times.Never);
         }
         
         [Test]
@@ -74,7 +117,7 @@ namespace StartMenuProtectorTest
 
             controller.SaveProgramShortcuts(StartMenuShortcutsLocation.System, FilesToSave);
             
-            MockFileToBeSaved.Verify((self) => self.Copy(SystemProgramsMock.Object), Times.Never);
+            FileToBeSavedMock.Verify((self) => self.Copy(SystemProgramsMock.Object), Times.Never);
         }
     }
 }

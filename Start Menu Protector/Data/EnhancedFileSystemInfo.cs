@@ -156,14 +156,14 @@ namespace StartMenuProtector.Data
                     throw new ArgumentException("Unknown subtype of FileSystemInfo");
             }
         }
-
-        public override void Delete() { OriginalFileSystemItem.Delete(); }
         
         /// <summary>
         /// Copies this item inside of the directory given by destination 
         /// </summary>
         /// <param name="destination">The directory to copy into</param>
         public abstract void Copy(EnhancedDirectoryInfo destination);
+        
+        public override void Delete() { OriginalFileSystemItem.Delete(); }
     }
 
     public class EnhancedDirectoryInfo : EnhancedFileSystemInfo
@@ -232,6 +232,19 @@ namespace StartMenuProtector.Data
                 {
                     itemToCopy.Copy(directoryCopy);
                 }
+            }
+        }
+
+        public override void Delete()
+        {
+            Self.Delete(true);
+        }
+
+        public virtual void DeleteContents()
+        {
+            foreach (EnhancedFileSystemInfo fileSystemItem in Contents)
+            {
+                fileSystemItem.Delete();
             }
         }
     }

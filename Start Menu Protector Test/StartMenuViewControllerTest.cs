@@ -33,7 +33,7 @@ namespace StartMenuProtectorTest
                 .Returns(new EnhancedFileSystemInfo[]{});
             
             DataControllerMock.Setup(
-                (self) => self.ProgramShortcuts)
+                (self) => self.StartMenuShortcuts)
                 .Returns(ActiveProgramShortcuts);
 
             DataControllerMock

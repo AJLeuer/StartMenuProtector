@@ -12,7 +12,7 @@ namespace StartMenuProtector.Control
     
     public class SystemStateController
     {
-        public Dictionary<StartMenuShortcutsLocation, EnhancedDirectoryInfo> LoadSystemAndUserStartMenuProgramShortcutsFromDisk()
+        public virtual Dictionary<StartMenuShortcutsLocation, EnhancedDirectoryInfo> LoadSystemAndUserStartMenuProgramShortcutsFromDisk()
         {
             String systemStartMenuShortcutsPath = $@"{Environment.GetFolderPath(Environment.SpecialFolder.CommonStartMenu)}\Programs";
             String userStartMenuShortcutsPath = $@"{Environment.GetFolderPath(Environment.SpecialFolder.StartMenu)}\Programs";

@@ -15,7 +15,7 @@ namespace StartMenuProtector.Control
 
         public EnhancedDirectoryInfo CurrentShortcutsDirectory
         {
-            get { return DataController.ProgramShortcuts[StartMenuStartMenuShortcutsLocation]; }
+            get { return DataController.StartMenuShortcuts[StartMenuStartMenuShortcutsLocation]; }
         }
 
         public StartMenuViewController(StartMenuDataController startMenuDataController, SystemStateController systemStateController)
