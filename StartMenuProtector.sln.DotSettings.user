@@ -3,4 +3,5 @@
 	<s:String x:Key="/Default/Environment/AssemblyExplorer/XmlDocument/@EntryValue">&lt;AssemblyExplorer&gt;&#xD;
   &lt;Assembly Path="D:\Developer\StartMenuProtector\packages\Syroot.Windows.IO.KnownFolders.1.2.1\lib\net452\Syroot.KnownFolders.dll" /&gt;&#xD;
   &lt;Assembly Path="D:\Developer\StartMenuProtector\packages\Optional.5.0.0-alpha\lib\net45\Optional.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\Developer\StartMenuProtector\packages\C5.3.0.0-beta\lib\netstandard2.0\C5.dll" /&gt;&#xD;
 &lt;/AssemblyExplorer&gt;</s:String></wpf:ResourceDictionary>

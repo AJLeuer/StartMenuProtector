@@ -17,7 +17,7 @@ namespace StartMenuProtector.Control
             {StartMenuShortcutsLocation.User, ActiveUserProgramShortcuts}
         };
         
-        protected static Dictionary<StartMenuShortcutsLocation, EnhancedDirectoryInfo> SavedProgramShortcuts { get; set; } = new Dictionary<StartMenuShortcutsLocation, EnhancedDirectoryInfo> 
+        public static Dictionary<StartMenuShortcutsLocation, EnhancedDirectoryInfo> SavedProgramShortcuts { get; set; } = new Dictionary<StartMenuShortcutsLocation, EnhancedDirectoryInfo> 
         {
             {StartMenuShortcutsLocation.System, SavedSystemProgramShortcuts}, 
             {StartMenuShortcutsLocation.User, SavedUserProgramShortcuts}
@@ -77,7 +77,6 @@ namespace StartMenuProtector.Control
         {
             /* Do nothing */
         }
-
     }
 
 }

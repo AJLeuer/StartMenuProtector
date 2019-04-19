@@ -169,7 +169,7 @@ namespace StartMenuProtector.Data
     public class EnhancedDirectoryInfo : EnhancedFileSystemInfo
     {
 
-        public DirectoryInfo Self
+        public virtual DirectoryInfo Self
         {
             get { return OriginalFileSystemItem as DirectoryInfo; }
         }
