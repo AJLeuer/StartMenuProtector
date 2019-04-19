@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Input;
-using System.Windows.Media;
-using StartMenuProtector.Configuration;
 using StartMenuProtector.Control;
 
 namespace StartMenuProtector.View

@@ -1,6 +1,5 @@
 ﻿using System.Windows;
 using StartMenuProtector.Control;
-using StartMenuProtector.Util;
 using StartMenuProtector.View;
 
 namespace StartMenuProtector

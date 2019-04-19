@@ -9,8 +9,6 @@ using Optional.Unsafe;
 using StartMenuProtector.Data;
 using StartMenuProtector.Configuration;
 
-using Duration = NodaTime.Duration;
-using Timer = StartMenuProtector.Util.Timer;
 
 namespace StartMenuProtector.View
 {

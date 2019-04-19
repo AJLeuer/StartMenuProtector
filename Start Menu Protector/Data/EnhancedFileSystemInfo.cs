@@ -5,7 +5,6 @@ using System.IO;
 using System.Security.AccessControl;
 using System.Security.Principal;
 using System.Windows.Media.Imaging;
-using StartMenuProtector.Configuration;
 using StartMenuProtector.Util;
 using static StartMenuProtector.Configuration.Config;
 
