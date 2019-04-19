@@ -18,10 +18,6 @@ namespace StartMenuProtector
         
         protected override void OnStartup(StartupEventArgs startup)
         {
-            #if DEBUG
-            ConsoleManager.Show();
-            #endif
-            
             activeDataController = new ActiveStartMenuDataController(systemStateController);
             savedDataController = new SavedStartMenuDataController(systemStateController);
             

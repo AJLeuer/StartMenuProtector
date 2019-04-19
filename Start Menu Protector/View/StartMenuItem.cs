@@ -20,9 +20,24 @@ namespace StartMenuProtector.View
         
         public static readonly DependencyProperty FileProperty = DependencyProperty.Register(nameof (File), typeof (EnhancedFileSystemInfo), typeof (StartMenuItem), new FrameworkPropertyMetadata(propertyChangedCallback: UpdateFile) { BindsTwoWayByDefault = false });
         
+        public static Brush DefaultOutlineColor { get; set; } = new SolidColorBrush(Config.OutlineColor);
         public static Brush DefaultTextColor { get; set; } = new SolidColorBrush(Config.TextColor);
         public static Brush DefaultBackgroundColor { get; set; } = new SolidColorBrush(Config.BackgroundColor);
         public static Brush DefaultSelectionTextColor { get; set; } = new SolidColorBrush(Config.SelectionTextColor);
+        
+        public static Brush DefaultSelectionBackgroundColor { get; } = new LinearGradientBrush
+        {
+            EndPoint = new Point(0.5, 1),
+            MappingMode = BrushMappingMode.RelativeToBoundingBox,
+            StartPoint = new Point(0.5, 0),
+            GradientStops =
+            {
+                new GradientStop { Color = Config.SelectionBackgroundColor },
+                new GradientStop { Color = Color.FromArgb(0xFF, 0x48, 0x77, 0xAA)},
+                new GradientStop { Color = Color.FromArgb(0xFF, 0x4C, 0x8D, 0xD3)}
+            }
+        };
+        
         public static Brush DefaultMarkedDeletedBackgroundColor { get; } = new LinearGradientBrush
         {
             EndPoint = new Point(0.5, 1),
@@ -35,8 +50,33 @@ namespace StartMenuProtector.View
                 new GradientStop { Color = Color.FromArgb(Config.MarkedDeletedBackgroundColor.A, Config.MarkedDeletedBackgroundColor.R, Config.MarkedDeletedBackgroundColor.G, (byte)(Config.MarkedDeletedBackgroundColor.B + 0x0F))}
             }
         };
+
+        private bool selected = false;
+
+        public bool Selected 
+        {
+            get { return selected; }
+            
+            private set
+            {
+                selected = value;
+                UpdateColor();
+            }
+        }
         
-        public Brush SelectionBackgroundColor { get; set; }
+        private bool markedRemoved = false;
+
+        public bool MarkedRemoved 
+        {
+            get { return markedRemoved; }
+            
+            private set
+            {
+                markedRemoved = value;
+                File.MarkedForExclusion = value;
+                UpdateColor();
+            }
+        }
 
         public Option<Border> Border
         {
@@ -51,6 +91,7 @@ namespace StartMenuProtector.View
         public Image Image { get; set; }
 
         private EnhancedFileSystemInfo file;
+
         public EnhancedFileSystemInfo File
         {
             get { return file; }
@@ -69,12 +110,14 @@ namespace StartMenuProtector.View
             {
                 FocusManager.SetIsFocusScope(this.Parent, true);
             }
-            this.Background = DefaultBackgroundColor;
+            
             this.Image = new Image { Margin = new Thickness(left: 5, top: 5, right: 2.5, bottom: 5)};
             this.TextBlock = new TextBlock { FontSize = Config.FontSize, Foreground = DefaultTextColor, Margin = new Thickness(left: 2.5, top: 5, right: 5, bottom: 5), VerticalAlignment = VerticalAlignment.Center};
             
             this.Children.Add(Image);
             this.Children.Add(TextBlock);
+            
+            UpdateColor();
 
             this.MouseDown += TakeFocus;
             this.GotFocus += Select;
@@ -86,29 +129,17 @@ namespace StartMenuProtector.View
 
         public void TakeFocus(object sender, MouseButtonEventArgs @event)
         {
-            Dispatcher.CurrentDispatcher.BeginInvoke(DispatcherPriority.Input, new Action(() => this.Focus()));
+            Dispatcher.CurrentDispatcher.BeginInvoke(DispatcherPriority.Input, new Action(() => { this.Focus(); }));
         }
 
         public void Select(object sender, RoutedEventArgs @event)
         {
-            Background = SelectionBackgroundColor;
-            TextBlock.Foreground = DefaultSelectionTextColor;
-            
-            if (Border.HasValue)
-            {
-                Border.ValueOrFailure().BorderBrush = SelectionBackgroundColor;
-            }
+            Selected = true;
         }
         
         public void Deselect(object sender, RoutedEventArgs @event)
         {
-            Background = DefaultBackgroundColor;
-            TextBlock.Foreground = DefaultTextColor;
-
-            if (Border.HasValue)
-            {
-                Border.ValueOrFailure().BorderBrush = StartMenuShortcutsView.OutlineColor;
-            }
+            Selected = false;
         }
 
         private void MarkAsRemoved(object sender, KeyEventArgs keyEvent)
@@ -120,10 +151,7 @@ namespace StartMenuProtector.View
         {
             if ((key == Key.Delete) || (key == Key.Back))
             {
-                Background = DefaultMarkedDeletedBackgroundColor;
-                TextBlock.Foreground = DefaultSelectionTextColor;
-
-                File.MarkedForExclusion = true;
+                MarkedRemoved = true;
             }
         }
 
@@ -136,37 +164,43 @@ namespace StartMenuProtector.View
             TextBlock.Text = File.PrettyName;
             TextBlock.ToolTip = File.Path;
         }
-        
+
+        private void UpdateColor()
+        {
+            if (MarkedRemoved)
+            {
+                UpdateColor(backgroundColor: DefaultMarkedDeletedBackgroundColor, textColor: DefaultSelectionTextColor, borderColor: DefaultMarkedDeletedBackgroundColor);
+            }
+            else 
+            {
+                if (Selected)
+                {
+                    UpdateColor(backgroundColor: DefaultSelectionBackgroundColor, textColor: DefaultSelectionTextColor, borderColor: DefaultSelectionBackgroundColor);
+                }
+                else /* if (Selected == false) */
+                {
+                    UpdateColor(backgroundColor: DefaultBackgroundColor, textColor: DefaultTextColor, DefaultOutlineColor);
+                }    
+            }
+        }
+
+        private void UpdateColor(Brush backgroundColor, Brush textColor, Brush borderColor)
+        {
+            Background = backgroundColor;
+            TextBlock.Foreground = textColor;
+
+            if (Border.HasValue)
+            {
+                Border.ValueOrFailure().BorderBrush = borderColor;
+            }
+        }
+
         private static void UpdateFile(DependencyObject startMenuDataItem, DependencyPropertyChangedEventArgs updatedValue)
         {
             if (startMenuDataItem is StartMenuItem self)
             {
                 self.File = (EnhancedFileSystemInfo) updatedValue.NewValue;
             }
-        }
-        
-        protected static Timer Timer = new Timer(duration: Duration.FromSeconds(1));
-        protected override void OnRender(DrawingContext dc)
-        {
-            if (Timer.Started == false)
-            {
-                Timer.Start();
-            }
-            else if (Timer.Finished)
-            {
-                var focusedElement = FocusManager.GetFocusedElement(FocusManager.GetFocusScope(this));
-                if (focusedElement is StartMenuItem startMenuItem)
-                {
-                    Console.WriteLine($"Focused element is a StartMenuItem with ID {startMenuItem.ID}");
-                }
-                else
-                {
-                    Console.WriteLine($"Focused element is {focusedElement}");
-                }
-                Timer.Stop();
-                Timer.Start();
-            }
-            base.OnRender(dc);
         }
     }
 }
