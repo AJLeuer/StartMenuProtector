@@ -3,6 +3,7 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media;
 using StartMenuProtector.Configuration;
 using StartMenuProtector.Control;
@@ -30,18 +31,6 @@ namespace StartMenuProtector.View
         };
         
         public ObservableCollection<StartMenuShortcutsLocation> Locations { get; set; } = new ObservableCollection<StartMenuShortcutsLocation> { StartMenuShortcutsLocation.System, StartMenuShortcutsLocation.User };
-                
-        private (StartMenuItem, Border) selectedStartMenuItem;
-        private (StartMenuItem, Border) SelectedStartMenuItem 
-        {
-            get { return selectedStartMenuItem; }
-            set
-            {
-                selectedStartMenuItem.Item1?.Deselected();
-                selectedStartMenuItem = value;
-                selectedStartMenuItem.Item1?.Selected();
-            }
-        }
         public StartMenuViewController Controller { get; set; }
 
         public ObservableCollection<FileSystemInfo> StartMenuContents
@@ -61,21 +50,6 @@ namespace StartMenuProtector.View
             StartMenuShortcutsLocation startMenuStartMenuShortcutsLocation = selectedLocation is StartMenuShortcutsLocation ? (StartMenuShortcutsLocation) selectedLocation : StartMenuShortcutsLocation.System;
 
             Controller.UpdateCurrentShortcuts(startMenuStartMenuShortcutsLocation);
-        }
-
-        private void UpdateSelectedItem(object sender, System.Windows.Input.MouseButtonEventArgs _)
-        {
-            var newSelectedStartMenuItem = this.SelectedStartMenuItem;
-            switch (sender)
-            {
-                case StartMenuItem startMenuItem:
-                    newSelectedStartMenuItem.Item1 = startMenuItem;
-                    break;
-                case Border border:
-                    newSelectedStartMenuItem.Item2 = border;
-                    break;
-            }
-            SelectedStartMenuItem = newSelectedStartMenuItem;
         }
 
         private void SaveCurrentShortcuts(object sender, RoutedEventArgs _)

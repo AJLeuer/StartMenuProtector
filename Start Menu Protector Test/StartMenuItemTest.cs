@@ -15,7 +15,7 @@ namespace StartMenuProtectorTest
         {
             var startMenuItem = new StartMenuItem();
             
-            startMenuItem.Selected();
+            startMenuItem.Select(null, null);
             
             Assert.AreEqual(StartMenuItem.DefaultSelectionTextColor, startMenuItem.TextBlock.Foreground);
         }

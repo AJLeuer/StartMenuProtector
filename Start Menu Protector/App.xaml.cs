@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using StartMenuProtector.Control;
+using StartMenuProtector.Util;
 using StartMenuProtector.View;
 
 namespace StartMenuProtector
@@ -17,6 +18,8 @@ namespace StartMenuProtector
         
         protected override void OnStartup(StartupEventArgs startup)
         {
+            ConsoleManager.Show();
+            
             activeDataController = new ActiveStartMenuDataController(systemStateController);
             savedDataController = new SavedStartMenuDataController(systemStateController);
             
