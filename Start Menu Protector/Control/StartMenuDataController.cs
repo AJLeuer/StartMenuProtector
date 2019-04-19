@@ -46,8 +46,8 @@ namespace StartMenuProtector.Control
         private void LoadActiveProgramShortcutsState()
         {
             Dictionary<StartMenuShortcutsLocation, EnhancedDirectoryInfo> startMenuPrograms = SystemStateController.LoadSystemAndUserStartMenuProgramShortcutsFromDisk();
-            startMenuPrograms[StartMenuShortcutsLocation.System].Copy(ProgramShortcuts[StartMenuShortcutsLocation.System].Self);
-            startMenuPrograms[StartMenuShortcutsLocation.User].Copy(ProgramShortcuts[StartMenuShortcutsLocation.User].Self);
+            startMenuPrograms[StartMenuShortcutsLocation.System].Copy(ProgramShortcuts[StartMenuShortcutsLocation.System]);
+            startMenuPrograms[StartMenuShortcutsLocation.User].Copy(ProgramShortcuts[StartMenuShortcutsLocation.User]);
         }
         
         public override void SaveProgramShortcuts(StartMenuShortcutsLocation location, IEnumerable<FileSystemInfo> startMenuContents)
@@ -57,7 +57,7 @@ namespace StartMenuProtector.Control
             foreach (var fileSystemItem in startMenuContents)
             {
                 EnhancedFileSystemInfo enhancedFileSystemItem = EnhancedFileSystemInfo.Create(fileSystemItem);
-                enhancedFileSystemItem.Copy(programShortcutsSaveDirectory.Self);
+                enhancedFileSystemItem.Copy(programShortcutsSaveDirectory);
             }
         }
         

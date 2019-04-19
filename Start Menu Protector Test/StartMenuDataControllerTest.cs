@@ -43,7 +43,7 @@ namespace StartMenuProtectorTest
                 .Returns((DirectoryInfo) null);
 
             MockFileToBeSaved.Setup(
-                (self) => self.Copy(It.IsAny<DirectoryInfo>()));
+                (self) => self.Copy(It.IsAny<EnhancedDirectoryInfo>()));
         }
 
         [Test]
@@ -53,7 +53,7 @@ namespace StartMenuProtectorTest
 
             controller.SaveProgramShortcuts(StartMenuShortcutsLocation.System, FilesToSave);
             
-            MockFileToBeSaved.Verify((self) => self.Copy(SystemProgramsMock.Object.Self), Times.Exactly(3));
+            MockFileToBeSaved.Verify((self) => self.Copy(SystemProgramsMock.Object), Times.Exactly(3));
         }
         
         [Test]
@@ -63,7 +63,7 @@ namespace StartMenuProtectorTest
 
             controller.SaveProgramShortcuts(StartMenuShortcutsLocation.System, FilesToSave);
             
-            MockFileToBeSaved.Verify((self) => self.Copy(SystemProgramsMock.Object.Self), Times.AtLeastOnce);
+            MockFileToBeSaved.Verify((self) => self.Copy(SystemProgramsMock.Object), Times.AtLeastOnce);
         }
         
         [Test]
@@ -73,7 +73,7 @@ namespace StartMenuProtectorTest
 
             controller.SaveProgramShortcuts(StartMenuShortcutsLocation.System, FilesToSave);
             
-            MockFileToBeSaved.Verify((self) => self.Copy(SystemProgramsMock.Object.Self), Times.Never);
+            MockFileToBeSaved.Verify((self) => self.Copy(SystemProgramsMock.Object), Times.Never);
         }
     }
 }

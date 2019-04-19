@@ -8,7 +8,7 @@ using System.Windows.Media.Imaging;
 using StartMenuProtector.Util;
 using static StartMenuProtector.Configuration.Config;
 
-namespace StartMenuProtector.Data
+namespace StartMenuProtector.Data 
 {
     public abstract class EnhancedFileSystemInfo : FileSystemInfo
     {
@@ -163,7 +163,7 @@ namespace StartMenuProtector.Data
         /// Copies this item inside of the directory given by destination 
         /// </summary>
         /// <param name="destination">The directory to copy into</param>
-        public abstract void Copy(DirectoryInfo destination);
+        public abstract void Copy(EnhancedDirectoryInfo destination);
     }
 
     public class EnhancedDirectoryInfo : EnhancedFileSystemInfo
@@ -215,16 +215,16 @@ namespace StartMenuProtector.Data
         /// Recursively copies this directory inside of the directory given by destination 
         /// </summary>
         /// <param name="destination">The directory to copy into</param>
-        public override void Copy(DirectoryInfo destination)
+        public override void Copy(EnhancedDirectoryInfo destination)
         {
             if (Valid)
             {
                 String pathOfCopy = System.IO.Path.Combine(destination.FullName, Name);
-                DirectoryInfo directoryCopy = Directory.Exists(pathOfCopy) ? new DirectoryInfo(pathOfCopy) : Directory.CreateDirectory(pathOfCopy);
+                EnhancedDirectoryInfo directoryCopy = Directory.Exists(pathOfCopy) ? new EnhancedDirectoryInfo(pathOfCopy) : new EnhancedDirectoryInfo(Directory.CreateDirectory(pathOfCopy));
 
                 DirectorySecurity security = Self.GetAccessControl();
                 security.SetAccessRuleProtection(true, true);
-                directoryCopy.SetAccessControl(security);
+                directoryCopy.Self.SetAccessControl(security);
 
                 EnhancedFileSystemInfo[] contents = Self.GetContents();
             
@@ -278,7 +278,7 @@ namespace StartMenuProtector.Data
             }
         }
 
-        public override void Copy(DirectoryInfo destination)
+        public override void Copy(EnhancedDirectoryInfo destination)
         {
             if (Valid)
             {
@@ -345,7 +345,7 @@ namespace StartMenuProtector.Data
         }
     }
 
-    public class OwnerType
+    public class OwnerType 
     {
         public static System OS { get; } = new System();
         public static Administrator Admin { get; } = new Administrator();
