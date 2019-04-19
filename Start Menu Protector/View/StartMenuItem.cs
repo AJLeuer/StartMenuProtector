@@ -62,29 +62,7 @@ namespace StartMenuProtector.View
         }
 
         public UInt64 ID { get; } = IDs++;
-        
-        public static StartMenuItem CurrentSelectedItem { get; protected set; } = null;
 
-        public bool IsCurrentSelectedItem 
-        {
-            get
-            {
-                bool propertySetTrue = (bool) this.GetValue(IsCurrentSelectedItemProperty);
-                return propertySetTrue;
-            }
-            set
-            {
-                this.SetValue(IsCurrentSelectedItemProperty, value);
-            }
-        }
-
-        public static void CurrentSelectedItemChanged(DependencyObject startMenuItem, DependencyPropertyChangedEventArgs @event)
-        {
-            uint i = 0;
-        }
-        
-        public static readonly DependencyProperty IsCurrentSelectedItemProperty = DependencyProperty.Register(nameof (IsCurrentSelectedItem), typeof (bool), typeof (StartMenuItem), new FrameworkPropertyMetadata(false, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, CurrentSelectedItemChanged));
-        
         public StartMenuItem()
         {
             if (Parent != null)
@@ -98,12 +76,17 @@ namespace StartMenuProtector.View
             this.Children.Add(Image);
             this.Children.Add(TextBlock);
 
-            this.MouseDown += (object sender, MouseButtonEventArgs @event) => { IsCurrentSelectedItem = true;};
+            this.MouseDown += TakeFocus;
             this.GotFocus += Select;
             this.LostFocus += Deselect;
             this.KeyDown += MarkAsRemoved;
             
             this.Focusable = true;
+        }
+
+        public void TakeFocus(object sender, MouseButtonEventArgs @event)
+        {
+            Dispatcher.CurrentDispatcher.BeginInvoke(DispatcherPriority.Input, new Action(() => this.Focus()));
         }
 
         public void Select(object sender, RoutedEventArgs @event)
@@ -172,50 +155,18 @@ namespace StartMenuProtector.View
             else if (Timer.Finished)
             {
                 var focusedElement = FocusManager.GetFocusedElement(FocusManager.GetFocusScope(this));
-                Console.WriteLine($"Focused element is {focusedElement}");
+                if (focusedElement is StartMenuItem startMenuItem)
+                {
+                    Console.WriteLine($"Focused element is a StartMenuItem with ID {startMenuItem.ID}");
+                }
+                else
+                {
+                    Console.WriteLine($"Focused element is {focusedElement}");
+                }
                 Timer.Stop();
                 Timer.Start();
             }
             base.OnRender(dc);
-        }
-        
-        #region AllowFocus
-        public bool Focused
-        {
-            get
-            {
-                return (bool) GetValue(IsFocusedProperty);
-            }
-
-            set
-            {
-                SetValue(IsFocusedProperty, value);
-            }
-        }
-        
-        public static readonly DependencyProperty FocusedProperty = DependencyProperty.RegisterAttached(
-            "Focused", 
-            typeof (bool), 
-            typeof (StartMenuItem),
-            new UIPropertyMetadata(false, FocusExtension.OnIsFocusedPropertyChanged));
-        #endregion
-    }
-    
-    /* Code credit StackOverflow user Anvaka:
-       https://stackoverflow.com/questions/1356045/set-focus-on-textbox-in-wpf-from-view-model-c/1356781#1356781 */
-    public static class FocusExtension
-    {
-        public static void OnIsFocusedPropertyChanged(this DependencyObject @object, DependencyPropertyChangedEventArgs @event)
-        {
-            var uiElement = (UIElement) @object;
-            
-            if (((bool) @event.NewValue) && (uiElement is StartMenuItem item))
-            {
-                if (item.IsCurrentSelectedItem)
-                {
-                    Dispatcher.CurrentDispatcher.BeginInvoke(DispatcherPriority.Input, new Action(() => item.Focus()));
-                }
-            }
         }
     }
 }

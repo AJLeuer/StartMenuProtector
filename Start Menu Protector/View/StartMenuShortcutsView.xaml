@@ -10,13 +10,13 @@
     <UserControl.Resources>
         <HierarchicalDataTemplate x:Name="Folder" DataType="{x:Type IO:EnhancedDirectoryInfo}" ItemsSource="{Binding Path=Contents}">
             <Border BorderThickness="2" BorderBrush="{x:Static view:StartMenuShortcutsView.OutlineColor}" CornerRadius="4" Margin="0,2.5,0,2.5">
-                <view:StartMenuItem File="{Binding}" SelectionBackgroundColor="{x:Static view:StartMenuShortcutsView.SelectionBackgroundGradient}" LastChildFill="true" ClipToBounds="True" Focused="{Binding IsCurrentSelectedItem, RelativeSource={RelativeSource Self}}" />
+                <view:StartMenuItem File="{Binding}" SelectionBackgroundColor="{x:Static view:StartMenuShortcutsView.SelectionBackgroundGradient}" LastChildFill="true" ClipToBounds="True"/>
             </Border>
         </HierarchicalDataTemplate>
 
         <DataTemplate x:Name="File" DataType="{x:Type IO:EnhancedFileInfo}">
             <Border BorderThickness="2" BorderBrush="{x:Static view:StartMenuShortcutsView.OutlineColor}" CornerRadius="4" Margin="0,2.5,0,2.5">
-                <view:StartMenuItem File="{Binding}" SelectionBackgroundColor="{x:Static view:StartMenuShortcutsView.SelectionBackgroundGradient}" LastChildFill="true" ClipToBounds="True" Focused="{Binding IsCurrentSelectedItem, RelativeSource={RelativeSource Self}}"/>
+                <view:StartMenuItem File="{Binding}" SelectionBackgroundColor="{x:Static view:StartMenuShortcutsView.SelectionBackgroundGradient}" LastChildFill="true" ClipToBounds="True"/>
             </Border>
         </DataTemplate>
     </UserControl.Resources>
