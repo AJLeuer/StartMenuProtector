@@ -61,9 +61,10 @@ namespace StartMenuProtectorTest
         {
             StartMenuDataController controller = new ActiveStartMenuDataController(MockSystemStateController);
 
-            controller.SaveProgramShortcuts(StartMenuShortcutsLocation.System, FilesToSave);
+            controller.SaveProgramShortcuts(StartMenuShortcutsLocation.User, FilesToSave);
             
-            MockFileToBeSaved.Verify((self) => self.Copy(SystemProgramsMock.Object), Times.AtLeastOnce);
+            MockFileToBeSaved.Verify((self) => self.Copy(UserProgramsMock.Object), Times.AtLeastOnce);
+            MockFileToBeSaved.Verify((self) => self.Copy(SystemProgramsMock.Object), Times.Never);
         }
         
         [Test]
