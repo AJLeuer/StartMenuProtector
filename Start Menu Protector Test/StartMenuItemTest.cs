@@ -26,7 +26,7 @@ namespace StartMenuProtectorTest
         [TestCase(Key.Back, true)]
         [TestCase(Key.A, false)]
         [TestCase(Key.Delete, true)]
-        public static void StartMenuItemMarkFileSystemItemForExclusionWhenDeleteOrBackspaceArePressed(Key pressedKey, bool shouldResultInMarkingForExclusion)
+        public static void StartMenuItemShouldMarkFileSystemItemForExclusionWhenDeleteOrBackspaceArePressed(Key pressedKey, bool shouldResultInMarkingForExclusion)
         {
             Key backspace = pressedKey;
             var fileMock = new Mock<MockableEnhancedFileInfo>();
