@@ -8,9 +8,11 @@ using StartMenuProtectorTest.Data;
 
 namespace StartMenuProtectorTest
 {
+    [TestFixture]
+    [Apartment(ApartmentState.STA)]
     public static class StartMenuItemTest
     {
-        [Test, Apartment(ApartmentState.STA)]
+        [Test]
         public static void StartMenuItemShouldHaveExpectedAttributesWhenSelected()
         {
             var startMenuItem = new StartMenuItem();
@@ -20,7 +22,7 @@ namespace StartMenuProtectorTest
             Assert.AreEqual(StartMenuItem.DefaultSelectionTextColor, startMenuItem.TextBlock.Foreground);
         }
         
-        [Test, Apartment(ApartmentState.STA)]
+        [Test]
         [TestCase(Key.Back, true)]
         [TestCase(Key.A, false)]
         [TestCase(Key.Delete, true)]
