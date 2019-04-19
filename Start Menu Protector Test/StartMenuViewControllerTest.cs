@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.IO;
 using Moq;
 using NUnit.Framework;
 using StartMenuProtector.Control;
@@ -34,6 +35,9 @@ namespace StartMenuProtectorTest
             DataControllerMock.Setup(
                 (self) => self.ProgramShortcuts)
                 .Returns(ActiveProgramShortcuts);
+
+            DataControllerMock
+                .Setup((self) => self.SaveProgramShortcuts(It.IsAny<StartMenuShortcutsLocation>(), It.IsAny<IEnumerable<FileSystemInfo>>()));
         }
         
         [Test]
@@ -45,6 +49,17 @@ namespace StartMenuProtectorTest
             viewController.UpdateCurrentShortcuts(StartMenuShortcutsLocation.System);
 
             Assert.AreEqual(ActiveProgramShortcuts[StartMenuShortcutsLocation.System], viewController.CurrentShortcutsDirectory);
+        }
+        
+        [Test]
+        public static void ShouldSaveUserShortcuts()
+        {
+            var mockDataController = DataControllerMock.Object;
+            var viewController = new StartMenuViewController(mockDataController, MockSystemStateController) { StartMenuStartMenuShortcutsLocation = StartMenuShortcutsLocation.User };
+
+            viewController.SaveCurrentShortcuts();
+            
+            DataControllerMock.Verify((self) => self.SaveProgramShortcuts(viewController.StartMenuStartMenuShortcutsLocation, viewController.StartMenuContents), Times.Once());
         }
     }
 }
