@@ -33,7 +33,7 @@ namespace StartMenuProtector.Control
 
         public abstract void SaveProgramShortcuts(StartMenuShortcutsLocation location, IEnumerable<FileSystemInfo> startMenuContents);
 
-        public abstract void HandleRequestToMoveFileSystemItems(EnhancedFileSystemInfo itemRequestingMove, EnhancedFileSystemInfo destinationItem);
+        public abstract Task HandleRequestToMoveFileSystemItems(EnhancedFileSystemInfo itemRequestingMove, EnhancedFileSystemInfo destinationItem);
     }
 
     public class ActiveStartMenuDataController : StartMenuDataController
@@ -81,7 +81,7 @@ namespace StartMenuProtector.Control
             }
         }
 
-        public override async void HandleRequestToMoveFileSystemItems(EnhancedFileSystemInfo itemRequestingMove, EnhancedFileSystemInfo destinationItem)
+        public override async Task HandleRequestToMoveFileSystemItems(EnhancedFileSystemInfo itemRequestingMove, EnhancedFileSystemInfo destinationItem)
         {
             if (destinationItem is EnhancedDirectoryInfo destinationFolder)
             {
@@ -108,9 +108,10 @@ namespace StartMenuProtector.Control
             /* Do nothing */
         }
         
-        public override void HandleRequestToMoveFileSystemItems(EnhancedFileSystemInfo itemRequestingMove, EnhancedFileSystemInfo destinationItem)
+        public override Task HandleRequestToMoveFileSystemItems(EnhancedFileSystemInfo itemRequestingMove, EnhancedFileSystemInfo destinationItem)
         {
             /* Do nothing */
+            return new Task(() => {});
         }
     }
 

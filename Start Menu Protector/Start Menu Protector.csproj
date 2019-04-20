@@ -111,6 +111,7 @@
     <Compile Include="Control\StartMenuViewController.cs" />
     <Compile Include="Control\SystemStateController.cs" />
     <Compile Include="Data\EnhancedFileSystemInfo.cs" />
+    <Compile Include="Util\AsyncObservableCollection.cs" />
     <Compile Include="Util\ConsoleManager.cs" />
     <Compile Include="Util\Timer.cs" />
     <Compile Include="Util\Util.cs" />

@@ -5,7 +5,6 @@ using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using StartMenuProtector.Control;
-using StartMenuProtector.Util;
 
 namespace StartMenuProtector.View
 {

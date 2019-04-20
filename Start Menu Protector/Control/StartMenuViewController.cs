@@ -1,6 +1,8 @@
 using System.Collections.ObjectModel;
 using System.IO;
+using System.Threading.Tasks;
 using StartMenuProtector.Data;
+using StartMenuProtector.Util;
 using StartMenuProtector.View;
 
 
@@ -11,7 +13,7 @@ namespace StartMenuProtector.Control
         public StartMenuDataController DataController { get; set; }
         public SystemStateController SystemStateController { get; set; }
         
-        public readonly ObservableCollection<FileSystemInfo> StartMenuContents = new ObservableCollection<FileSystemInfo>();
+        public readonly ObservableCollection<FileSystemInfo> StartMenuContents = new AsyncObservableCollection<FileSystemInfo>();
         public StartMenuShortcutsLocation StartMenuStartMenuShortcutsLocation { get; set; } = StartMenuShortcutsLocation.System;
 
         public EnhancedDirectoryInfo CurrentShortcutsDirectory
@@ -28,12 +30,15 @@ namespace StartMenuProtector.Control
         
         private void PopulateStartMenuTreeView()
         {
-            StartMenuContents.Clear();
-            
-            foreach (FileSystemInfo item in CurrentShortcutsDirectory.Contents)
+            Task.Run(() =>
             {
-                StartMenuContents.Add(item);         
-            }
+                StartMenuContents.Clear();
+            
+                foreach (EnhancedFileSystemInfo item in CurrentShortcutsDirectory.Contents)
+                {
+                    StartMenuContents.Add(item);         
+                }
+            });
         }
 
         public void UpdateCurrentShortcuts(StartMenuShortcutsLocation startMenuStartMenuShortcutsLocation)
@@ -47,9 +52,13 @@ namespace StartMenuProtector.Control
             DataController.SaveProgramShortcuts(StartMenuStartMenuShortcutsLocation, StartMenuContents);
         }
 
-        public void HandleRequestToMoveStartMenuItem(StartMenuItem itemRequestingMove, StartMenuItem destinationItem)
+        public async void HandleRequestToMoveStartMenuItem(StartMenuItem itemRequestingMove, StartMenuItem destinationItem)
         {
-            DataController.HandleRequestToMoveFileSystemItems(itemRequestingMove: itemRequestingMove.File, destinationItem: destinationItem.File);
+            await Task.Run(() =>
+            {
+                DataController.HandleRequestToMoveFileSystemItems(itemRequestingMove: itemRequestingMove.File, destinationItem: destinationItem.File).Wait();
+                PopulateStartMenuTreeView();
+            });
         }
     }
 }

@@ -5,6 +5,8 @@ using StartMenuProtector.View;
 /* Todo: Refactor StartMenuItem into two separate subclasses. One for directories, one for files */
 /* Todo: Fix first loaded start menu items view only showing directories */
 /* Todo: Items in saved view should not change color when dragged */
+/* Todo: Clicking on the "User" or "System" view reloads all items, but clicking on Active, Saved, etc. tabs does not */
+/* Todo: Active view does not refresh its contents from the file system after save */
 
 namespace StartMenuProtector
 {
