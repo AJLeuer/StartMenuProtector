@@ -1,8 +1,11 @@
-﻿using System.Collections.ObjectModel;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using StartMenuProtector.Control;
+using StartMenuProtector.Util;
 
 namespace StartMenuProtector.View
 {
@@ -17,6 +20,11 @@ namespace StartMenuProtector.View
         public ObservableCollection<FileSystemInfo> StartMenuContents
         {
             get { return Controller.StartMenuContents; }
+        }
+
+        public StartMenuItemDraggedAndDroppedEventHandler DragAndDropEventHandler
+        {
+            get { return this.HandleDragAndDropEvent; }
         }
 
         public StartMenuShortcutsView()
@@ -37,5 +45,11 @@ namespace StartMenuProtector.View
         {
             Controller.SaveCurrentShortcuts();
         }
+
+        private void HandleDragAndDropEvent(StartMenuItem droppedStartMenuItem, StartMenuItem recipient)
+        {
+           Controller.HandleRequestToMoveStartMenuItem(itemRequestingMove: droppedStartMenuItem, destinationItem: recipient);
+        }
+        
     }
 }

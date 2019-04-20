@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading.Tasks;
 using Moq;
 using NUnit.Framework;
 using StartMenuProtector.Control;
@@ -80,8 +81,8 @@ namespace StartMenuProtectorTest
         public static void ActiveStartMenuDataControllerShouldClearOldActiveStartMenuDataOnStartup()
         {
             ActiveStartMenuDataController controller = new ActiveStartMenuDataController(MockSystemStateController);
-
-            controller.LoadCurrentStartMenuData();
+            
+            Task.Run(async () => { await controller.LoadCurrentStartMenuData();}).Wait();
             
             //ActiveStartMenuController also creates a new thread to run LoadCurrentStartMenuData automatically,
             //so we may see DeleteContents() called more than once

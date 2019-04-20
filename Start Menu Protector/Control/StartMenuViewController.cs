@@ -1,6 +1,7 @@
 using System.Collections.ObjectModel;
 using System.IO;
 using StartMenuProtector.Data;
+using StartMenuProtector.View;
 
 
 namespace StartMenuProtector.Control
@@ -44,6 +45,11 @@ namespace StartMenuProtector.Control
         public void SaveCurrentShortcuts()
         {
             DataController.SaveProgramShortcuts(StartMenuStartMenuShortcutsLocation, StartMenuContents);
+        }
+
+        public void HandleRequestToMoveStartMenuItem(StartMenuItem itemRequestingMove, StartMenuItem destinationItem)
+        {
+            DataController.HandleRequestToMoveFileSystemItems(itemRequestingMove: itemRequestingMove.File, destinationItem: destinationItem.File);
         }
     }
 }

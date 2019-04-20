@@ -4,6 +4,7 @@ using StartMenuProtector.View;
 
 /* Todo: Refactor StartMenuItem into two separate subclasses. One for directories, one for files */
 /* Todo: Fix first loaded start menu items view only showing directories */
+/* Todo: Items in saved view should not change color when dragged */
 
 namespace StartMenuProtector
 {

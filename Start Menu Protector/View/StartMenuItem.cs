@@ -9,6 +9,7 @@ using Optional;
 using Optional.Unsafe;
 using StartMenuProtector.Data;
 using StartMenuProtector.Configuration;
+using StartMenuProtector.Control;
 
 
 namespace StartMenuProtector.View 
@@ -18,7 +19,10 @@ namespace StartMenuProtector.View
         private static UInt64 IDs = 0;
         
         public static readonly DependencyProperty FileProperty = DependencyProperty.Register(nameof (File), typeof (EnhancedFileSystemInfo), typeof (StartMenuItem), new FrameworkPropertyMetadata(propertyChangedCallback: UpdateFile) { BindsTwoWayByDefault = false });
-        
+        public static readonly DependencyProperty ReceivedDropHandlerProperty = DependencyProperty.Register(nameof (ReceivedDropHandler), typeof (StartMenuItemDraggedAndDroppedEventHandler), typeof (StartMenuItem), new FrameworkPropertyMetadata(propertyChangedCallback: UpdateReceivedDropHandler) { BindsTwoWayByDefault = false });
+
+        public StartMenuItemDraggedAndDroppedEventHandler ReceivedDropHandler { get; set; }
+
         public static Brush DefaultOutlineColor { get; set; } = new SolidColorBrush(Config.OutlineColor);
         public static Brush DefaultTextColor { get; set; } = new SolidColorBrush(Config.TextColor);
         public static Brush DefaultBackgroundColor { get; set; } = new SolidColorBrush(Config.BackgroundColor);
@@ -189,15 +193,32 @@ namespace StartMenuProtector.View
             if (mouseAction.LeftButton == MouseButtonState.Pressed)
             {
                 var data = new DataObject();
-                data.SetData(File.GetType(), File);
+                data.SetData(typeof(StartMenuItem), this);
 
                 DragDrop.DoDragDrop(this, data, DragDropEffects.Copy | DragDropEffects.Move);
             }
         }
+        
+        protected override void OnDrop(DragEventArgs dropEvent)
+        {
+            base.OnDrop(dropEvent);
+            
+            if (DragOrDropEventOriginatedHere(dropEvent) == false)
+            {
+                Option<StartMenuItem> droppedItem = RetrieveStartMenuItemFromDragOrDropEvent(dropEvent);
+
+                if (droppedItem.HasValue)
+                {
+                    ReceivedDropHandler.Invoke(droppedStartMenuItem: droppedItem.ValueOrFailure(), recipient: this);
+                }
+            }
+            
+            dropEvent.Handled = true;
+        }
 
         private void RespondToItemDraggedOver(object sender, DragEventArgs dragEvent)
         {
-            if (DragEventOriginatedHere(dragEvent) == false)
+            if (DragOrDropEventOriginatedHere(dragEvent) == false)
             {
                 CandidateForDrop = true;
             }
@@ -205,7 +226,7 @@ namespace StartMenuProtector.View
         
         private void RespondToDraggedItemLeaving(object sender, DragEventArgs dragEvent)
         {
-            if (DragEventOriginatedHere(dragEvent) == false)
+            if (DragOrDropEventOriginatedHere(dragEvent) == false)
             {
                 CandidateForDrop = false;
             }
@@ -262,12 +283,20 @@ namespace StartMenuProtector.View
                 self.File = (EnhancedFileSystemInfo) updatedValue.NewValue;
             }
         }
-
-        private bool DragEventOriginatedHere(DragEventArgs dragEvent)
+        
+        private static void UpdateReceivedDropHandler(DependencyObject startMenuDataItem, DependencyPropertyChangedEventArgs updatedValue)
         {
-            Option<EnhancedFileSystemInfo> draggedFile = RetrieveFileFromDragEvent(dragEvent);
+            if (startMenuDataItem is StartMenuItem self)
+            {
+                self.ReceivedDropHandler = (StartMenuItemDraggedAndDroppedEventHandler) updatedValue.NewValue;
+            }
+        }
 
-            if ((draggedFile.HasValue) && (draggedFile.ValueOrFailure() == this.File))
+        private bool DragOrDropEventOriginatedHere(DragEventArgs dragEvent)
+        {
+            Option<StartMenuItem> draggedItem = RetrieveStartMenuItemFromDragOrDropEvent(dragEvent);
+
+            if ((draggedItem.HasValue) && (draggedItem.ValueOrFailure() == this))
             {
                 return true;
             }
@@ -276,19 +305,21 @@ namespace StartMenuProtector.View
                 return false;
             }
         }
-        private Option<EnhancedFileSystemInfo> RetrieveFileFromDragEvent(DragEventArgs dragEvent)
+        private Option<StartMenuItem> RetrieveStartMenuItemFromDragOrDropEvent(DragEventArgs dragEvent)
         {
-            var dataObject = dragEvent.Data.GetData(File.GetType());
+            var dataObject = dragEvent.Data.GetData(typeof(StartMenuItem));
             
             if (dataObject != null)
             {
-                if (dataObject is EnhancedFileSystemInfo file)
+                if (dataObject is StartMenuItem item)
                 {
-                    return Option.Some(file);
+                    return Option.Some(item);
                 }
             }
 
-            return Option.None<EnhancedFileSystemInfo>();
+            return Option.None<StartMenuItem>();
         }
     }
+
+    public delegate void StartMenuItemDraggedAndDroppedEventHandler(StartMenuItem droppedStartMenuItem, StartMenuItem recipient);
 }

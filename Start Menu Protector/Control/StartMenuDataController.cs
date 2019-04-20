@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Threading;
+using System.Threading.Tasks;
 using StartMenuProtector.Data;
 using static StartMenuProtector.Configuration.Globals;
 
@@ -31,24 +32,31 @@ namespace StartMenuProtector.Control
         }
 
         public abstract void SaveProgramShortcuts(StartMenuShortcutsLocation location, IEnumerable<FileSystemInfo> startMenuContents);
+
+        public abstract void HandleRequestToMoveFileSystemItems(EnhancedFileSystemInfo itemRequestingMove, EnhancedFileSystemInfo destinationItem);
     }
 
     public class ActiveStartMenuDataController : StartMenuDataController
     {
+        public override Dictionary<StartMenuShortcutsLocation, EnhancedDirectoryInfo> StartMenuShortcuts { get; set; } = ActiveStartMenuShortcuts;
+
         public ActiveStartMenuDataController(SystemStateController systemStateController) 
             : base(systemStateController)
         {
-            new Thread(this.LoadCurrentStartMenuData).Start();
+            #pragma warning disable 4014
+            LoadCurrentStartMenuData();
+            #pragma warning restore 4014
         }
 
-        public override Dictionary<StartMenuShortcutsLocation, EnhancedDirectoryInfo> StartMenuShortcuts { get; set; } = ActiveStartMenuShortcuts;
-
-        public void LoadCurrentStartMenuData()
+        public async Task LoadCurrentStartMenuData()
         {
-            ClearOldActiveStartMenuShortcutsFromDisk();
-            LoadCurrentActiveStartMenuShortcutsFromDisk();
+            await Task.Run(() =>
+            {
+                ClearOldActiveStartMenuShortcutsFromDisk();
+                LoadCurrentActiveStartMenuShortcutsFromDisk();
+            });
         }
-        
+
         private void ClearOldActiveStartMenuShortcutsFromDisk()
         {
             StartMenuShortcuts[StartMenuShortcutsLocation.System].DeleteContents();
@@ -72,7 +80,17 @@ namespace StartMenuProtector.Control
                 enhancedFileSystemItem.Copy(programShortcutsSaveDirectory);
             }
         }
-        
+
+        public override async void HandleRequestToMoveFileSystemItems(EnhancedFileSystemInfo itemRequestingMove, EnhancedFileSystemInfo destinationItem)
+        {
+            if (destinationItem is EnhancedDirectoryInfo destinationFolder)
+            {
+                await Task.Run(() =>
+                {
+                    itemRequestingMove.Move(destinationFolder);
+                });
+            }
+        }
     }
     
     public class SavedStartMenuDataController : StartMenuDataController
@@ -86,6 +104,11 @@ namespace StartMenuProtector.Control
         public override Dictionary<StartMenuShortcutsLocation, EnhancedDirectoryInfo> StartMenuShortcuts { get; set; } = SavedStartMenuShortcuts;
 
         public override void SaveProgramShortcuts(StartMenuShortcutsLocation location, IEnumerable<FileSystemInfo> startMenuContents)
+        {
+            /* Do nothing */
+        }
+        
+        public override void HandleRequestToMoveFileSystemItems(EnhancedFileSystemInfo itemRequestingMove, EnhancedFileSystemInfo destinationItem)
         {
             /* Do nothing */
         }
