@@ -1,11 +1,6 @@
-﻿using System;
-using System.Windows;
-using System.Windows.Media.Imaging;
-using Hardcodet.Wpf.TaskbarNotification;
+﻿using System.Windows;
 using StartMenuProtector.Control;
 using StartMenuProtector.View;
-using static StartMenuProtector.Configuration.Config;
-using static StartMenuProtector.Util.Util;
 
 
 /* Todo: Refactor StartMenuItem into two separate subclasses. One for directories, one for files */
@@ -26,7 +21,6 @@ namespace StartMenuProtector
         private StartMenuViewController savedProgramsViewController;
         private StartMenuShortcutsView activeProgramsView;
         private StartMenuShortcutsView savedProgramsView;
-        private TaskbarIcon TaskbarIcon = new TaskbarIcon { ToolTipText = "Start Menu Protector", IconSource = new BitmapImage(GetResourceURI(TrayIconFilePath))};
 
         protected override void OnStartup(StartupEventArgs startup)
         {
