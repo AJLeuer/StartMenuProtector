@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using System.Windows.Media.Imaging;
 
@@ -5,8 +6,10 @@ namespace StartMenuProtector.Util
 {
     public static class Util
     {
-        public static void Sanitize(FileSystemInfo fileSystemItem)
+        public static Uri GetResourceURI(string resourcePath)
         {
+            String uri = $"pack://application:,,,{resourcePath}";
+            return new Uri(uri);
         }
     }
 

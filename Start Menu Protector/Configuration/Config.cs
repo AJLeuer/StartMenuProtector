@@ -7,6 +7,8 @@ namespace StartMenuProtector.Configuration
 {
     public static class Config
     {
+        public const string ApplicationIconFilePath = "/Assets/ApplicationIcon.ico";
+        public const string TrayIconFilePath = "/Assets/TrayIcon.ico";
         public const ushort FontSize = 18;
         public static readonly Color TextColor = Colors.Black;
         public static readonly Color BackgroundColor = Colors.White;

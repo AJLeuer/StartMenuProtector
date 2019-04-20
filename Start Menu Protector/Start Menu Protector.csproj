@@ -51,6 +51,10 @@
       <HintPath>..\packages\C5.3.0.0-beta\lib\netstandard2.0\C5.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Hardcodet.Wpf.TaskbarNotification, Version=1.0.5.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\packages\Hardcodet.NotifyIcon.Wpf.1.0.8\lib\net451\Hardcodet.Wpf.TaskbarNotification.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="NodaTime, Version=3.0.0.0, Culture=neutral, PublicKeyToken=4226afe0d9b296d1">
       <HintPath>..\packages\NodaTime.3.0.0-alpha01\lib\netstandard2.0\NodaTime.dll</HintPath>
       <Private>True</Private>
@@ -168,9 +172,6 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="ReadMe.md" />
-  </ItemGroup>
-  <ItemGroup>
     <COMReference Include="Shell32">
       <Guid>{50A7E9B0-70EF-11D1-B75A-00A0C90564FE}</Guid>
       <VersionMajor>1</VersionMajor>
@@ -180,6 +181,13 @@
       <Isolated>False</Isolated>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </COMReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="..\ReadMe.md">
+      <Link>ReadMe.md</Link>
+    </Content>
+    <Resource Include="Assets\ApplicationIcon.ico" />
+    <Resource Include="Assets\TrayIcon.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
