@@ -2,9 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
+using Shell32;
 using System.Security.AccessControl;
 using System.Security.Principal;
 using System.Windows.Media.Imaging;
+using Optional;
 using StartMenuProtector.Util;
 using static StartMenuProtector.Configuration.Config;
 
@@ -290,6 +292,12 @@ namespace StartMenuProtector.Data
                 Icon = icon.ConvertToImageSource();
             }
         }
+        
+        public EnhancedFileInfo(string path) : 
+            this(new FileInfo(path))
+        {
+            
+        }
 
         public override void Copy(EnhancedDirectoryInfo destination)
         {
@@ -307,6 +315,36 @@ namespace StartMenuProtector.Data
                 // ReSharper disable once AssignNullToNotNullAttribute
                 fileCopy.SetAccessControl(originalSecurity);
             }
+        }
+        
+        /// <returns>If this is a shortcut, returns the FileSystemItem this points to.
+        /// Otherwise, returns an empty optional.</returns>
+        public Option<EnhancedFileSystemInfo> GetShortcutTarget()
+        {
+            string pathOnly = System.IO.Path.GetDirectoryName(Path);
+            string filenameOnly = System.IO.Path.GetFileName(Path);
+
+            var shell = new Shell();
+            Folder folder = shell.NameSpace(pathOnly);
+            FolderItem folderItem = folder.ParseName(filenameOnly);
+            
+            if (folderItem != null)
+            {
+                ShellLinkObject link = (ShellLinkObject)folderItem.GetLink;
+                FileAttributes targetItemAttributes = File.GetAttributes(link.Path);
+
+                if ((targetItemAttributes & FileAttributes.Directory) == FileAttributes.Directory)
+                {
+                    return Option.Some<EnhancedFileSystemInfo>(new EnhancedDirectoryInfo(link.Path));
+                }
+                else /* if is file */
+                {
+                    return Option.Some<EnhancedFileSystemInfo>(new EnhancedFileInfo(link.Path));
+                }
+                    
+            }
+
+            return Option.None<EnhancedFileSystemInfo>();
         }
     }
 
