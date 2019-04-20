@@ -1,4 +1,5 @@
 using System;
+using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -10,7 +11,7 @@ using StartMenuProtector.Data;
 using StartMenuProtector.Configuration;
 
 
-namespace StartMenuProtector.View
+namespace StartMenuProtector.View 
 {
     public class StartMenuItem : DockPanel 
     {
@@ -47,6 +48,19 @@ namespace StartMenuProtector.View
                 new GradientStop { Color = Color.FromArgb(Config.MarkedDeletedBackgroundColor.A, Config.MarkedDeletedBackgroundColor.R, Config.MarkedDeletedBackgroundColor.G, (byte)(Config.MarkedDeletedBackgroundColor.B + 0x08))},
                 new GradientStop { Color = Color.FromArgb(Config.MarkedDeletedBackgroundColor.A, Config.MarkedDeletedBackgroundColor.R, Config.MarkedDeletedBackgroundColor.G, (byte)(Config.MarkedDeletedBackgroundColor.B + 0x0F))}
             }
+        };        
+        
+        public static Brush DefaultDropTargetBackgroundColor { get; } = new LinearGradientBrush
+        {
+            EndPoint = new Point(0.5, 1),
+            MappingMode = BrushMappingMode.RelativeToBoundingBox,
+            StartPoint = new Point(0.5, 0),
+            GradientStops =
+            {
+                new GradientStop { Color = Config.DropTargetBackgroundColor },
+                new GradientStop { Color = Color.FromArgb(Config.DropTargetBackgroundColor.A, (byte)(Config.DropTargetBackgroundColor.R + 0x08), Config.DropTargetBackgroundColor.G, Config.DropTargetBackgroundColor.B)},
+                new GradientStop { Color = Color.FromArgb(Config.DropTargetBackgroundColor.A, (byte)(Config.DropTargetBackgroundColor.R + 0x0F), Config.DropTargetBackgroundColor.G, Config.DropTargetBackgroundColor.B)}
+            }
         };
 
         private bool selected = false;
@@ -76,9 +90,21 @@ namespace StartMenuProtector.View
             }
         }
 
-        public Option<Border> Border
+        private bool candidateForDrop;
+
+        public bool CandidateForDrop
         {
-            get
+            get { return candidateForDrop; }
+            set
+            {
+                candidateForDrop = value;
+                UpdateColor();
+            }
+        }
+
+        public Option<Border> Border 
+        {
+            get 
             {
                 Option<Border> border = (this.Parent is Border) ? Option.Some((Border)Parent) : Option.None<Border>();
                 return border;
@@ -90,7 +116,7 @@ namespace StartMenuProtector.View
 
         private EnhancedFileSystemInfo file;
 
-        public EnhancedFileSystemInfo File
+        public EnhancedFileSystemInfo File 
         {
             get { return file; }
             set
@@ -102,7 +128,7 @@ namespace StartMenuProtector.View
 
         public UInt64 ID { get; } = IDs++;
 
-        public StartMenuItem()
+        public StartMenuItem() 
         {
             if (Parent != null)
             {
@@ -121,8 +147,11 @@ namespace StartMenuProtector.View
             this.GotFocus += Select;
             this.LostFocus += Deselect;
             this.KeyDown += MarkAsRemoved;
+            this.DragOver += RespondToItemDraggedOver;
+            this.DragLeave += RespondToDraggedItemLeaving;
             
             this.Focusable = true;
+            this.AllowDrop = true;
         }
 
         public void TakeFocus(object sender, MouseButtonEventArgs @event)
@@ -135,21 +164,50 @@ namespace StartMenuProtector.View
             Selected = true;
         }
         
-        public void Deselect(object sender, RoutedEventArgs @event)
+        public void Deselect(object sender, RoutedEventArgs @event) 
         {
             Selected = false;
         }
 
-        private void MarkAsRemoved(object sender, KeyEventArgs keyEvent)
+        private void MarkAsRemoved(object sender, KeyEventArgs keyEvent) 
         {
             MarkAsRemoved(keyEvent.Key);
         }
 
-        public void MarkAsRemoved(Key key)
+        public void MarkAsRemoved(Key key) 
         {
             if ((key == Key.Delete) || (key == Key.Back))
             {
                 MarkedRemoved = true;
+            }
+        }
+
+        protected override void OnMouseMove(MouseEventArgs mouseAction)
+        {
+            base.OnMouseMove(mouseAction);
+            
+            if (mouseAction.LeftButton == MouseButtonState.Pressed)
+            {
+                var data = new DataObject();
+                data.SetData(File.GetType(), File);
+
+                DragDrop.DoDragDrop(this, data, DragDropEffects.Copy | DragDropEffects.Move);
+            }
+        }
+
+        private void RespondToItemDraggedOver(object sender, DragEventArgs dragEvent)
+        {
+            if (DragEventOriginatedHere(dragEvent) == false)
+            {
+                CandidateForDrop = true;
+            }
+        }
+        
+        private void RespondToDraggedItemLeaving(object sender, DragEventArgs dragEvent)
+        {
+            if (DragEventOriginatedHere(dragEvent) == false)
+            {
+                CandidateForDrop = false;
             }
         }
 
@@ -168,6 +226,10 @@ namespace StartMenuProtector.View
             if (MarkedRemoved)
             {
                 UpdateColor(backgroundColor: DefaultMarkedDeletedBackgroundColor, textColor: DefaultSelectionTextColor, borderColor: DefaultMarkedDeletedBackgroundColor);
+            }
+            else if (CandidateForDrop)
+            {
+                UpdateColor(backgroundColor: DefaultDropTargetBackgroundColor, textColor: DefaultSelectionTextColor, borderColor: DefaultDropTargetBackgroundColor);
             }
             else 
             {
@@ -199,6 +261,34 @@ namespace StartMenuProtector.View
             {
                 self.File = (EnhancedFileSystemInfo) updatedValue.NewValue;
             }
+        }
+
+        private bool DragEventOriginatedHere(DragEventArgs dragEvent)
+        {
+            Option<EnhancedFileSystemInfo> draggedFile = RetrieveFileFromDragEvent(dragEvent);
+
+            if ((draggedFile.HasValue) && (draggedFile.ValueOrFailure() == this.File))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        private Option<EnhancedFileSystemInfo> RetrieveFileFromDragEvent(DragEventArgs dragEvent)
+        {
+            var dataObject = dragEvent.Data.GetData(File.GetType());
+            
+            if (dataObject != null)
+            {
+                if (dataObject is EnhancedFileSystemInfo file)
+                {
+                    return Option.Some(file);
+                }
+            }
+
+            return Option.None<EnhancedFileSystemInfo>();
         }
     }
 }

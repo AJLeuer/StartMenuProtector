@@ -2,6 +2,9 @@
 using StartMenuProtector.Control;
 using StartMenuProtector.View;
 
+/* Todo: Refactor StartMenuItem into two separate subclasses. One for directories, one for files */
+/* Todo: Fix first loaded start menu items view only showing directories */
+
 namespace StartMenuProtector
 {
     public partial class App : Application
