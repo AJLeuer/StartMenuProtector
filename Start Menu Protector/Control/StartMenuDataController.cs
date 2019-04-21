@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading;
@@ -25,10 +26,16 @@ namespace StartMenuProtector.Control
         };
         
         public abstract Dictionary<StartMenuShortcutsLocation, EnhancedDirectoryInfo> StartMenuShortcuts { get; set; }
-
+        
         public StartMenuDataController(SystemStateController systemStateController)
         {
             this.SystemStateController = systemStateController;
+        }
+        
+        protected void ClearOldStartMenuShortcutsFromDisk()
+        {
+            StartMenuShortcuts[StartMenuShortcutsLocation.System].DeleteContents();
+            StartMenuShortcuts[StartMenuShortcutsLocation.User].DeleteContents();
         }
 
         public abstract void SaveProgramShortcuts(StartMenuShortcutsLocation location, IEnumerable<FileSystemInfo> startMenuContents);
@@ -52,15 +59,9 @@ namespace StartMenuProtector.Control
         {
             await Task.Run(() =>
             {
-                ClearOldActiveStartMenuShortcutsFromDisk();
+                ClearOldStartMenuShortcutsFromDisk();
                 LoadCurrentActiveStartMenuShortcutsFromDisk();
             });
-        }
-
-        private void ClearOldActiveStartMenuShortcutsFromDisk()
-        {
-            StartMenuShortcuts[StartMenuShortcutsLocation.System].DeleteContents();
-            StartMenuShortcuts[StartMenuShortcutsLocation.User].DeleteContents();
         }
         
         private void LoadCurrentActiveStartMenuShortcutsFromDisk()
