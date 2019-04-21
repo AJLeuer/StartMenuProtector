@@ -7,7 +7,7 @@ using StartMenuProtector.Control;
 using StartMenuProtector.Data;
 using StartMenuProtectorTest.Utility;
 
-namespace StartMenuProtectorTest
+namespace StartMenuProtectorTest.Test
 {
     public static class StartMenuDataControllerTest
     {
