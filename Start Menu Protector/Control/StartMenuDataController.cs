@@ -109,10 +109,10 @@ namespace StartMenuProtector.Control
             /* Do nothing */
         }
         
-        public override Task HandleRequestToMoveFileSystemItems(EnhancedFileSystemInfo itemRequestingMove, EnhancedFileSystemInfo destinationItem)
+        public override async Task HandleRequestToMoveFileSystemItems(EnhancedFileSystemInfo itemRequestingMove, EnhancedFileSystemInfo destinationItem)
         {
             /* Do nothing */
-            return new Task(() => {});
+            await Task.Run(() => {});
         }
     }
 

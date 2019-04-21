@@ -165,7 +165,7 @@ namespace StartMenuProtector.Data
         /// <param name="destination">The directory to copy into</param>
         public abstract void Copy(EnhancedDirectoryInfo destination);
 
-        public void Move(EnhancedDirectoryInfo destination)
+        public virtual void Move(EnhancedDirectoryInfo destination)
         {
             Copy(destination);
             Delete();

@@ -4,11 +4,11 @@ using StartMenuProtector.View;
 
 
 /* Todo: Refactor StartMenuItem into two separate subclasses. One for directories, one for files */
-/* Todo: Items in saved view should not change color when dragged */
+/* Todo: Only directory items should change color when dragged over*/
+/* Todo: No items (including directories) should ever change color when dragged over in Saved view*/
 /* Todo: Clicking on the "User" or "System" view reloads all items, but clicking on Active, Saved, etc. tabs does not */
 /* Todo: Active view does not refresh its contents from the file system after save */
 /* Todo: Each view controller should have one of each type of data controller */
-/* Todo: Test that SavedStartMenuDataController does nothing when it receives a request to copy a file into a directory */
 
 namespace StartMenuProtector
 {
