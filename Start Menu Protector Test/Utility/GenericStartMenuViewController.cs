@@ -4,8 +4,8 @@ namespace StartMenuProtectorTest.Utility
 {
     public class GenericStartMenuViewController : StartMenuViewController
     {
-        public GenericStartMenuViewController(StartMenuDataController startMenuDataController, SystemStateController systemStateController) 
-            : base(startMenuDataController, systemStateController)
+        public GenericStartMenuViewController(StartMenuDataService startMenuDataService, SystemStateService systemStateService) 
+            : base(startMenuDataService, systemStateService)
         {
         }
         

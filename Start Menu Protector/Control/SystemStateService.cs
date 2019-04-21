@@ -10,7 +10,7 @@ namespace StartMenuProtector.Control
         User
     }
     
-    public class SystemStateController
+    public class SystemStateService
     {
         public virtual Dictionary<StartMenuShortcutsLocation, EnhancedDirectoryInfo> LoadSystemAndUserStartMenuProgramShortcutsFromDisk()
         {

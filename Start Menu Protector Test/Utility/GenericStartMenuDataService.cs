@@ -7,10 +7,10 @@ using StartMenuProtector.Data;
 
 namespace StartMenuProtectorTest.Utility
 {
-    public class GenericStartMenuDataController : StartMenuDataController
+    public class GenericStartMenuDataService : StartMenuDataService
     {
-        public GenericStartMenuDataController(SystemStateController systemStateController) 
-            : base(systemStateController)
+        public GenericStartMenuDataService(SystemStateService systemStateService) 
+            : base(systemStateService)
         {
         }
 

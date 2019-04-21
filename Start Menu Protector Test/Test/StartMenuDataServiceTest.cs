@@ -9,10 +9,10 @@ using StartMenuProtectorTest.Utility;
 
 namespace StartMenuProtectorTest.Test
 {
-    public static class StartMenuDataControllerTest
+    public static class StartMenuDataServiceTest
     {
-        public static Mock<SystemStateController> SystemStateControllerMock = new Mock<SystemStateController>();
-        public static SystemStateController MockSystemStateController = SystemStateControllerMock.Object;
+        public static Mock<SystemStateService> SystemStateControllerMock = new Mock<SystemStateService>();
+        public static SystemStateService MockSystemStateService = SystemStateControllerMock.Object;
         public static Mock<MockableEnhancedDirectoryInfo> SystemProgramsMock = new Mock<MockableEnhancedDirectoryInfo>(); 
         public static Mock<MockableEnhancedDirectoryInfo> UserProgramsMock = new Mock<MockableEnhancedDirectoryInfo>();
         public static Mock<MockableEnhancedFileInfo> FileToBeSavedMock;
@@ -38,13 +38,13 @@ namespace StartMenuProtectorTest.Test
                 {StartMenuShortcutsLocation.User, UserProgramsMock.Object}
             };
             
-            StartMenuDataController.SavedStartMenuShortcuts = new Dictionary<StartMenuShortcutsLocation, EnhancedDirectoryInfo>
+            StartMenuDataService.SavedStartMenuShortcuts = new Dictionary<StartMenuShortcutsLocation, EnhancedDirectoryInfo>
             {
                 {StartMenuShortcutsLocation.System, SystemProgramsMock.Object},
                 {StartMenuShortcutsLocation.User, UserProgramsMock.Object}
             };
             
-            StartMenuDataController.ActiveStartMenuShortcuts = new Dictionary<StartMenuShortcutsLocation, EnhancedDirectoryInfo>
+            StartMenuDataService.ActiveStartMenuShortcuts = new Dictionary<StartMenuShortcutsLocation, EnhancedDirectoryInfo>
             {
                 {StartMenuShortcutsLocation.System, SystemProgramsMock.Object},
                 {StartMenuShortcutsLocation.User, UserProgramsMock.Object}
@@ -85,9 +85,9 @@ namespace StartMenuProtectorTest.Test
         }
         
         [Test]
-        public static void ActiveStartMenuDataControllerShouldClearOldActiveStartMenuDataOnStartup()
+        public static void ActiveStartMenuDataServiceShouldClearOldActiveStartMenuDataOnStartup()
         {
-            var controller = new ActiveStartMenuDataController(MockSystemStateController);
+            var controller = new ActiveStartMenuDataService(MockSystemStateService);
             
             Task.Run(async () => { await controller.LoadCurrentStartMenuData();}).Wait();
             
@@ -98,9 +98,9 @@ namespace StartMenuProtectorTest.Test
         }
 
         [Test]
-        public static void ActiveStartMenuDataControllerShouldSaveAllRequestedStartMenuShortcuts()
+        public static void ActiveStartMenuDataServiceShouldSaveAllRequestedStartMenuShortcuts()
         {
-            var controller = new ActiveStartMenuDataController(MockSystemStateController);
+            var controller = new ActiveStartMenuDataService(MockSystemStateService);
 
             controller.SaveProgramShortcuts(StartMenuShortcutsLocation.System, FilesToSave);
             
@@ -110,7 +110,7 @@ namespace StartMenuProtectorTest.Test
         [Test]
         public static void ShouldSaveStartMenuShortcutsFromSpecifiedLocationOnly()
         {
-            var controller = new ActiveStartMenuDataController(MockSystemStateController);
+            var controller = new ActiveStartMenuDataService(MockSystemStateService);
 
             controller.SaveProgramShortcuts(StartMenuShortcutsLocation.User, FilesToSave);
             
@@ -119,9 +119,9 @@ namespace StartMenuProtectorTest.Test
         }
         
         [Test]
-        public static void SavedStartMenuDataControllerShouldDoNothingWhenRequestedToSaveStartMenuShortcuts()
+        public static void SavedStartMenuDataServiceShouldDoNothingWhenRequestedToSaveStartMenuShortcuts()
         {
-            var controller = new SavedStartMenuDataController(MockSystemStateController);
+            var controller = new SavedStartMenuDataService(MockSystemStateService);
 
             controller.SaveProgramShortcuts(StartMenuShortcutsLocation.System, FilesToSave);
             
@@ -129,9 +129,9 @@ namespace StartMenuProtectorTest.Test
         }
         
         [Test]
-        public static void ActiveStartMenuDataControllerShouldMoveItemsWhenRequestedToMoveFileSystemItems()
+        public static void ActiveStartMenuDataServiceShouldMoveItemsWhenRequestedToMoveFileSystemItems()
         {
-            var controller = new ActiveStartMenuDataController(MockSystemStateController);
+            var controller = new ActiveStartMenuDataService(MockSystemStateService);
 
             Task fileMoveTask = controller.HandleRequestToMoveFileSystemItems(itemRequestingMove: FileToMoveMock.Object, destinationItem: DestinationDirectoryMock.Object);
             fileMoveTask.Wait();
@@ -140,9 +140,9 @@ namespace StartMenuProtectorTest.Test
         }
         
         [Test]
-        public static void SavedStartMenuDataControllerShouldDoNothingWhenRequestedToMoveFileSystemItems()
+        public static void SavedStartMenuDataServiceShouldDoNothingWhenRequestedToMoveFileSystemItems()
         {
-            var controller = new SavedStartMenuDataController(MockSystemStateController);
+            var controller = new SavedStartMenuDataService(MockSystemStateService);
 
             Task fileMoveTask = controller.HandleRequestToMoveFileSystemItems(itemRequestingMove: FileToMoveMock.Object, destinationItem: DestinationDirectoryMock.Object);
             fileMoveTask.Wait();

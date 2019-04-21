@@ -7,9 +7,9 @@ using static StartMenuProtector.Configuration.Globals;
 
 namespace StartMenuProtector.Control
 {
-    public abstract class StartMenuDataController
+    public abstract class StartMenuDataService
     {
-        public SystemStateController SystemStateController { get; set; }
+        public SystemStateService SystemStateService { get; set; }
 
         public static Dictionary<StartMenuShortcutsLocation, EnhancedDirectoryInfo> ActiveStartMenuShortcuts { get; set; } = new Dictionary<StartMenuShortcutsLocation, EnhancedDirectoryInfo> 
         {
@@ -25,9 +25,9 @@ namespace StartMenuProtector.Control
         
         public abstract Dictionary<StartMenuShortcutsLocation, EnhancedDirectoryInfo> StartMenuShortcuts { get; set; }
         
-        public StartMenuDataController(SystemStateController systemStateController)
+        public StartMenuDataService(SystemStateService systemStateService)
         {
-            this.SystemStateController = systemStateController;
+            this.SystemStateService = systemStateService;
         }
         
         protected void ClearOldStartMenuShortcutsFromDisk()
@@ -41,12 +41,12 @@ namespace StartMenuProtector.Control
         public abstract Task HandleRequestToMoveFileSystemItems(EnhancedFileSystemInfo itemRequestingMove, EnhancedFileSystemInfo destinationItem);
     }
 
-    public class ActiveStartMenuDataController : StartMenuDataController
+    public class ActiveStartMenuDataService : StartMenuDataService
     {
         public override Dictionary<StartMenuShortcutsLocation, EnhancedDirectoryInfo> StartMenuShortcuts { get; set; } = ActiveStartMenuShortcuts;
 
-        public ActiveStartMenuDataController(SystemStateController systemStateController) 
-            : base(systemStateController)
+        public ActiveStartMenuDataService(SystemStateService systemStateService) 
+            : base(systemStateService)
         {
             #pragma warning disable 4014
             LoadCurrentStartMenuData();
@@ -64,7 +64,7 @@ namespace StartMenuProtector.Control
         
         private void LoadCurrentActiveStartMenuShortcutsFromDisk()
         {
-            Dictionary<StartMenuShortcutsLocation, EnhancedDirectoryInfo> startMenuPrograms = SystemStateController.LoadSystemAndUserStartMenuProgramShortcutsFromDisk();
+            Dictionary<StartMenuShortcutsLocation, EnhancedDirectoryInfo> startMenuPrograms = SystemStateService.LoadSystemAndUserStartMenuProgramShortcutsFromDisk();
             startMenuPrograms[StartMenuShortcutsLocation.System].Copy(StartMenuShortcuts[StartMenuShortcutsLocation.System]);
             startMenuPrograms[StartMenuShortcutsLocation.User].Copy(StartMenuShortcuts[StartMenuShortcutsLocation.User]);
         }
@@ -92,10 +92,10 @@ namespace StartMenuProtector.Control
         }
     }
     
-    public class SavedStartMenuDataController : StartMenuDataController
+    public class SavedStartMenuDataService : StartMenuDataService
     {
-        public SavedStartMenuDataController(SystemStateController systemStateController) 
-            : base(systemStateController)
+        public SavedStartMenuDataService(SystemStateService systemStateService) 
+            : base(systemStateService)
         {
             
         }
