@@ -11,7 +11,8 @@ namespace StartMenuProtectorTest.Test
     public static class StartMenuViewControllerTest
     {
         public static SystemStateService MockSystemStateService = new Mock<SystemStateService>().Object;
-        public static Mock<StartMenuDataService> DataServiceMock;
+        public static Mock<ActiveStartMenuDataService>    ActiveDataServiceMock;
+        public static Mock<SavedStartMenuDataService>     SavedDataServiceMock;
         public static Mock<MockableEnhancedDirectoryInfo> SystemProgramsMock = new Mock<MockableEnhancedDirectoryInfo>(); 
         public static Mock<MockableEnhancedDirectoryInfo> UserProgramsMock = new Mock<MockableEnhancedDirectoryInfo>();
         
@@ -20,11 +21,18 @@ namespace StartMenuProtectorTest.Test
                 {StartMenuShortcutsLocation.System, SystemProgramsMock.Object},
                 {StartMenuShortcutsLocation.User, UserProgramsMock.Object}
             };
+        
+        public static Dictionary<StartMenuShortcutsLocation, EnhancedDirectoryInfo> SavedProgramShortcuts = new Dictionary<StartMenuShortcutsLocation, EnhancedDirectoryInfo>
+        {
+            {StartMenuShortcutsLocation.System, SystemProgramsMock.Object},
+            {StartMenuShortcutsLocation.User, UserProgramsMock.Object}
+        };
 
         [SetUp]
         public static void Setup()
         {
-            DataServiceMock = new Mock<StartMenuDataService>(MockSystemStateService);
+            ActiveDataServiceMock = new Mock<ActiveStartMenuDataService>(MockSystemStateService);
+            SavedDataServiceMock = new Mock<SavedStartMenuDataService>(MockSystemStateService);
             
             SystemProgramsMock.Setup(
                     (self) => self.Contents)
@@ -34,46 +42,54 @@ namespace StartMenuProtectorTest.Test
                     (self) => self.Contents)
                 .Returns(new EnhancedFileSystemInfo[]{});
             
-            DataServiceMock.Setup(
+            ActiveDataServiceMock.Setup(
                 (self) => self.StartMenuShortcuts)
                 .Returns(ActiveProgramShortcuts);
 
-            DataServiceMock
-                .Setup((self) => self.SaveProgramShortcuts(It.IsAny<StartMenuShortcutsLocation>(), It.IsAny<IEnumerable<FileSystemInfo>>()));
+            ActiveDataServiceMock
+                .Setup((self) => self.SaveStartMenuItems(It.IsAny<StartMenuShortcutsLocation>(), It.IsAny<IEnumerable<FileSystemInfo>>()));
+        
+            SavedDataServiceMock.Setup(
+                (self) => self.StartMenuShortcuts)
+                .Returns(SavedProgramShortcuts);
+
+            SavedDataServiceMock
+                .Setup((self) => self.SaveStartMenuItems(It.IsAny<StartMenuShortcutsLocation>(), It.IsAny<IEnumerable<FileSystemInfo>>()));
         }
         
         [Test]
         public static void ShouldSetCurrentShortcutsToUsersWhenUserIsSelected()
         {
-            var mockDataService = DataServiceMock.Object;
-            var viewController = new GenericStartMenuViewController(mockDataService, MockSystemStateService) { StartMenuStartMenuShortcutsLocation = StartMenuShortcutsLocation.User };
+            var activeViewController = new ActiveStartMenuViewController(ActiveDataServiceMock.Object, SavedDataServiceMock.Object, MockSystemStateService) { StartMenuStartMenuShortcutsLocation = StartMenuShortcutsLocation.User };
+            var savedViewController  = new SavedStartMenuViewController(ActiveDataServiceMock.Object, SavedDataServiceMock.Object, MockSystemStateService) { StartMenuStartMenuShortcutsLocation = StartMenuShortcutsLocation.User };
+                
+            activeViewController.UpdateCurrentShortcuts(StartMenuShortcutsLocation.System);
+            savedViewController.UpdateCurrentShortcuts(StartMenuShortcutsLocation.User);
 
-            viewController.UpdateCurrentShortcuts(StartMenuShortcutsLocation.System);
-
-            Assert.AreEqual(ActiveProgramShortcuts[StartMenuShortcutsLocation.System], viewController.CurrentShortcutsDirectory);
+            Assert.AreEqual(ActiveProgramShortcuts[StartMenuShortcutsLocation.System], activeViewController.CurrentShortcutsDirectory);
+            Assert.AreEqual(ActiveProgramShortcuts[StartMenuShortcutsLocation.User],   savedViewController.CurrentShortcutsDirectory);
         }
         
         [Test]
         public static void ActiveStartMenuViewControllerShouldSaveUserShortcuts()
         {
-            var mockDataService = DataServiceMock.Object;
-            var viewController = new ActiveStartMenuViewController(mockDataService, MockSystemStateService) { StartMenuStartMenuShortcutsLocation = StartMenuShortcutsLocation.User };
+            var viewController = new ActiveStartMenuViewController(ActiveDataServiceMock.Object, SavedDataServiceMock.Object, MockSystemStateService) { StartMenuStartMenuShortcutsLocation = StartMenuShortcutsLocation.User };
 
             viewController.SaveCurrentShortcuts();
             
-            DataServiceMock.Verify((self) => self.SaveProgramShortcuts(viewController.StartMenuStartMenuShortcutsLocation, viewController.StartMenuContents), Times.Once());
+            SavedDataServiceMock.Verify((self) => self.SaveStartMenuItems(viewController.StartMenuStartMenuShortcutsLocation, viewController.StartMenuContents), Times.Once());
         }
 
 
         [Test]
         public static void SavedStartMenuViewControllerShouldDoNothingWhenRequestedToSaveStartMenuShortcuts()
         {
-            var mockDataService = DataServiceMock.Object;
-            var viewController = new SavedStartMenuViewController(mockDataService, MockSystemStateService) { StartMenuStartMenuShortcutsLocation = StartMenuShortcutsLocation.User };
+            var mockDataService = ActiveDataServiceMock.Object;
+            var viewController = new SavedStartMenuViewController(ActiveDataServiceMock.Object, SavedDataServiceMock.Object, MockSystemStateService) { StartMenuStartMenuShortcutsLocation = StartMenuShortcutsLocation.User };
 
             viewController.SaveCurrentShortcuts();
             
-            DataServiceMock.Verify((self) => self.SaveProgramShortcuts(viewController.StartMenuStartMenuShortcutsLocation, viewController.StartMenuContents), Times.Never);
+            ActiveDataServiceMock.Verify((self) => self.SaveStartMenuItems(viewController.StartMenuStartMenuShortcutsLocation, viewController.StartMenuContents), Times.Never);
         }
     }
 }

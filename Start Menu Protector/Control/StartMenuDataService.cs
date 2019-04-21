@@ -11,18 +11,6 @@ namespace StartMenuProtector.Control
     {
         public SystemStateService SystemStateService { get; set; }
 
-        public static Dictionary<StartMenuShortcutsLocation, EnhancedDirectoryInfo> ActiveStartMenuShortcuts { get; set; } = new Dictionary<StartMenuShortcutsLocation, EnhancedDirectoryInfo> 
-        {
-            {StartMenuShortcutsLocation.System, ActiveSystemProgramShortcuts}, 
-            {StartMenuShortcutsLocation.User, ActiveUserProgramShortcuts}
-        };
-        
-        public static Dictionary<StartMenuShortcutsLocation, EnhancedDirectoryInfo> SavedStartMenuShortcuts { get; set; } = new Dictionary<StartMenuShortcutsLocation, EnhancedDirectoryInfo> 
-        {
-            {StartMenuShortcutsLocation.System, SavedSystemStartMenuShortcuts}, 
-            {StartMenuShortcutsLocation.User, SavedUserStartMenuShortcuts}
-        };
-        
         public abstract Dictionary<StartMenuShortcutsLocation, EnhancedDirectoryInfo> StartMenuShortcuts { get; set; }
         
         public StartMenuDataService(SystemStateService systemStateService)
@@ -36,14 +24,18 @@ namespace StartMenuProtector.Control
             StartMenuShortcuts[StartMenuShortcutsLocation.User].DeleteContents();
         }
 
-        public abstract void SaveProgramShortcuts(StartMenuShortcutsLocation location, IEnumerable<FileSystemInfo> startMenuContents);
+        public abstract void SaveStartMenuItems(StartMenuShortcutsLocation location, IEnumerable<FileSystemInfo> startMenuItems);
 
         public abstract Task HandleRequestToMoveFileSystemItems(EnhancedFileSystemInfo itemRequestingMove, EnhancedFileSystemInfo destinationItem);
     }
 
     public class ActiveStartMenuDataService : StartMenuDataService
     {
-        public override Dictionary<StartMenuShortcutsLocation, EnhancedDirectoryInfo> StartMenuShortcuts { get; set; } = ActiveStartMenuShortcuts;
+        public override Dictionary<StartMenuShortcutsLocation, EnhancedDirectoryInfo> StartMenuShortcuts { get; set; } = new Dictionary<StartMenuShortcutsLocation, EnhancedDirectoryInfo> 
+        {
+            {StartMenuShortcutsLocation.System, ActiveSystemProgramShortcuts}, 
+            {StartMenuShortcutsLocation.User, ActiveUserProgramShortcuts}
+        };
 
         public ActiveStartMenuDataService(SystemStateService systemStateService) 
             : base(systemStateService)
@@ -69,15 +61,9 @@ namespace StartMenuProtector.Control
             startMenuPrograms[StartMenuShortcutsLocation.User].Copy(StartMenuShortcuts[StartMenuShortcutsLocation.User]);
         }
         
-        public override void SaveProgramShortcuts(StartMenuShortcutsLocation location, IEnumerable<FileSystemInfo> startMenuContents)
+        public override void SaveStartMenuItems(StartMenuShortcutsLocation location, IEnumerable<FileSystemInfo> startMenuItems)
         {
-            EnhancedDirectoryInfo programShortcutsSaveDirectory = SavedStartMenuShortcuts[location];
-            
-            foreach (var fileSystemItem in startMenuContents)
-            {
-                EnhancedFileSystemInfo enhancedFileSystemItem = EnhancedFileSystemInfo.Create(fileSystemItem);
-                enhancedFileSystemItem.Copy(programShortcutsSaveDirectory);
-            }
+            /* Do nothing */
         }
 
         public override async Task HandleRequestToMoveFileSystemItems(EnhancedFileSystemInfo itemRequestingMove, EnhancedFileSystemInfo destinationItem)
@@ -94,17 +80,27 @@ namespace StartMenuProtector.Control
     
     public class SavedStartMenuDataService : StartMenuDataService
     {
+        public override Dictionary<StartMenuShortcutsLocation, EnhancedDirectoryInfo> StartMenuShortcuts { get; set; } = new Dictionary<StartMenuShortcutsLocation, EnhancedDirectoryInfo> 
+        {
+            {StartMenuShortcutsLocation.System, SavedSystemStartMenuShortcuts}, 
+            {StartMenuShortcutsLocation.User, SavedUserStartMenuShortcuts}
+        };
+        
         public SavedStartMenuDataService(SystemStateService systemStateService) 
             : base(systemStateService)
         {
             
         }
 
-        public override Dictionary<StartMenuShortcutsLocation, EnhancedDirectoryInfo> StartMenuShortcuts { get; set; } = SavedStartMenuShortcuts;
-
-        public override void SaveProgramShortcuts(StartMenuShortcutsLocation location, IEnumerable<FileSystemInfo> startMenuContents)
+        public override void SaveStartMenuItems(StartMenuShortcutsLocation location, IEnumerable<FileSystemInfo> startMenuItems)
         {
-            /* Do nothing */
+            EnhancedDirectoryInfo programShortcutsSaveDirectory = StartMenuShortcuts[location];
+            
+            foreach (var fileSystemItem in startMenuItems)
+            {
+                EnhancedFileSystemInfo enhancedFileSystemItem = EnhancedFileSystemInfo.Create(fileSystemItem);
+                enhancedFileSystemItem.Copy(programShortcutsSaveDirectory);
+            }
         }
         
         public override async Task HandleRequestToMoveFileSystemItems(EnhancedFileSystemInfo itemRequestingMove, EnhancedFileSystemInfo destinationItem)

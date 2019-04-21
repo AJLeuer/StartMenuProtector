@@ -5,11 +5,9 @@ using StartMenuProtector.View;
 
 /* Todo: Refactor StartMenuItem into two separate subclasses. One for directories, one for files */
 /* Todo: Only directory items should change color when dragged over*/
-/* Todo: No items (including directories) should ever change color when dragged over in Saved view*/
+/* Todo: In Saved view, *no* items (including directories) should ever change color when dragged over*/
 /* Todo: Clicking on the "User" or "System" view reloads all items, but clicking on Active, Saved, etc. tabs does not */
 /* Todo: Active view does not refresh its contents from the file system after save */
-/* Todo: Each view controller should have one of each type of data service */
-/* Todo: Related to the above: saving a new Saved state should be moved to SavedStartMenuDataService */
 
 namespace StartMenuProtector
 {
@@ -17,27 +15,27 @@ namespace StartMenuProtector
     {
         private readonly StartMenuSentinel sentinel = new StartMenuSentinel();
         private readonly SystemStateService systemStateService = new SystemStateService();
-        private StartMenuDataService activeDataService;
-        private StartMenuDataService savedDataService;
-        private StartMenuViewController activeProgramsViewController;
-        private StartMenuViewController savedProgramsViewController;
-        private StartMenuShortcutsView activeProgramsView;
-        private StartMenuShortcutsView savedProgramsView;
+        private ActiveStartMenuDataService activeDataService;
+        private SavedStartMenuDataService savedDataService;
+        private StartMenuViewController activeStartMenuItemsViewController;
+        private StartMenuViewController savedStartMenuItemsViewController;
+        private StartMenuShortcutsView activeStartMenuItemsView;
+        private StartMenuShortcutsView savedStartMenuItemsView;
 
         protected override void OnStartup(StartupEventArgs startup)
         {
             activeDataService = new ActiveStartMenuDataService(systemStateService);
             savedDataService = new SavedStartMenuDataService(systemStateService);
             
-            activeProgramsViewController = new ActiveStartMenuViewController(activeDataService, systemStateService);
-            savedProgramsViewController = new SavedStartMenuViewController(savedDataService, systemStateService);
+            activeStartMenuItemsViewController = new ActiveStartMenuViewController(activeDataService, savedDataService, systemStateService);
+            savedStartMenuItemsViewController = new SavedStartMenuViewController(activeDataService, savedDataService, systemStateService);
 
             MainWindow = new MainWindow();
-            activeProgramsView = ((MainWindow) MainWindow).ActiveProgramShortcutsView;
-            savedProgramsView = ((MainWindow) MainWindow).SavedProgramShortcutsView;
+            activeStartMenuItemsView = ((MainWindow) MainWindow).ActiveProgramShortcutsView;
+            savedStartMenuItemsView = ((MainWindow) MainWindow).SavedProgramShortcutsView;
             
-            activeProgramsView.Controller = activeProgramsViewController;
-            savedProgramsView.Controller = savedProgramsViewController;
+            activeStartMenuItemsView.Controller = activeStartMenuItemsViewController;
+            savedStartMenuItemsView.Controller = savedStartMenuItemsViewController;
             
             MainWindow.Show();
         }

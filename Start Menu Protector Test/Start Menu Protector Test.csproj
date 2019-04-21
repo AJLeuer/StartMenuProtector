@@ -70,7 +70,6 @@
     <Compile Include="Test\StartMenuItemTest.cs" />
     <Compile Include="Test\StartMenuViewControllerTest.cs" />
     <Compile Include="Utility\GenericStartMenuDataService.cs" />
-    <Compile Include="Utility\GenericStartMenuViewController.cs" />
     <Compile Include="Utility\MockableFileSystemInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

@@ -9,20 +9,19 @@ namespace StartMenuProtector.Control
 {
     public abstract class StartMenuViewController 
     {
-        public StartMenuDataService DataService { get; set; }
+        public ActiveStartMenuDataService ActiveDataService { get; set; }
+        public SavedStartMenuDataService SavedDataService { get; set; }
         public SystemStateService SystemStateService { get; set; }
         
         public readonly ObservableCollection<FileSystemInfo> StartMenuContents = new AsyncObservableCollection<FileSystemInfo>();
         public StartMenuShortcutsLocation StartMenuStartMenuShortcutsLocation { get; set; } = StartMenuShortcutsLocation.System;
 
-        public EnhancedDirectoryInfo CurrentShortcutsDirectory
-        {
-            get { return DataService.StartMenuShortcuts[StartMenuStartMenuShortcutsLocation]; }
-        }
+        public abstract EnhancedDirectoryInfo CurrentShortcutsDirectory { get; }
 
-        public StartMenuViewController(StartMenuDataService startMenuDataService, SystemStateService systemStateService)
+        protected StartMenuViewController(ActiveStartMenuDataService activeStartMenuDataService, SavedStartMenuDataService savedStartMenuDataService, SystemStateService systemStateService)
         {
-            this.DataService = startMenuDataService;
+            this.ActiveDataService  = activeStartMenuDataService;
+            this.SavedDataService   = savedStartMenuDataService;
             this.SystemStateService = systemStateService;
             PopulateStartMenuTreeView();
         }
@@ -52,7 +51,7 @@ namespace StartMenuProtector.Control
         {
             await Task.Run(() =>
             {
-                DataService.HandleRequestToMoveFileSystemItems(itemRequestingMove: itemRequestingMove.File, destinationItem: destinationItem.File).Wait();
+                ActiveDataService.HandleRequestToMoveFileSystemItems(itemRequestingMove: itemRequestingMove.File, destinationItem: destinationItem.File).Wait();
                 PopulateStartMenuTreeView();
             });
         }
@@ -60,21 +59,31 @@ namespace StartMenuProtector.Control
 
     public class ActiveStartMenuViewController : StartMenuViewController
     {
-        public ActiveStartMenuViewController(StartMenuDataService startMenuDataService, SystemStateService systemStateService) 
-            : base(startMenuDataService, systemStateService)
+        public override EnhancedDirectoryInfo CurrentShortcutsDirectory
+        {
+            get { return ActiveDataService.StartMenuShortcuts[StartMenuStartMenuShortcutsLocation]; }
+        }
+        
+        public ActiveStartMenuViewController(ActiveStartMenuDataService activeStartMenuDataService, SavedStartMenuDataService savedStartMenuDataService, SystemStateService systemStateService) 
+            : base(activeStartMenuDataService, savedStartMenuDataService, systemStateService)
         {
         }
         
         public override void SaveCurrentShortcuts()
         {
-            DataService.SaveProgramShortcuts(StartMenuStartMenuShortcutsLocation, StartMenuContents);
+            SavedDataService.SaveStartMenuItems(StartMenuStartMenuShortcutsLocation, StartMenuContents);
         }
     }
     
     public class SavedStartMenuViewController : StartMenuViewController
     {
-        public SavedStartMenuViewController(StartMenuDataService startMenuDataService, SystemStateService systemStateService) 
-            : base(startMenuDataService, systemStateService)
+        public override EnhancedDirectoryInfo CurrentShortcutsDirectory
+        {
+            get { return SavedDataService.StartMenuShortcuts[StartMenuStartMenuShortcutsLocation]; }
+        }
+        
+        public SavedStartMenuViewController(ActiveStartMenuDataService activeStartMenuDataService, SavedStartMenuDataService savedStartMenuDataService, SystemStateService systemStateService) 
+            : base(activeStartMenuDataService, savedStartMenuDataService, systemStateService)
         {
         }
         
