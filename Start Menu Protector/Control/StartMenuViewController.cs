@@ -6,9 +6,9 @@ using StartMenuProtector.Util;
 using StartMenuProtector.View;
 
 
-namespace StartMenuProtector.Control
+namespace StartMenuProtector.Control 
 {
-    public class StartMenuViewController
+    public abstract class StartMenuViewController 
     {
         public StartMenuDataController DataController { get; set; }
         public SystemStateController SystemStateController { get; set; }
@@ -47,10 +47,7 @@ namespace StartMenuProtector.Control
             PopulateStartMenuTreeView();
         }
 
-        public void SaveCurrentShortcuts()
-        {
-            DataController.SaveProgramShortcuts(StartMenuStartMenuShortcutsLocation, StartMenuContents);
-        }
+        public abstract void SaveCurrentShortcuts();
 
         public async void HandleRequestToMoveStartMenuItem(StartMenuItem itemRequestingMove, StartMenuItem destinationItem)
         {
@@ -59,6 +56,32 @@ namespace StartMenuProtector.Control
                 DataController.HandleRequestToMoveFileSystemItems(itemRequestingMove: itemRequestingMove.File, destinationItem: destinationItem.File).Wait();
                 PopulateStartMenuTreeView();
             });
+        }
+    }
+
+    public class ActiveStartMenuViewController : StartMenuViewController
+    {
+        public ActiveStartMenuViewController(StartMenuDataController startMenuDataController, SystemStateController systemStateController) 
+            : base(startMenuDataController, systemStateController)
+        {
+        }
+        
+        public override void SaveCurrentShortcuts()
+        {
+            DataController.SaveProgramShortcuts(StartMenuStartMenuShortcutsLocation, StartMenuContents);
+        }
+    }
+    
+    public class SavedStartMenuViewController : StartMenuViewController
+    {
+        public SavedStartMenuViewController(StartMenuDataController startMenuDataController, SystemStateController systemStateController) 
+            : base(startMenuDataController, systemStateController)
+        {
+        }
+        
+        public override void SaveCurrentShortcuts()
+        {
+            /* Do nothing */
         }
     }
 }

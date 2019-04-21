@@ -4,10 +4,11 @@ using StartMenuProtector.View;
 
 
 /* Todo: Refactor StartMenuItem into two separate subclasses. One for directories, one for files */
-/* Todo: Fix first loaded start menu items view only showing directories */
 /* Todo: Items in saved view should not change color when dragged */
 /* Todo: Clicking on the "User" or "System" view reloads all items, but clicking on Active, Saved, etc. tabs does not */
 /* Todo: Active view does not refresh its contents from the file system after save */
+/* Todo: Each view controller should have one of each type of data controller */
+/* Todo: Test that SavedStartMenuDataController does nothing when it receives a request to copy a file into a directory */
 
 namespace StartMenuProtector
 {
@@ -27,8 +28,8 @@ namespace StartMenuProtector
             activeDataController = new ActiveStartMenuDataController(systemStateController);
             savedDataController = new SavedStartMenuDataController(systemStateController);
             
-            activeProgramsViewController = new StartMenuViewController(activeDataController, systemStateController);
-            savedProgramsViewController = new StartMenuViewController(savedDataController, systemStateController);
+            activeProgramsViewController = new ActiveStartMenuViewController(activeDataController, systemStateController);
+            savedProgramsViewController = new SavedStartMenuViewController(savedDataController, systemStateController);
 
             MainWindow = new MainWindow();
             activeProgramsView = ((MainWindow) MainWindow).ActiveProgramShortcutsView;

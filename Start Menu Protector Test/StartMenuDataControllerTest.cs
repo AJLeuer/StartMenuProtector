@@ -6,7 +6,7 @@ using Moq;
 using NUnit.Framework;
 using StartMenuProtector.Control;
 using StartMenuProtector.Data;
-using StartMenuProtectorTest.Data;
+using StartMenuProtectorTest.Utility;
 
 namespace StartMenuProtectorTest
 {

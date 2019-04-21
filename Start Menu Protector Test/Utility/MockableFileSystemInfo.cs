@@ -1,6 +1,6 @@
 using StartMenuProtector.Data;
 
-namespace StartMenuProtectorTest.Data
+namespace StartMenuProtectorTest.Utility
 {
     public class MockableEnhancedDirectoryInfo : EnhancedDirectoryInfo
     {
