@@ -9,6 +9,7 @@ using StartMenuProtector.View;
 /* Todo: Clicking on the "User" or "System" view reloads all items, but clicking on Active, Saved, etc. tabs does not */
 /* Todo: Active view does not refresh its contents from the file system after save */
 /* Todo: Each view controller should have one of each type of data controller */
+/* Todo: Related to the above: saving a new Saved state should be moved to SavedStartMenuDataController */
 
 namespace StartMenuProtector
 {

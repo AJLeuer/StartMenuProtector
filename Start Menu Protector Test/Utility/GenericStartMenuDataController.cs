@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
@@ -17,12 +18,12 @@ namespace StartMenuProtectorTest.Utility
         
         public override void SaveProgramShortcuts(StartMenuShortcutsLocation location, IEnumerable<FileSystemInfo> startMenuContents)
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
         public override Task HandleRequestToMoveFileSystemItems(EnhancedFileSystemInfo itemRequestingMove, EnhancedFileSystemInfo destinationItem)
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
     }
 }

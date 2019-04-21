@@ -1,3 +1,5 @@
+using System.Windows;
+
 namespace StartMenuProtector.View
 {
     public class SavedStartMenuShortcutsView : StartMenuShortcutsView
@@ -6,7 +8,7 @@ namespace StartMenuProtector.View
             base()
         {
             SaveButton.IsEnabled = false;
-            SaveButton.Visibility = System.Windows.Visibility.Hidden;
+            SaveButton.Visibility = Visibility.Hidden;
         }
     }
 }

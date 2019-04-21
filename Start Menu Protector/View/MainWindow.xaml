@@ -13,8 +13,7 @@
                 <view:ActiveStartMenuShortcutsView x:Name="ActiveProgramShortcutsView"/>
             </TabItem>
             <TabItem Header="Saved" >
-                <view:SavedStartMenuShortcutsView x:Name="SavedProgramShortcutsView">
-                </view:SavedStartMenuShortcutsView>
+                <view:SavedStartMenuShortcutsView x:Name="SavedProgramShortcutsView" />
             </TabItem>
         </TabControl>
     </Grid>

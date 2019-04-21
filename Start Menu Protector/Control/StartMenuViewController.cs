@@ -5,7 +5,6 @@ using StartMenuProtector.Data;
 using StartMenuProtector.Util;
 using StartMenuProtector.View;
 
-
 namespace StartMenuProtector.Control 
 {
     public abstract class StartMenuViewController 

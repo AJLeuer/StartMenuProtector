@@ -1,5 +1,4 @@
 using System;
-using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -7,10 +6,8 @@ using System.Windows.Media;
 using System.Windows.Threading;
 using Optional;
 using Optional.Unsafe;
-using StartMenuProtector.Data;
 using StartMenuProtector.Configuration;
-using StartMenuProtector.Control;
-
+using StartMenuProtector.Data;
 
 namespace StartMenuProtector.View 
 {

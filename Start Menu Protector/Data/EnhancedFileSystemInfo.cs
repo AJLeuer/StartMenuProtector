@@ -2,11 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
-using Shell32;
 using System.Security.AccessControl;
 using System.Security.Principal;
 using System.Windows.Media.Imaging;
 using Optional;
+using Shell32;
 using StartMenuProtector.Util;
 using static StartMenuProtector.Configuration.Config;
 

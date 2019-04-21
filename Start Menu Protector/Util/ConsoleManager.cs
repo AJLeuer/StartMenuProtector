@@ -1,6 +1,7 @@
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Reflection;
 using System.Runtime.InteropServices;
 
 namespace StartMenuProtector.Util
@@ -70,16 +71,16 @@ namespace StartMenuProtector.Util
 
         static void InvalidateOutAndError()
         {
-            Type type = typeof(System.Console);
+            Type type = typeof(Console);
 
-            System.Reflection.FieldInfo _out = type.GetField("_out",
-                System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.NonPublic);
+            FieldInfo _out = type.GetField("_out",
+                BindingFlags.Static | BindingFlags.NonPublic);
 
-            System.Reflection.FieldInfo _error = type.GetField("_error",
-                System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.NonPublic);
+            FieldInfo _error = type.GetField("_error",
+                BindingFlags.Static | BindingFlags.NonPublic);
 
-            System.Reflection.MethodInfo _InitializeStdOutError = type.GetMethod("InitializeStdOutError",
-                System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.NonPublic);
+            MethodInfo _InitializeStdOutError = type.GetMethod("InitializeStdOutError",
+                BindingFlags.Static | BindingFlags.NonPublic);
 
             Debug.Assert(_out != null);
             Debug.Assert(_error != null);
