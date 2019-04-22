@@ -47,10 +47,6 @@
     <ApplicationManifest>Properties\app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="C5, Version=3.0.0.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\packages\C5.3.0.0-beta\lib\netstandard2.0\C5.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="Hardcodet.Wpf.TaskbarNotification, Version=1.0.5.0, Culture=neutral, PublicKeyToken=null">
       <HintPath>..\packages\Hardcodet.NotifyIcon.Wpf.1.0.8\lib\net451\Hardcodet.Wpf.TaskbarNotification.dll</HintPath>
       <Private>True</Private>
@@ -61,10 +57,6 @@
     </Reference>
     <Reference Include="Optional, Version=4.1.0.0, Culture=neutral, PublicKeyToken=null">
       <HintPath>..\packages\Optional.5.0.0-alpha\lib\net45\Optional.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="ParallelExtensionsExtras, Version=1.2.3.0, Culture=neutral, PublicKeyToken=665f4d61f853b5a9">
-      <HintPath>..\packages\ParallelExtensionsExtras.1.2.0.0\lib\net40\ParallelExtensionsExtras.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Syroot.KnownFolders, Version=1.2.1.0, Culture=neutral, PublicKeyToken=null">
