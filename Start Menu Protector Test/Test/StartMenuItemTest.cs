@@ -32,7 +32,7 @@ namespace StartMenuProtectorTest.Test
             var fileMock = new Mock<MockableEnhancedFileInfo>();
             fileMock.Setup((MockableEnhancedFileInfo self) => self.PrettyName).Returns("Firefox");
             EnhancedFileSystemInfo mockFile = fileMock.Object;
-            var startMenuItem = new StartMenuItem { File = mockFile };
+            var startMenuItem = new StartMenuItem { File = mockFile, MarkedExcludedHandler = (StartMenuItem item) => {} };
             
             startMenuItem.MarkAsRemoved(backspace);
 

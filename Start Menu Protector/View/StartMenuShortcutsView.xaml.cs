@@ -25,6 +25,11 @@ namespace StartMenuProtector.View
             get { return this.HandleDragAndDropEvent; }
         }
 
+        public StartMenuItemMarkedExcludedEventHandler ItemMarkedExcludedHandler
+        {
+            get { return this.HandleItemMarkedExcludedEvent; }
+        }
+
         public StartMenuShortcutsView()
         {
             InitializeComponent();
@@ -53,6 +58,11 @@ namespace StartMenuProtector.View
         private void HandleDragAndDropEvent(StartMenuItem droppedStartMenuItem, StartMenuItem recipient)
         {
            Controller.HandleRequestToMoveStartMenuItem(itemRequestingMove: droppedStartMenuItem, destinationItem: recipient);
+        }        
+        
+        private void HandleItemMarkedExcludedEvent(StartMenuItem itemMarkedRemoved)
+        {
+           Controller.HandleRequestToExcludeStartMenuItem();
         }
         
     }

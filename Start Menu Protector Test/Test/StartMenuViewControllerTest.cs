@@ -129,6 +129,17 @@ namespace StartMenuProtectorTest.Test
         }
         
         [Test]
+        public static void ActiveStartMenuViewControllerHandleRequestToExcludeStartMenuItemShouldSetContentStateToUserChangesPresent()
+        {
+            var viewController = new ActiveStartMenuViewController(ActiveDataServiceMock.Object, SavedDataServiceMock.Object, MockSystemStateService) { StartMenuStartMenuShortcutsLocation = StartMenuShortcutsLocation.User };
+            viewController.CurrentContentState = ActiveStartMenuViewController.ContentState.MirroringOSEnvironment;
+
+            viewController.HandleRequestToExcludeStartMenuItem();
+                
+            Assert.AreEqual(ActiveStartMenuViewController.ContentState.UserChangesPresent, viewController.CurrentContentState);
+        }
+        
+        [Test]
         public static void SavingShouldRevertActiveStartMenuViewControllerCurrentContentStateToMirroringOSEnvironment()
         {
             var viewController = new ActiveStartMenuViewController(ActiveDataServiceMock.Object, SavedDataServiceMock.Object, MockSystemStateService) { StartMenuStartMenuShortcutsLocation = StartMenuShortcutsLocation.User };

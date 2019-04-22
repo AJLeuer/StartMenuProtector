@@ -29,6 +29,8 @@ namespace StartMenuProtector.Control
         public abstract void SaveCurrentStartMenuItems();
 
         public abstract Task HandleRequestToMoveStartMenuItem(IStartMenuItem itemRequestingMove, IStartMenuItem destinationItem);
+
+        public abstract void HandleRequestToExcludeStartMenuItem();
     }
 
     public class ActiveStartMenuViewController : StartMenuViewController
@@ -82,6 +84,11 @@ namespace StartMenuProtector.Control
                 UpdateCurrentShortcuts().Wait();
             });
         }
+        
+        public override void HandleRequestToExcludeStartMenuItem()
+        {
+            CurrentContentState = ContentState.UserChangesPresent;
+        }
     }
     
     public class SavedStartMenuViewController : StartMenuViewController
@@ -107,6 +114,11 @@ namespace StartMenuProtector.Control
         {
             /* Do nothing */
             await Task.Run(() => {});
+        }
+        
+        public override void HandleRequestToExcludeStartMenuItem()
+        {
+            /* Do nothing */
         }
     }
 }
