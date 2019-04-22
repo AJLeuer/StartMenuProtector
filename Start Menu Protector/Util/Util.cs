@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
@@ -30,6 +31,26 @@ namespace StartMenuProtector.Util
             image.EndInit();
 
             return image;
+        }
+        
+        public static void AddAll<T>(this ICollection<T> collection, IEnumerable<T> items)
+        {
+            foreach (T item in items)
+            {
+                collection.Add(item);
+            }
+        }
+        
+        /// <summary>
+        /// Clear the contents of collection and replace with items
+        /// </summary>
+        /// <param name="collection"></param>
+        /// <param name="items"></param>
+        /// <typeparam name="T"></typeparam>
+        public static void ReplaceAll<T>(this ICollection<T> collection, IEnumerable<T> items)
+        {
+            collection.Clear();
+            collection.AddAll(items);
         }
     }
 }

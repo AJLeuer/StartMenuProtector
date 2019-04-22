@@ -63,6 +63,10 @@
       <HintPath>..\packages\Optional.5.0.0-alpha\lib\net45\Optional.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="ParallelExtensionsExtras, Version=1.2.3.0, Culture=neutral, PublicKeyToken=665f4d61f853b5a9">
+      <HintPath>..\packages\ParallelExtensionsExtras.1.2.0.0\lib\net40\ParallelExtensionsExtras.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Syroot.KnownFolders, Version=1.2.1.0, Culture=neutral, PublicKeyToken=null">
       <HintPath>..\packages\Syroot.Windows.IO.KnownFolders.1.2.1\lib\net452\Syroot.KnownFolders.dll</HintPath>
       <Private>True</Private>

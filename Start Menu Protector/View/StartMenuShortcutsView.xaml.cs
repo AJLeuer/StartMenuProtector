@@ -1,3 +1,4 @@
+using System;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Windows;
@@ -28,6 +29,11 @@ namespace StartMenuProtector.View
         {
             InitializeComponent();
             DataContext = this;
+            
+            Loaded += (object sender, RoutedEventArgs routedEvent) =>
+            {
+                Controller.UpdateCurrentShortcuts();
+            };
         }
         
         private void CurrentShortcutsLocationChanged(object sender, SelectionChangedEventArgs _)
@@ -35,7 +41,8 @@ namespace StartMenuProtector.View
             var selectedLocation = (sender as ListBox)?.SelectedItem;
             StartMenuShortcutsLocation startMenuStartMenuShortcutsLocation = selectedLocation is StartMenuShortcutsLocation ? (StartMenuShortcutsLocation) selectedLocation : StartMenuShortcutsLocation.System;
 
-            Controller.UpdateCurrentShortcuts(startMenuStartMenuShortcutsLocation);
+            Controller.StartMenuStartMenuShortcutsLocation = startMenuStartMenuShortcutsLocation;
+            Controller.UpdateCurrentShortcuts();
         }
 
         private void SaveCurrentShortcuts(object sender, RoutedEventArgs _)

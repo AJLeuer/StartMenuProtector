@@ -4,6 +4,14 @@ using StartMenuProtector.Data;
 
 namespace StartMenuProtector.Control
 {
+
+    public enum StartMenuProtectorViewType
+    {
+        Active,
+        Saved,
+        Quarantine,
+        Excluded
+    }
     public enum StartMenuShortcutsLocation
     {
         System, 
