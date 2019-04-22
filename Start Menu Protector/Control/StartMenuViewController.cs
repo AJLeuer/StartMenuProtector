@@ -27,14 +27,7 @@ namespace StartMenuProtector.Control
 
         public abstract void SaveCurrentShortcuts();
 
-        public async void HandleRequestToMoveStartMenuItem(StartMenuItem itemRequestingMove, StartMenuItem destinationItem)
-        {
-            await Task.Run(() =>
-            {
-                ActiveDataService.HandleRequestToMoveFileSystemItems(itemRequestingMove: itemRequestingMove.File, destinationItem: destinationItem.File).Wait();
-                UpdateCurrentShortcuts();
-            });
-        }
+        public abstract void HandleRequestToMoveStartMenuItem(StartMenuItem itemRequestingMove, StartMenuItem destinationItem);
     }
 
     public class ActiveStartMenuViewController : StartMenuViewController
@@ -55,6 +48,15 @@ namespace StartMenuProtector.Control
         {
             SavedDataService.SaveStartMenuItems(StartMenuStartMenuShortcutsLocation, StartMenuContents);
         }
+        
+        public override async void HandleRequestToMoveStartMenuItem(StartMenuItem itemRequestingMove, StartMenuItem destinationItem)
+        {
+            await Task.Run(() =>
+            {
+                ActiveDataService.HandleRequestToMoveFileSystemItems(itemRequestingMove: itemRequestingMove.File, destinationItem: destinationItem.File).Wait();
+                UpdateCurrentShortcuts().Wait();
+            });
+        }
     }
     
     public class SavedStartMenuViewController : StartMenuViewController
@@ -72,6 +74,11 @@ namespace StartMenuProtector.Control
         }
 
         public override void SaveCurrentShortcuts()
+        {
+            /* Do nothing */
+        }
+        
+        public override void HandleRequestToMoveStartMenuItem(StartMenuItem itemRequestingMove, StartMenuItem destinationItem)
         {
             /* Do nothing */
         }
