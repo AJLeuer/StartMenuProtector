@@ -82,7 +82,7 @@ namespace StartMenuProtector.Control
             return startMenuContents;
         }
         
-        public async Task<ICollection<FileSystemInfo>> GetStartMenuContentsFromAppDataCache(StartMenuShortcutsLocation location)
+        public virtual async Task<ICollection<FileSystemInfo>> GetStartMenuContentsFromAppDataCache(StartMenuShortcutsLocation location)
         {
             return await base.GetStartMenuContents(location);
         }

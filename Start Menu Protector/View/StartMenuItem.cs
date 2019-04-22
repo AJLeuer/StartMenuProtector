@@ -11,7 +11,24 @@ using StartMenuProtector.Data;
 
 namespace StartMenuProtector.View 
 {
-    public class StartMenuItem : DockPanel 
+    public interface IStartMenuItem
+    {
+        StartMenuItemDraggedAndDroppedEventHandler ReceivedDropHandler { get; set; }
+        bool Selected { get; }
+        bool MarkedRemoved { get; }
+        bool CandidateForDrop { get; set; }
+        Option<Border> Border { get; }
+        TextBlock TextBlock { get; set; }
+        Image Image { get; set; }
+        EnhancedFileSystemInfo File { get; set; }
+        UInt64 ID { get; }
+        void TakeFocus(object sender, MouseButtonEventArgs @event);
+        void Select(object sender, RoutedEventArgs @event);
+        void Deselect(object sender, RoutedEventArgs @event);
+        void MarkAsRemoved(Key key);
+    }
+
+    public class StartMenuItem : DockPanel, IStartMenuItem
     {
         private static UInt64 IDs = 0;
         
@@ -117,7 +134,7 @@ namespace StartMenuProtector.View
 
         private EnhancedFileSystemInfo file;
 
-        public EnhancedFileSystemInfo File 
+        public virtual EnhancedFileSystemInfo File 
         {
             get { return file; }
             set

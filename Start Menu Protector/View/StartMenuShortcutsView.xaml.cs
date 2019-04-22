@@ -47,7 +47,7 @@ namespace StartMenuProtector.View
 
         private void SaveCurrentShortcuts(object sender, RoutedEventArgs _)
         {
-            Controller.SaveCurrentShortcuts();
+            Controller.SaveCurrentStartMenuItems();
         }
 
         private void HandleDragAndDropEvent(StartMenuItem droppedStartMenuItem, StartMenuItem recipient)

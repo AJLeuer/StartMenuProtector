@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.IO;
 using System.Threading.Tasks;
 using StartMenuProtector.Util;
@@ -25,13 +26,21 @@ namespace StartMenuProtector.Control
 
         public abstract Task UpdateCurrentShortcuts();
 
-        public abstract void SaveCurrentShortcuts();
+        public abstract void SaveCurrentStartMenuItems();
 
-        public abstract void HandleRequestToMoveStartMenuItem(StartMenuItem itemRequestingMove, StartMenuItem destinationItem);
+        public abstract Task HandleRequestToMoveStartMenuItem(IStartMenuItem itemRequestingMove, IStartMenuItem destinationItem);
     }
 
     public class ActiveStartMenuViewController : StartMenuViewController
     {
+        public enum ContentState
+        {
+            MirroringOSEnvironment,
+            UserChangesPresent
+        }
+
+        public ContentState CurrentContentState { get; set; } = ContentState.MirroringOSEnvironment;
+        
         public ActiveStartMenuViewController(ActiveStartMenuDataService activeStartMenuDataService, SavedStartMenuDataService savedStartMenuDataService, SystemStateService systemStateService) 
             : base(activeStartMenuDataService, savedStartMenuDataService, systemStateService)
         {
@@ -40,17 +49,33 @@ namespace StartMenuProtector.Control
         
         public sealed override async Task UpdateCurrentShortcuts()
         {
-            ICollection<FileSystemInfo> startMenuContentRetrieval = await ActiveDataService.GetStartMenuContents(StartMenuStartMenuShortcutsLocation);
+            ICollection<FileSystemInfo> startMenuContentRetrieval;
+            
+            switch (CurrentContentState)
+            {
+                case ContentState.MirroringOSEnvironment:
+                    startMenuContentRetrieval = await ActiveDataService.GetStartMenuContents(StartMenuStartMenuShortcutsLocation);
+                    break;
+                case ContentState.UserChangesPresent:
+                    startMenuContentRetrieval = await ActiveDataService.GetStartMenuContentsFromAppDataCache(StartMenuStartMenuShortcutsLocation);
+                    break;
+                default:
+                    throw new InvalidEnumArgumentException("Unhandled type of ContentState");
+            }
+
             StartMenuContents.ReplaceAll(startMenuContentRetrieval);
         }
         
-        public override void SaveCurrentShortcuts()
+        public override void SaveCurrentStartMenuItems()
         {
             SavedDataService.SaveStartMenuItems(StartMenuStartMenuShortcutsLocation, StartMenuContents);
+            CurrentContentState = ContentState.MirroringOSEnvironment;
         }
         
-        public override async void HandleRequestToMoveStartMenuItem(StartMenuItem itemRequestingMove, StartMenuItem destinationItem)
+        public override async Task HandleRequestToMoveStartMenuItem(IStartMenuItem itemRequestingMove, IStartMenuItem destinationItem)
         {
+            CurrentContentState = ContentState.UserChangesPresent;
+            
             await Task.Run(() =>
             {
                 ActiveDataService.HandleRequestToMoveFileSystemItems(itemRequestingMove: itemRequestingMove.File, destinationItem: destinationItem.File).Wait();
@@ -73,14 +98,15 @@ namespace StartMenuProtector.Control
             StartMenuContents.ReplaceAll(startMenuContent);
         }
 
-        public override void SaveCurrentShortcuts()
+        public override void SaveCurrentStartMenuItems()
         {
             /* Do nothing */
         }
         
-        public override void HandleRequestToMoveStartMenuItem(StartMenuItem itemRequestingMove, StartMenuItem destinationItem)
+        public override async Task HandleRequestToMoveStartMenuItem(IStartMenuItem itemRequestingMove, IStartMenuItem destinationItem)
         {
             /* Do nothing */
+            await Task.Run(() => {});
         }
     }
 }
