@@ -24,8 +24,8 @@
     <Grid>
         <Button Name="SaveButton" Content="Save" FontSize="16" Margin="24,12,24,24" Padding="0,0,0,3" VerticalAlignment="Top" HorizontalAlignment="Left"  Width="64" Click="SaveCurrentShortcuts"/>
         <Grid Margin="24,48,24,24">
-            <ListBox Name="StartMenuShortcutsLocationSelection" Background="WhiteSmoke" Width="172" ItemsSource="{Binding Locations, Mode=TwoWay}" FontSize="20" VerticalAlignment="Stretch" HorizontalAlignment="Left" SelectionChanged="CurrentShortcutsLocationChanged" />
-            <TreeView Name="StartMenuDirectoryTreeView" ItemsSource="{Binding StartMenuContents}" Margin="172,0,0,0">
+            <ListBox Name="StartMenuShortcutsLocationSelection" Background="WhiteSmoke" Width="172" ItemsSource="{Binding Locations, RelativeSource={RelativeSource AncestorType=view:StartMenuShortcutsView}, Mode=TwoWay}" FontSize="20" VerticalAlignment="Stretch" HorizontalAlignment="Left" SelectionChanged="CurrentShortcutsLocationChanged" />
+            <TreeView Name="StartMenuDirectoryTreeView" ItemsSource="{Binding StartMenuContents, RelativeSource={RelativeSource AncestorType=view:StartMenuShortcutsView}}" Margin="172,0,0,0">
                 <TreeView.Resources>
                     <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}"
                                  Color="Transparent" />

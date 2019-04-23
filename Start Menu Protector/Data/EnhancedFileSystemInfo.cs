@@ -14,8 +14,10 @@ namespace StartMenuProtector.Data
 {
     public abstract class EnhancedFileSystemInfo : FileSystemInfo
     {
+        protected static ulong IDs = 0;
         protected FileSystemInfo OriginalFileSystemItem { get; set; }
 
+        public readonly ulong ID = IDs++;
         public override string Name 
         {
             get { return OriginalFileSystemItem.Name; }
@@ -118,7 +120,7 @@ namespace StartMenuProtector.Data
             }
         }
 
-        public bool Filtered
+        public bool Filtered 
         {
             get
             {
@@ -354,7 +356,7 @@ namespace StartMenuProtector.Data
         }
     }
 
-    public static class DirectoryInfoExtensions
+    public static class DirectoryInfoExtensions 
     {
         public static EnhancedDirectoryInfo[] GetDirectoriesEnhanced(this DirectoryInfo directoryInfo)
         {

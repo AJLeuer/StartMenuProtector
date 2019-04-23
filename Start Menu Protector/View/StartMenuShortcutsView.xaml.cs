@@ -4,6 +4,7 @@ using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using StartMenuProtector.Control;
+using StartMenuProtector.Util;
 
 namespace StartMenuProtector.View
 {
@@ -12,7 +13,7 @@ namespace StartMenuProtector.View
     /// </summary>
     public abstract partial class StartMenuShortcutsView : UserControl 
     {
-        public ObservableCollection<StartMenuShortcutsLocation> Locations { get; set; } = new ObservableCollection<StartMenuShortcutsLocation> { StartMenuShortcutsLocation.System, StartMenuShortcutsLocation.User };
+        public ObservableCollection<StartMenuShortcutsLocation> Locations { get; set; } = new AsyncObservableCollection<StartMenuShortcutsLocation> { StartMenuShortcutsLocation.System, StartMenuShortcutsLocation.User };
         public StartMenuViewController Controller { get; set; }
 
         public ObservableCollection<FileSystemInfo> StartMenuContents

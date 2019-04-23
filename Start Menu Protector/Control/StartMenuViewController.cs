@@ -14,7 +14,8 @@ namespace StartMenuProtector.Control
         public SavedStartMenuDataService SavedDataService { get; set; }
         public SystemStateService SystemStateService { get; set; }
         
-        public readonly ObservableCollection<FileSystemInfo> StartMenuContents = new AsyncObservableCollection<FileSystemInfo>();
+        public ObservableCollection<FileSystemInfo> StartMenuContents { get;} = new AsyncObservableCollection<FileSystemInfo>();
+
         public StartMenuShortcutsLocation StartMenuStartMenuShortcutsLocation { get; set; } = StartMenuShortcutsLocation.System;
 
         protected StartMenuViewController(ActiveStartMenuDataService activeStartMenuDataService, SavedStartMenuDataService savedStartMenuDataService, SystemStateService systemStateService)
