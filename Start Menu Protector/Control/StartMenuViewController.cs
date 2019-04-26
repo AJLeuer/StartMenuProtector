@@ -52,21 +52,21 @@ namespace StartMenuProtector.Control
         
         public sealed override async Task UpdateCurrentShortcuts()
         {
-            ICollection<FileSystemInfo> startMenuContentRetrieval;
+            ICollection<FileSystemInfo> startMenuContents;
             
             switch (CurrentContentState)
             {
                 case ContentState.MirroringOSEnvironment:
-                    startMenuContentRetrieval = await ActiveDataService.GetStartMenuContents(StartMenuStartMenuShortcutsLocation);
+                    startMenuContents = await ActiveDataService.GetStartMenuContents(StartMenuStartMenuShortcutsLocation);
                     break;
                 case ContentState.UserChangesPresent:
-                    startMenuContentRetrieval = await ActiveDataService.GetStartMenuContentsFromAppDataCache(StartMenuStartMenuShortcutsLocation);
+                    startMenuContents = await ActiveDataService.GetStartMenuContentsFromAppDataCache(StartMenuStartMenuShortcutsLocation);
                     break;
                 default:
                     throw new InvalidEnumArgumentException("Unhandled type of ContentState");
             }
 
-            StartMenuContents.ReplaceAll(startMenuContentRetrieval);
+            StartMenuContents.ReplaceAll(startMenuContents);
         }
         
         public override void SaveCurrentStartMenuItems()

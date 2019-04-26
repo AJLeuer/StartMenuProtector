@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
@@ -13,6 +14,31 @@ namespace StartMenuProtector.Util
         {
             String uri = $"pack://application:,,,{resourcePath}";
             return new Uri(uri);
+        }
+        
+        /* Code credit stackoverflow user Lasse Vågsæther Karlsen: https://stackoverflow.com/questions/2742276/how-do-i-check-if-a-type-is-a-subtype-or-the-type-of-an-object*/ 
+        public static bool BelongsToClassOrSubclass(Type potentialBase, Type potentialDescendant)
+        {
+            if (potentialDescendant == potentialBase)
+            {
+                return true;
+            }
+            else if (potentialDescendant.IsSubclassOf(potentialBase))
+            {
+                return true;
+            }
+            else if (potentialDescendant.IsAssignableFrom(potentialBase))
+            {
+                return true;
+            }
+            else if (((IList) potentialDescendant.GetInterfaces()).Contains(potentialBase))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
     }
 
@@ -51,6 +77,11 @@ namespace StartMenuProtector.Util
         {
             collection.Clear();
             collection.AddAll(items);
+        }
+
+        public static bool IsOfType<T>(this object @object)
+        {
+            return Util.BelongsToClassOrSubclass(potentialBase: typeof(T), potentialDescendant: @object.GetType());
         }
     }
 }

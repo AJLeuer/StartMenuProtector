@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
@@ -48,6 +49,23 @@ namespace StartMenuProtector.Control
         protected abstract Task<Dictionary<StartMenuShortcutsLocation, ICollection<FileSystemInfo>>> LoadStartMenuContentsFromAppDataDiskStorageToMemory();
 
         public abstract Task HandleRequestToMoveFileSystemItems(EnhancedFileSystemInfo itemRequestingMove, EnhancedFileSystemInfo destinationItem);
+        
+        
+        protected EnhancedDirectoryInfo FindRootStartMenuItemsStorageDirectoryForItem(EnhancedFileSystemInfo item)
+        {
+            if (StartMenuItemsStorage[StartMenuShortcutsLocation.System].Contains(item))
+            {
+                return StartMenuItemsStorage[StartMenuShortcutsLocation.System];
+            }
+            else if (StartMenuItemsStorage[StartMenuShortcutsLocation.User].Contains(item))
+            {
+                return StartMenuItemsStorage[StartMenuShortcutsLocation.User];
+            }
+            else
+            {
+                throw new ArgumentException("File system item not found in Saved Start Menu items");
+            }
+        }
     }
 
     public class ActiveStartMenuDataService : StartMenuDataService
@@ -123,6 +141,8 @@ namespace StartMenuProtector.Control
                 await Task.Run(() =>
                 {
                     itemRequestingMove.Move(destinationFolder);
+                    EnhancedDirectoryInfo startMenuItemsStorage = FindRootStartMenuItemsStorageDirectoryForItem(destinationFolder);
+                    startMenuItemsStorage.RefreshContents();
                 });
             }
         }
@@ -160,15 +180,15 @@ namespace StartMenuProtector.Control
 
         public override void SaveStartMenuItems(StartMenuShortcutsLocation location, IEnumerable<FileSystemInfo> startMenuItems)
         {
-            EnhancedDirectoryInfo programShortcutsSaveDirectory = StartMenuItemsStorage[location];
+            EnhancedDirectoryInfo startMenuItemsDirectory = StartMenuItemsStorage[location];
             
             foreach (var fileSystemItem in startMenuItems)
             {
                 EnhancedFileSystemInfo enhancedFileSystemItem = EnhancedFileSystemInfo.Create(fileSystemItem);
-                enhancedFileSystemItem.Copy(programShortcutsSaveDirectory);
+                enhancedFileSystemItem.Copy(startMenuItemsDirectory);
             }
 
-            programShortcutsSaveDirectory.RefreshContents();
+            startMenuItemsDirectory.RefreshContents();
         }
 
         public override async Task HandleRequestToMoveFileSystemItems(EnhancedFileSystemInfo itemRequestingMove, EnhancedFileSystemInfo destinationItem)

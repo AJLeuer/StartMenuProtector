@@ -13,12 +13,13 @@ using static StartMenuProtector.Configuration.Config;
 
 namespace StartMenuProtector.Data 
 {
-    public abstract class EnhancedFileSystemInfo : FileSystemInfo
+    public abstract class EnhancedFileSystemInfo : FileSystemInfo, IEquatable<EnhancedFileSystemInfo>
     {
         protected static ulong IDs = 0;
         protected FileSystemInfo OriginalFileSystemItem { get; set; }
 
         public readonly ulong ID = IDs++;
+
         public override string Name 
         {
             get { return OriginalFileSystemItem.Name; }
@@ -144,6 +145,38 @@ namespace StartMenuProtector.Data
         {
             OriginalFileSystemItem = originalFileSystemItem;
         }
+        
+        public static bool operator == (EnhancedFileSystemInfo left, EnhancedFileSystemInfo right)
+        {
+            return left?.Path == right?.Path;
+        }
+
+        public static bool operator != (EnhancedFileSystemInfo left, EnhancedFileSystemInfo right)
+        {
+            return (!(left == right));
+        }
+
+        public bool Equals(EnhancedFileSystemInfo item)
+        {
+            return this == item;
+        }
+        
+        public override bool Equals(object @object)
+        {
+            if ((@object != null) && (@object.IsOfType<EnhancedFileSystemInfo>()))
+            {
+                return this.Equals((EnhancedFileSystemInfo) @object);
+            }
+            else
+            {
+                return false;
+            }
+        }
+        
+        public override int GetHashCode()
+        {
+            return Path.GetHashCode();
+        }
 
         public static EnhancedFileSystemInfo Create(FileSystemInfo fileSystemItem)
         {
@@ -249,6 +282,29 @@ namespace StartMenuProtector.Data
                 
                 return contents;
             }
+        }
+
+        public virtual bool Contains(EnhancedFileSystemInfo item)
+        {
+            bool contained = false;
+            
+            if (Contents.Contains(item))
+            {
+                contained = true;
+            }
+            else
+            {
+                foreach (EnhancedDirectoryInfo subdirectory in Directories)
+                {
+                    if (subdirectory.Contains(item))
+                    {
+                        contained = true;
+                        break;
+                    }
+                }
+            }
+
+            return contained;
         }
 
         public virtual List<EnhancedFileSystemInfo> RefreshContents()

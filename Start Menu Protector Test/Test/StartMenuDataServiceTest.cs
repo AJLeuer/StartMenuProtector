@@ -66,7 +66,11 @@ namespace StartMenuProtectorTest.Test
             
             UserProgramsMock.Setup(
                     (self) => self.Self)
-                .Returns((DirectoryInfo) null);            
+                .Returns((DirectoryInfo) null);  
+            
+            SystemProgramsMock.Setup(
+                    (self) => self.RefreshContents())
+                .Returns(new List<EnhancedFileSystemInfo>());
             
             UserProgramsMock.Setup(
                     (self) => self.RefreshContents())
@@ -143,12 +147,26 @@ namespace StartMenuProtectorTest.Test
         [Test]
         public static void ActiveStartMenuDataServiceShouldMoveItemsWhenRequestedToMoveFileSystemItems()
         {
+            SystemProgramsMock.Setup((self) => self.Contains(DestinationDirectoryMock.Object)).Returns(true);
             StartMenuDataService service = new ActiveStartMenuDataService(MockSystemStateService) { StartMenuItemsStorage = ActiveStartMenuShortcuts};
 
             Task fileMoveTask = service.HandleRequestToMoveFileSystemItems(itemRequestingMove: FileToMoveMock.Object, destinationItem: DestinationDirectoryMock.Object);
             fileMoveTask.Wait();
             
             FileToMoveMock.Verify((self) => self.Move(DestinationDirectoryMock.Object));
+        }
+        
+        [Test]
+        public static void ActiveStartMenuDataServiceShouldRefreshStartMenuItemsStorageWhenRequestedToMoveFileSystemItems()
+        {
+            SystemProgramsMock.Setup((self) => self.Contains(DestinationDirectoryMock.Object)).Returns(false);
+            UserProgramsMock.Setup((self) => self.Contains(DestinationDirectoryMock.Object)).Returns(true);
+            StartMenuDataService service = new ActiveStartMenuDataService(MockSystemStateService) { StartMenuItemsStorage = ActiveStartMenuShortcuts};
+
+            Task fileMoveTask = service.HandleRequestToMoveFileSystemItems(itemRequestingMove: FileToMoveMock.Object, destinationItem: DestinationDirectoryMock.Object);
+            fileMoveTask.Wait();
+            
+            UserProgramsMock.Verify((self) => self.RefreshContents());
         }
         
         [Test]
