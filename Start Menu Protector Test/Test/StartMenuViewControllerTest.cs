@@ -15,19 +15,22 @@ namespace StartMenuProtectorTest.Test
 {
     public static class StartMenuViewControllerTest
     {
-        public static SystemStateService MockSystemStateService = new Mock<SystemStateService>().Object;
+        public static SystemStateService MockSystemStateService;
         public static Mock<ActiveStartMenuDataService> ActiveDataServiceMock;
         public static Mock<SavedStartMenuDataService>  SavedDataServiceMock;
-        public static Mock<IStartMenuItem> StartMenuItemMock = new Mock<IStartMenuItem>();
-        public static Mock<MockableDirectory> DirectoryMock = new Mock<MockableDirectory>();
+        public static Mock<IStartMenuItem> StartMenuItemMock;
+        public static Mock<MockableDirectory> DirectoryMock;
         
         
 
         [SetUp]
         public static void Setup()
         {
+            MockSystemStateService = new Mock<SystemStateService>().Object;
             ActiveDataServiceMock = new Mock<ActiveStartMenuDataService>(MockSystemStateService);
             SavedDataServiceMock = new Mock<SavedStartMenuDataService>(MockSystemStateService);
+            StartMenuItemMock = new Mock<IStartMenuItem>();
+            DirectoryMock = new Mock<MockableDirectory>();
 
             ActiveDataServiceMock.Setup(
                 (self) => self.GetStartMenuContents(It.IsAny<StartMenuShortcutsLocation>()))
