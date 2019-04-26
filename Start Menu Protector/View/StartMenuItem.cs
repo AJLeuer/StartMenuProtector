@@ -21,7 +21,7 @@ namespace StartMenuProtector.View
         Option<Border> Border { get; }
         TextBlock TextBlock { get; set; }
         Image Image { get; set; }
-        EnhancedFileSystemInfo File { get; set; }
+        FileSystemItem File { get; set; }
         UInt64 ID { get; }
         void TakeFocus(object sender, MouseButtonEventArgs @event);
         void Select(object sender, RoutedEventArgs @event);
@@ -33,7 +33,7 @@ namespace StartMenuProtector.View
     {
         private static UInt64 IDs = 0;
         
-        public static readonly DependencyProperty FileProperty                  = DependencyProperty.Register(nameof (File), typeof (EnhancedFileSystemInfo), typeof (StartMenuItem), new FrameworkPropertyMetadata(propertyChangedCallback: UpdateFile) { BindsTwoWayByDefault = false });
+        public static readonly DependencyProperty FileProperty                  = DependencyProperty.Register(nameof (File), typeof (FileSystemItem), typeof (StartMenuItem), new FrameworkPropertyMetadata(propertyChangedCallback: UpdateFile) { BindsTwoWayByDefault = false });
         public static readonly DependencyProperty ReceivedDropHandlerProperty   = DependencyProperty.Register(nameof (ReceivedDropHandler), typeof (StartMenuItemDraggedAndDroppedEventHandler), typeof (StartMenuItem), new FrameworkPropertyMetadata(propertyChangedCallback: UpdateReceivedDropHandler) { BindsTwoWayByDefault = false });
         public static readonly DependencyProperty MarkedExcludedHandlerProperty = DependencyProperty.Register(nameof (MarkedExcludedHandler), typeof (StartMenuItemMarkedExcludedEventHandler), typeof (StartMenuItem), new FrameworkPropertyMetadata(propertyChangedCallback: UpdateMarkedExcludedHandler) { BindsTwoWayByDefault = false });
 
@@ -136,9 +136,9 @@ namespace StartMenuProtector.View
         public TextBlock TextBlock { get; set; }
         public Image Image { get; set; }
 
-        private EnhancedFileSystemInfo file;
+        private FileSystemItem file;
 
-        public virtual EnhancedFileSystemInfo File 
+        public virtual FileSystemItem File 
         {
             get { return file; }
             set
@@ -252,9 +252,9 @@ namespace StartMenuProtector.View
 
         private void UpdateState()
         {
-            if (File is EnhancedFileInfo)
+            if (File is File)
             {
-                Image.Source = ((EnhancedFileInfo) File).Icon;
+                Image.Source = ((File) File).Icon;
             }
             TextBlock.Text = File.PrettyName;
             TextBlock.ToolTip = File.Path;
@@ -298,7 +298,7 @@ namespace StartMenuProtector.View
         {
             if (startMenuDataItem is StartMenuItem self)
             {
-                self.File = (EnhancedFileSystemInfo) updatedValue.NewValue;
+                self.File = (FileSystemItem) updatedValue.NewValue;
             }
         }
         

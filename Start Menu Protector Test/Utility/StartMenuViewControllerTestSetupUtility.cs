@@ -9,8 +9,8 @@ namespace StartMenuProtectorTest.Utility
 {
     public static class StartMenuViewControllerTestSetupUtility
     {
-        public static readonly Mock<MockableEnhancedFileInfo> SystemStartMenuItemMock = new Mock<MockableEnhancedFileInfo>(); 
-        public static readonly Mock<MockableEnhancedFileInfo> UserStartMenuItemMock   = new Mock<MockableEnhancedFileInfo>();
+        public static readonly Mock<MockableFile> SystemStartMenuItemMock = new Mock<MockableFile>(); 
+        public static readonly Mock<MockableFile> UserStartMenuItemMock   = new Mock<MockableFile>();
 
         public static readonly ICollection<FileSystemInfo> ActiveSystemStartMenuItems = new List<FileSystemInfo> { SystemStartMenuItemMock.Object, SystemStartMenuItemMock.Object, SystemStartMenuItemMock.Object };
         public static readonly ICollection<FileSystemInfo> ActiveUserStartMenuItems   = new List<FileSystemInfo> { UserStartMenuItemMock.Object,   UserStartMenuItemMock.Object,   UserStartMenuItemMock.Object   };

@@ -2,16 +2,16 @@ using StartMenuProtector.Data;
 
 namespace StartMenuProtectorTest.Utility
 {
-    public class MockableEnhancedDirectoryInfo : EnhancedDirectoryInfo
+    public class MockableDirectory : Directory
     {
-        public MockableEnhancedDirectoryInfo() : base(directory: null)
+        public MockableDirectory() : base(directory: null)
         {
         }
     }
     
-    public class MockableEnhancedFileInfo : EnhancedFileInfo
+    public class MockableFile : File
     {
-        public MockableEnhancedFileInfo() : base(file: null)
+        public MockableFile() : base(file: null)
         {
         }
     }

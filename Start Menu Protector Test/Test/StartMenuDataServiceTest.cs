@@ -6,6 +6,7 @@ using NUnit.Framework;
 using StartMenuProtector.Control;
 using StartMenuProtector.Data;
 using StartMenuProtectorTest.Utility;
+using Directory = StartMenuProtector.Data.Directory;
 
 namespace StartMenuProtectorTest.Test
 {
@@ -13,19 +14,19 @@ namespace StartMenuProtectorTest.Test
     {
         public static Mock<SystemStateService> SystemStateControllerMock = new Mock<SystemStateService>();
         public static SystemStateService MockSystemStateService = SystemStateControllerMock.Object;
-        public static Mock<MockableEnhancedDirectoryInfo> SystemProgramsMock = new Mock<MockableEnhancedDirectoryInfo>(); 
-        public static Mock<MockableEnhancedDirectoryInfo> UserProgramsMock = new Mock<MockableEnhancedDirectoryInfo>();
-        public static Mock<MockableEnhancedFileInfo> FileToBeSavedMock;
+        public static Mock<MockableDirectory> SystemProgramsMock = new Mock<MockableDirectory>(); 
+        public static Mock<MockableDirectory> UserProgramsMock = new Mock<MockableDirectory>();
+        public static Mock<MockableFile> FileToBeSavedMock;
         public static ICollection<FileSystemInfo> FilesToSave;
-        public static Mock<MockableEnhancedFileInfo> FileToMoveMock;
-        public static Mock<MockableEnhancedDirectoryInfo> DestinationDirectoryMock;
-        public static Dictionary<StartMenuShortcutsLocation, EnhancedDirectoryInfo> ActiveStartMenuShortcuts = new Dictionary<StartMenuShortcutsLocation, EnhancedDirectoryInfo>
+        public static Mock<MockableFile> FileToMoveMock;
+        public static Mock<MockableDirectory> DestinationDirectoryMock;
+        public static Dictionary<StartMenuShortcutsLocation, Directory> ActiveStartMenuShortcuts = new Dictionary<StartMenuShortcutsLocation, Directory>
         {
             {StartMenuShortcutsLocation.System, SystemProgramsMock.Object},
             {StartMenuShortcutsLocation.User, UserProgramsMock.Object}
         };
         
-        public static Dictionary<StartMenuShortcutsLocation, EnhancedDirectoryInfo> SavedStartMenuShortcuts = new Dictionary<StartMenuShortcutsLocation, EnhancedDirectoryInfo>
+        public static Dictionary<StartMenuShortcutsLocation, Directory> SavedStartMenuShortcuts = new Dictionary<StartMenuShortcutsLocation, Directory>
         {
             {StartMenuShortcutsLocation.System, SystemProgramsMock.Object},
             {StartMenuShortcutsLocation.User, UserProgramsMock.Object}
@@ -34,7 +35,7 @@ namespace StartMenuProtectorTest.Test
         [SetUp]
         public static void Setup()
         {
-            FileToBeSavedMock = new Mock<MockableEnhancedFileInfo>();
+            FileToBeSavedMock = new Mock<MockableFile>();
             
             FilesToSave = new List<FileSystemInfo>
             {
@@ -43,14 +44,14 @@ namespace StartMenuProtectorTest.Test
                 FileToBeSavedMock.Object
             };
             
-            var startMenuShortcutsFromDisk = new Dictionary<StartMenuShortcutsLocation, EnhancedDirectoryInfo>
+            var startMenuShortcutsFromDisk = new Dictionary<StartMenuShortcutsLocation, Directory>
             {
                 {StartMenuShortcutsLocation.System, SystemProgramsMock.Object},
                 {StartMenuShortcutsLocation.User, UserProgramsMock.Object}
             };
 
-            FileToMoveMock = new Mock<MockableEnhancedFileInfo>();
-            DestinationDirectoryMock = new Mock<MockableEnhancedDirectoryInfo>();
+            FileToMoveMock = new Mock<MockableFile>();
+            DestinationDirectoryMock = new Mock<MockableDirectory>();
             
             SystemProgramsMock.Setup(
                     (self) => self.FullName)
@@ -70,25 +71,25 @@ namespace StartMenuProtectorTest.Test
             
             SystemProgramsMock.Setup(
                     (self) => self.RefreshContents())
-                .Returns(new List<EnhancedFileSystemInfo>());
+                .Returns(new List<FileSystemItem>());
             
             UserProgramsMock.Setup(
                     (self) => self.RefreshContents())
-                .Returns(new List<EnhancedFileSystemInfo>());
+                .Returns(new List<FileSystemItem>());
 
             SystemProgramsMock.Setup((self) => self.DeleteContents());
 
             UserProgramsMock.Setup((self) => self.DeleteContents());
 
             FileToBeSavedMock.Setup(
-                (self) => self.Copy(It.IsAny<EnhancedDirectoryInfo>()));
+                (self) => self.Copy(It.IsAny<Directory>()));
 
             SystemStateControllerMock.Setup(
                     (self) => self.LoadSystemAndUserStartMenuProgramShortcutsFromDisk())
                 .Returns(startMenuShortcutsFromDisk);
 
             FileToMoveMock
-                .Setup((MockableEnhancedFileInfo self) => self.Move(It.IsAny<EnhancedDirectoryInfo>()));
+                .Setup((MockableFile self) => self.Move(It.IsAny<Directory>()));
         }
         
         [Test]

@@ -18,10 +18,10 @@ namespace StartMenuProtector.Configuration
         public static readonly Color MarkedDeletedBackgroundColor = Color.FromArgb(0xFF, 0xFF,0x00,0x60); 
         public static readonly Color DropTargetBackgroundColor = Color.FromArgb(0xFF, 0x82,0xFF,0x00);
         
-        public static readonly ISet<Func<EnhancedFileSystemInfo, Boolean>> FileSystemItemFilters = new HashSet<Func<EnhancedFileSystemInfo, Boolean>>
+        public static readonly ISet<Func<FileSystemItem, Boolean>> FileSystemItemFilters = new HashSet<Func<FileSystemItem, Boolean>>
         {
-            (EnhancedFileSystemInfo item) => { return ((item.OwnerType == OwnerType.OS) && (item.PrettyName != "Programs")); },
-            (EnhancedFileSystemInfo item) => { return (String.Equals(item.Name,"desktop.ini", StringComparison.OrdinalIgnoreCase)); }
+            (FileSystemItem item) => { return ((item.OwnerType == OwnerType.OS) && (item.PrettyName != "Programs")); },
+            (FileSystemItem item) => { return (String.Equals(item.Name,"desktop.ini", StringComparison.OrdinalIgnoreCase)); }
         };
     }
 }

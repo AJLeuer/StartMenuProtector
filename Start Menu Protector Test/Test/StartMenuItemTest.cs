@@ -29,9 +29,9 @@ namespace StartMenuProtectorTest.Test
         public static void StartMenuItemShouldMarkFileSystemItemForExclusionWhenDeleteOrBackspaceArePressed(Key pressedKey, bool shouldResultInMarkingForExclusion)
         {
             Key backspace = pressedKey;
-            var fileMock = new Mock<MockableEnhancedFileInfo>();
-            fileMock.Setup((MockableEnhancedFileInfo self) => self.PrettyName).Returns("Firefox");
-            EnhancedFileSystemInfo mockFile = fileMock.Object;
+            var fileMock = new Mock<MockableFile>();
+            fileMock.Setup((MockableFile self) => self.PrettyName).Returns("Firefox");
+            FileSystemItem mockFile = fileMock.Object;
             var startMenuItem = new StartMenuItem { File = mockFile, MarkedExcludedHandler = (StartMenuItem item) => {} };
             
             startMenuItem.MarkAsRemoved(backspace);

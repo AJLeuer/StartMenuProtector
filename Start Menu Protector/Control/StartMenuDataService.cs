@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using StartMenuProtector.Data;
 using StartMenuProtector.Util;
 using static StartMenuProtector.Configuration.Globals;
+using Directory = StartMenuProtector.Data.Directory;
 
 
 namespace StartMenuProtector.Control 
@@ -13,7 +14,7 @@ namespace StartMenuProtector.Control
     {
         public SystemStateService SystemStateService { get; set; }
 
-        public abstract Dictionary<StartMenuShortcutsLocation, EnhancedDirectoryInfo> StartMenuItemsStorage { protected get; set; }
+        public abstract Dictionary<StartMenuShortcutsLocation, Directory> StartMenuItemsStorage { protected get; set; }
 
         public StartMenuDataService(SystemStateService systemStateService)
         {
@@ -48,10 +49,10 @@ namespace StartMenuProtector.Control
         
         protected abstract Task<Dictionary<StartMenuShortcutsLocation, ICollection<FileSystemInfo>>> LoadStartMenuContentsFromAppDataDiskStorageToMemory();
 
-        public abstract Task HandleRequestToMoveFileSystemItems(EnhancedFileSystemInfo itemRequestingMove, EnhancedFileSystemInfo destinationItem);
+        public abstract Task HandleRequestToMoveFileSystemItems(FileSystemItem itemRequestingMove, FileSystemItem destinationItem);
         
         
-        protected EnhancedDirectoryInfo FindRootStartMenuItemsStorageDirectoryForItem(EnhancedFileSystemInfo item)
+        protected Directory FindRootStartMenuItemsStorageDirectoryForItem(FileSystemItem item)
         {
             if (StartMenuItemsStorage[StartMenuShortcutsLocation.System].Contains(item))
             {
@@ -70,7 +71,7 @@ namespace StartMenuProtector.Control
 
     public class ActiveStartMenuDataService : StartMenuDataService
     {
-        public override Dictionary<StartMenuShortcutsLocation, EnhancedDirectoryInfo> StartMenuItemsStorage { protected get; set; } = new Dictionary<StartMenuShortcutsLocation, EnhancedDirectoryInfo> 
+        public override Dictionary<StartMenuShortcutsLocation, Directory> StartMenuItemsStorage { protected get; set; } = new Dictionary<StartMenuShortcutsLocation, Directory> 
         {
             { StartMenuShortcutsLocation.System, ActiveSystemStartMenuItems }, 
             { StartMenuShortcutsLocation.User, ActiveUserStartMenuItems }
@@ -107,7 +108,7 @@ namespace StartMenuProtector.Control
         
         private void CopyCurrentActiveStartMenuItemsFromOSEnvironmentToAppDataDiskStorage()
         {
-            Dictionary<StartMenuShortcutsLocation, EnhancedDirectoryInfo> startMenuPrograms = SystemStateService.LoadSystemAndUserStartMenuProgramShortcutsFromDisk();
+            Dictionary<StartMenuShortcutsLocation, Directory> startMenuPrograms = SystemStateService.LoadSystemAndUserStartMenuProgramShortcutsFromDisk();
             startMenuPrograms[StartMenuShortcutsLocation.System].Copy(StartMenuItemsStorage[StartMenuShortcutsLocation.System]);
             startMenuPrograms[StartMenuShortcutsLocation.User].Copy(StartMenuItemsStorage[StartMenuShortcutsLocation.User]);
         }
@@ -134,14 +135,14 @@ namespace StartMenuProtector.Control
             /* Do nothing */
         }
 
-        public override async Task HandleRequestToMoveFileSystemItems(EnhancedFileSystemInfo itemRequestingMove, EnhancedFileSystemInfo destinationItem)
+        public override async Task HandleRequestToMoveFileSystemItems(FileSystemItem itemRequestingMove, FileSystemItem destinationItem)
         {
-            if (destinationItem is EnhancedDirectoryInfo destinationFolder)
+            if (destinationItem is Directory destinationFolder)
             {
                 await Task.Run(() =>
                 {
                     itemRequestingMove.Move(destinationFolder);
-                    EnhancedDirectoryInfo startMenuItemsStorage = FindRootStartMenuItemsStorageDirectoryForItem(destinationFolder);
+                    Directory startMenuItemsStorage = FindRootStartMenuItemsStorageDirectoryForItem(destinationFolder);
                     startMenuItemsStorage.RefreshContents();
                 });
             }
@@ -150,7 +151,7 @@ namespace StartMenuProtector.Control
     
     public class SavedStartMenuDataService : StartMenuDataService
     {
-        public override Dictionary<StartMenuShortcutsLocation, EnhancedDirectoryInfo> StartMenuItemsStorage { protected get; set; } = new Dictionary<StartMenuShortcutsLocation, EnhancedDirectoryInfo> 
+        public override Dictionary<StartMenuShortcutsLocation, Directory> StartMenuItemsStorage { protected get; set; } = new Dictionary<StartMenuShortcutsLocation, Directory> 
         {
             {StartMenuShortcutsLocation.System, SavedSystemStartMenuItems}, 
             {StartMenuShortcutsLocation.User, SavedUserStartMenuItems}
@@ -180,18 +181,18 @@ namespace StartMenuProtector.Control
 
         public override void SaveStartMenuItems(StartMenuShortcutsLocation location, IEnumerable<FileSystemInfo> startMenuItems)
         {
-            EnhancedDirectoryInfo startMenuItemsDirectory = StartMenuItemsStorage[location];
+            Directory startMenuItemsDirectory = StartMenuItemsStorage[location];
             
-            foreach (var fileSystemItem in startMenuItems)
+            foreach (var startMenuItem in startMenuItems)
             {
-                EnhancedFileSystemInfo enhancedFileSystemItem = EnhancedFileSystemInfo.Create(fileSystemItem);
-                enhancedFileSystemItem.Copy(startMenuItemsDirectory);
+                FileSystemItem fileSystemItem = FileSystemItem.Create(startMenuItem);
+                fileSystemItem.Copy(startMenuItemsDirectory);
             }
 
             startMenuItemsDirectory.RefreshContents();
         }
 
-        public override async Task HandleRequestToMoveFileSystemItems(EnhancedFileSystemInfo itemRequestingMove, EnhancedFileSystemInfo destinationItem)
+        public override async Task HandleRequestToMoveFileSystemItems(FileSystemItem itemRequestingMove, FileSystemItem destinationItem)
         {
             /* Do nothing */
             await Task.Run(() => {});

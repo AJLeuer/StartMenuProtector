@@ -13,7 +13,7 @@ using static StartMenuProtector.Configuration.Config;
 
 namespace StartMenuProtector.Data 
 {
-    public abstract class EnhancedFileSystemInfo : FileSystemInfo, IEquatable<EnhancedFileSystemInfo>
+    public abstract class FileSystemItem : FileSystemInfo, IEquatable<FileSystemItem> 
     {
         protected static ulong IDs = 0;
         protected FileSystemInfo OriginalFileSystemItem { get; set; }
@@ -128,7 +128,7 @@ namespace StartMenuProtector.Data
             {
                 bool filtered = false;
                 
-                foreach (Func<EnhancedFileSystemInfo,bool> filter in FileSystemItemFilters)
+                foreach (Func<FileSystemItem,bool> filter in FileSystemItemFilters)
                 {
                     if (filter.Invoke(this))
                     {
@@ -141,31 +141,55 @@ namespace StartMenuProtector.Data
             }
         }
 
-        protected EnhancedFileSystemInfo(FileSystemInfo originalFileSystemItem)
+        protected FileSystemItem(FileSystemInfo originalFileSystemItem)
         {
             OriginalFileSystemItem = originalFileSystemItem;
         }
         
-        public static bool operator == (EnhancedFileSystemInfo left, EnhancedFileSystemInfo right)
+        /// <summary>
+        /// If fileSystemItem is already an instance of one of the FileSystemItem subclasses
+        /// (that is, if it's an instance of either File or Directory), Create() merely returns
+        /// the argument fileSystemItem unchanged. However, if fileSystemItem's an instance of one of the
+        /// built-in FileSystemInfo types (FileInfo or DirectoryInfo), Create() wraps it in
+        /// either a new Directory or a new File, and returns that.
+        /// </summary>
+        public static FileSystemItem Create(FileSystemInfo fileSystemItem)
+        {
+            switch (fileSystemItem)
+            {
+                case File file:
+                    return file;
+                case Directory directory:
+                    return directory;
+                case FileInfo file:
+                    return new File(file);
+                case DirectoryInfo directory:
+                    return new Directory(directory);
+                default:
+                    throw new ArgumentException("Unknown subtype of FileSystemInfo");
+            }
+        }
+        
+        public static bool operator == (FileSystemItem left, FileSystemItem right)
         {
             return left?.Path == right?.Path;
         }
 
-        public static bool operator != (EnhancedFileSystemInfo left, EnhancedFileSystemInfo right)
+        public static bool operator != (FileSystemItem left, FileSystemItem right)
         {
             return (!(left == right));
         }
 
-        public bool Equals(EnhancedFileSystemInfo item)
+        public bool Equals(FileSystemItem item)
         {
             return this == item;
         }
         
         public override bool Equals(object @object)
         {
-            if ((@object != null) && (@object.IsOfType<EnhancedFileSystemInfo>()))
+            if ((@object != null) && (@object.IsOfType<FileSystemItem>()))
             {
-                return this.Equals((EnhancedFileSystemInfo) @object);
+                return this.Equals((FileSystemItem) @object);
             }
             else
             {
@@ -178,30 +202,13 @@ namespace StartMenuProtector.Data
             return Path.GetHashCode();
         }
 
-        public static EnhancedFileSystemInfo Create(FileSystemInfo fileSystemItem)
-        {
-            switch (fileSystemItem)
-            {
-                case EnhancedFileInfo file:
-                    return file;
-                case EnhancedDirectoryInfo directory:
-                    return directory;
-                case FileInfo file:
-                    return new EnhancedFileInfo(file);
-                case DirectoryInfo directory:
-                    return new EnhancedDirectoryInfo(directory);
-                default:
-                    throw new ArgumentException("Unknown subtype of FileSystemInfo");
-            }
-        }
-        
         /// <summary>
         /// Copies this item inside of the directory given by destination 
         /// </summary>
         /// <param name="destination">The directory to copy into</param>
-        public abstract void Copy(EnhancedDirectoryInfo destination);
+        public abstract void Copy(Directory destination);
 
-        public virtual void Move(EnhancedDirectoryInfo destination)
+        public virtual void Move(Directory destination)
         {
             Copy(destination);
             Delete();
@@ -210,7 +217,7 @@ namespace StartMenuProtector.Data
         public override void Delete() { OriginalFileSystemItem.Delete(); }
     }
 
-    public class EnhancedDirectoryInfo : EnhancedFileSystemInfo
+    public class Directory : FileSystemItem 
     {
 
         public virtual DirectoryInfo Self
@@ -228,21 +235,21 @@ namespace StartMenuProtector.Data
             }
         }
         
-        public EnhancedDirectoryInfo(DirectoryInfo directory) : 
+        public Directory(DirectoryInfo directory) : 
             base(directory)
         {
             
         }
 
-        public EnhancedDirectoryInfo(string path) : 
+        public Directory(string path) : 
             this(new DirectoryInfo(path))
         {
             
         }
 
-        private List<EnhancedFileInfo> files = null;
+        private List<File> files = null;
         
-        public List<EnhancedFileInfo> Files 
+        public List<File> Files 
         {
             get
             {
@@ -255,8 +262,8 @@ namespace StartMenuProtector.Data
             }
         }
 
-        private List<EnhancedDirectoryInfo> directories = null;
-        public List<EnhancedDirectoryInfo> Directories 
+        private List<Directory> directories = null;
+        public List<Directory> Directories 
         {
             get
             {
@@ -270,8 +277,8 @@ namespace StartMenuProtector.Data
         }
 
         private readonly object contentsAccessLock = new Object();
-        private List<EnhancedFileSystemInfo> contents = null;
-        public List<EnhancedFileSystemInfo> Contents 
+        private List<FileSystemItem> contents = null;
+        public List<FileSystemItem> Contents 
         {
             get
             {
@@ -284,7 +291,7 @@ namespace StartMenuProtector.Data
             }
         }
 
-        public virtual bool Contains(EnhancedFileSystemInfo item)
+        public virtual bool Contains(FileSystemItem item)
         {
             bool contained = false;
             
@@ -294,7 +301,7 @@ namespace StartMenuProtector.Data
             }
             else
             {
-                foreach (EnhancedDirectoryInfo subdirectory in Directories)
+                foreach (Directory subdirectory in Directories)
                 {
                     if (subdirectory.Contains(item))
                     {
@@ -307,7 +314,7 @@ namespace StartMenuProtector.Data
             return contained;
         }
 
-        public virtual List<EnhancedFileSystemInfo> RefreshContents()
+        public virtual List<FileSystemItem> RefreshContents()
         {
             InitializeContents();
             return Contents;
@@ -317,11 +324,11 @@ namespace StartMenuProtector.Data
         {
             lock (contentsAccessLock)
             {
-                var currentContents = new List<EnhancedFileSystemInfo>();
-                var subdirectories = new List<EnhancedDirectoryInfo>(Self.GetDirectoriesEnhanced());
-                var currentFiles = new List<EnhancedFileInfo>(Self.GetFilesEnhanced());
+                var currentContents = new List<FileSystemItem>();
+                var subdirectories = new List<Directory>(Self.GetDirectoriesEnhanced());
+                var currentFiles = new List<File>(Self.GetFilesEnhanced());
 
-                foreach (EnhancedDirectoryInfo subdirectory in subdirectories)
+                foreach (Directory subdirectory in subdirectories)
                 {
                     subdirectory.InitializeContents();
                 }
@@ -339,18 +346,18 @@ namespace StartMenuProtector.Data
         /// Recursively copies this directory inside of the directory given by destination 
         /// </summary>
         /// <param name="destination">The directory to copy into</param>
-        public override void Copy(EnhancedDirectoryInfo destination)
+        public override void Copy(Directory destination)
         {
             if (Valid)
             {
                 String pathOfCopy = System.IO.Path.Combine(destination.FullName, Name);
-                EnhancedDirectoryInfo directoryCopy = Directory.Exists(pathOfCopy) ? new EnhancedDirectoryInfo(pathOfCopy) : new EnhancedDirectoryInfo(Directory.CreateDirectory(pathOfCopy));
+                Directory directoryCopy = System.IO.Directory.Exists(pathOfCopy) ? new Directory(pathOfCopy) : new Directory(System.IO.Directory.CreateDirectory(pathOfCopy));
 
                 DirectorySecurity security = Self.GetAccessControl();
                 security.SetAccessRuleProtection(true, true);
                 directoryCopy.Self.SetAccessControl(security);
 
-                foreach (EnhancedFileSystemInfo itemToCopy in Contents)
+                foreach (FileSystemItem itemToCopy in Contents)
                 {
                     itemToCopy.Copy(directoryCopy);
                 }
@@ -364,14 +371,14 @@ namespace StartMenuProtector.Data
 
         public virtual void DeleteContents()
         {
-            foreach (EnhancedFileSystemInfo fileSystemItem in Contents)
+            foreach (FileSystemItem fileSystemItem in Contents)
             {
                 fileSystemItem.Delete();
             }
         }
     }
     
-    public class EnhancedFileInfo : EnhancedFileSystemInfo
+    public class File : FileSystemItem 
     {
         protected FileInfo Self 
         {
@@ -403,7 +410,7 @@ namespace StartMenuProtector.Data
             }
         }
 
-        public EnhancedFileInfo(FileInfo file) : 
+        public File(FileInfo file) : 
             base(file)
         {
             if (file != null)
@@ -414,13 +421,13 @@ namespace StartMenuProtector.Data
             }
         }
         
-        public EnhancedFileInfo(string path) : 
+        public File(string path) : 
             this(new FileInfo(path))
         {
             
         }
 
-        public override void Copy(EnhancedDirectoryInfo destination)
+        public override void Copy(Directory destination)
         {
             if (Valid)
             {
@@ -440,7 +447,7 @@ namespace StartMenuProtector.Data
         
         /// <returns>If this is a shortcut, returns the FileSystemItem this points to.
         /// Otherwise, returns an empty optional.</returns>
-        public Option<EnhancedFileSystemInfo> GetShortcutTarget()
+        public Option<FileSystemItem> GetShortcutTarget()
         {
             string pathOnly = System.IO.Path.GetDirectoryName(Path);
             string filenameOnly = System.IO.Path.GetFileName(Path);
@@ -452,62 +459,62 @@ namespace StartMenuProtector.Data
             if (folderItem != null)
             {
                 ShellLinkObject link = (ShellLinkObject)folderItem.GetLink;
-                FileAttributes targetItemAttributes = File.GetAttributes(link.Path);
+                FileAttributes targetItemAttributes = System.IO.File.GetAttributes(link.Path);
 
                 if ((targetItemAttributes & FileAttributes.Directory) == FileAttributes.Directory)
                 {
-                    return Option.Some<EnhancedFileSystemInfo>(new EnhancedDirectoryInfo(link.Path));
+                    return Option.Some<FileSystemItem>(new Directory(link.Path));
                 }
                 else /* if is file */
                 {
-                    return Option.Some<EnhancedFileSystemInfo>(new EnhancedFileInfo(link.Path));
+                    return Option.Some<FileSystemItem>(new File(link.Path));
                 }
             }
 
-            return Option.None<EnhancedFileSystemInfo>();
+            return Option.None<FileSystemItem>();
         }
     }
 
     internal static class DirectoryInfoExtensions 
     {
-        public static EnhancedDirectoryInfo[] GetDirectoriesEnhanced(this DirectoryInfo directoryInfo)
+        public static Directory[] GetDirectoriesEnhanced(this DirectoryInfo directoryInfo)
         {
             DirectoryInfo[] directories = directoryInfo.GetDirectories();
-            var enhancedDirectories = new List<EnhancedDirectoryInfo>();
+            var enhancedDirectories = new List<Directory>();
             
             foreach (DirectoryInfo directory in directories)
             {
-                var enhancedDirectory = new EnhancedDirectoryInfo(directory);
+                var enhancedDirectory = new Directory(directory);
                 enhancedDirectories.Add(enhancedDirectory);
             }
 
             return enhancedDirectories.ToArray();
         }
         
-        public static EnhancedFileInfo[] GetFilesEnhanced(this DirectoryInfo directoryInfo)
+        public static File[] GetFilesEnhanced(this DirectoryInfo directoryInfo)
         {
             FileInfo[] files = directoryInfo.GetFiles();
-            var enhancedFiles = new List<EnhancedFileInfo>();
+            var enhancedFiles = new List<File>();
             
             foreach (FileInfo file in files)
             {
-                var enhancedFile = new EnhancedFileInfo(file);
+                var enhancedFile = new File(file);
                 enhancedFiles.Add(enhancedFile);
             }
 
             return enhancedFiles.ToArray();
         }
         
-        public static EnhancedFileSystemInfo[] GetContents(this DirectoryInfo directoryInfo)
+        public static FileSystemItem[] GetContents(this DirectoryInfo directoryInfo)
         {
-            var contents = new List<EnhancedFileSystemInfo>();
+            var contents = new List<FileSystemItem>();
 
-            foreach (EnhancedDirectoryInfo directory in directoryInfo.GetDirectoriesEnhanced())
+            foreach (Directory directory in directoryInfo.GetDirectoriesEnhanced())
             {
                 contents.Add(directory);
             }
 
-            foreach (EnhancedFileInfo file in directoryInfo.GetFilesEnhanced())
+            foreach (File file in directoryInfo.GetFilesEnhanced())
             {
                 contents.Add(file);
             }
