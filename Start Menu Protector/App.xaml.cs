@@ -15,7 +15,7 @@ using StartMenuProtector.View;
          loaded from the OS environment any time the Active view is reloaded. In this state however, the controller
          should *not* overwrite the contents of the Active view. This state should last from the time the first change
          is made, and only end when the user saves */
-/* Todo: The top level directory objects in Global (e.g. ActiveStartMenuShortcuts, SavedSystemStartMenuShortcuts, etc.) could
+/* Todo: The top level directory objects in Global (e.g. ActiveStartMenuItems, SavedSystemStartMenuItems, etc.) could
          be organized into Dictionaries by the type of view they represent (Active, Saved, etc.) */
 
 namespace StartMenuProtector

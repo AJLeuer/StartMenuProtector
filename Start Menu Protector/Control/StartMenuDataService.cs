@@ -54,8 +54,8 @@ namespace StartMenuProtector.Control
     {
         public override Dictionary<StartMenuShortcutsLocation, EnhancedDirectoryInfo> StartMenuItemsStorage { protected get; set; } = new Dictionary<StartMenuShortcutsLocation, EnhancedDirectoryInfo> 
         {
-            { StartMenuShortcutsLocation.System, ActiveSystemStartMenuShortcuts }, 
-            { StartMenuShortcutsLocation.User, ActiveUserStartMenuShortcuts }
+            { StartMenuShortcutsLocation.System, ActiveSystemStartMenuItems }, 
+            { StartMenuShortcutsLocation.User, ActiveUserStartMenuItems }
         };
 
         public ActiveStartMenuDataService(SystemStateService systemStateService) 
@@ -104,8 +104,8 @@ namespace StartMenuProtector.Control
             
             await Task.Run(() =>
             {
-                startMenuContents[StartMenuShortcutsLocation.System].AddAll(ActiveSystemStartMenuShortcuts.Contents);
-                startMenuContents[StartMenuShortcutsLocation.User].AddAll(ActiveUserStartMenuShortcuts.Contents);
+                startMenuContents[StartMenuShortcutsLocation.System].AddAll(ActiveSystemStartMenuItems.Contents);
+                startMenuContents[StartMenuShortcutsLocation.User].AddAll(ActiveUserStartMenuItems.Contents);
             });
 
             return startMenuContents;
@@ -132,8 +132,8 @@ namespace StartMenuProtector.Control
     {
         public override Dictionary<StartMenuShortcutsLocation, EnhancedDirectoryInfo> StartMenuItemsStorage { protected get; set; } = new Dictionary<StartMenuShortcutsLocation, EnhancedDirectoryInfo> 
         {
-            {StartMenuShortcutsLocation.System, SavedSystemStartMenuShortcuts}, 
-            {StartMenuShortcutsLocation.User, SavedUserStartMenuShortcuts}
+            {StartMenuShortcutsLocation.System, SavedSystemStartMenuItems}, 
+            {StartMenuShortcutsLocation.User, SavedUserStartMenuItems}
         };
         
         public SavedStartMenuDataService(SystemStateService systemStateService) 
@@ -151,8 +151,8 @@ namespace StartMenuProtector.Control
             
             await Task.Run(() =>
             {
-                startMenuContents[StartMenuShortcutsLocation.System].AddAll(SavedSystemStartMenuShortcuts.Contents);
-                startMenuContents[StartMenuShortcutsLocation.User].AddAll(SavedUserStartMenuShortcuts.Contents);
+                startMenuContents[StartMenuShortcutsLocation.System].AddAll(SavedSystemStartMenuItems.Contents);
+                startMenuContents[StartMenuShortcutsLocation.User].AddAll(SavedUserStartMenuItems.Contents);
             });
 
             return startMenuContents;

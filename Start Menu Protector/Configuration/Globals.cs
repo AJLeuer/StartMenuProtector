@@ -6,18 +6,19 @@ namespace StartMenuProtector.Configuration
 {
     public static class Globals
     {
-        private const string SystemShortcutsDirectoryName = "System Shortcuts";
-        private const string UserShortcutsDirectoryName = "User Shortcuts";
+        public const string ApplicationName              = "Start Menu Protector";
+        public const string SystemShortcutsDirectoryName = "System Shortcuts";
+        public const string UserShortcutsDirectoryName   = "User Shortcuts";
 
-        public static readonly EnhancedDirectoryInfo UserAppData = new EnhancedDirectoryInfo(new KnownFolder(KnownFolderType.RoamingAppData).Path);
-        public static readonly EnhancedDirectoryInfo StartMenuProtectorAppData = new EnhancedDirectoryInfo(Directory.CreateDirectory(Path.Combine(UserAppData.Path, "Start Menu Protector")));
+        public static readonly EnhancedDirectoryInfo UserAppData                = new EnhancedDirectoryInfo(new KnownFolder(KnownFolderType.RoamingAppData).Path);
+        public static readonly EnhancedDirectoryInfo StartMenuProtectorAppData  = new EnhancedDirectoryInfo(Directory.CreateDirectory(Path.Combine(UserAppData.Path, ApplicationName)));
         
-        public static readonly EnhancedDirectoryInfo ActiveStartMenuShortcuts = new EnhancedDirectoryInfo(Directory.CreateDirectory(Path.Combine(StartMenuProtectorAppData.Path, "Active")));
-        public static readonly EnhancedDirectoryInfo ActiveSystemStartMenuShortcuts = new EnhancedDirectoryInfo(Directory.CreateDirectory(Path.Combine(ActiveStartMenuShortcuts.Path, SystemShortcutsDirectoryName)));
-        public static readonly EnhancedDirectoryInfo ActiveUserStartMenuShortcuts = new EnhancedDirectoryInfo(Directory.CreateDirectory(Path.Combine(ActiveStartMenuShortcuts.Path, UserShortcutsDirectoryName)));
+        public static readonly EnhancedDirectoryInfo ActiveStartMenuItems       = new EnhancedDirectoryInfo(Directory.CreateDirectory(Path.Combine(StartMenuProtectorAppData.Path, "Active")));
+        public static readonly EnhancedDirectoryInfo ActiveSystemStartMenuItems = new EnhancedDirectoryInfo(Directory.CreateDirectory(Path.Combine(ActiveStartMenuItems.Path, SystemShortcutsDirectoryName)));
+        public static readonly EnhancedDirectoryInfo ActiveUserStartMenuItems   = new EnhancedDirectoryInfo(Directory.CreateDirectory(Path.Combine(ActiveStartMenuItems.Path, UserShortcutsDirectoryName)));
         
-        public static readonly EnhancedDirectoryInfo SavedStartMenuShortcuts = new EnhancedDirectoryInfo(Directory.CreateDirectory(Path.Combine(StartMenuProtectorAppData.Path, "Saved")));
-        public static readonly EnhancedDirectoryInfo SavedSystemStartMenuShortcuts = new EnhancedDirectoryInfo(Directory.CreateDirectory(Path.Combine(SavedStartMenuShortcuts.Path, SystemShortcutsDirectoryName)));
-        public static readonly EnhancedDirectoryInfo SavedUserStartMenuShortcuts = new EnhancedDirectoryInfo(Directory.CreateDirectory(Path.Combine(SavedStartMenuShortcuts.Path, UserShortcutsDirectoryName)));
+        public static readonly EnhancedDirectoryInfo SavedStartMenuItems        = new EnhancedDirectoryInfo(Directory.CreateDirectory(Path.Combine(StartMenuProtectorAppData.Path, "Saved")));
+        public static readonly EnhancedDirectoryInfo SavedSystemStartMenuItems  = new EnhancedDirectoryInfo(Directory.CreateDirectory(Path.Combine(SavedStartMenuItems.Path, SystemShortcutsDirectoryName)));
+        public static readonly EnhancedDirectoryInfo SavedUserStartMenuItems    = new EnhancedDirectoryInfo(Directory.CreateDirectory(Path.Combine(SavedStartMenuItems.Path, UserShortcutsDirectoryName)));
     }
 }
