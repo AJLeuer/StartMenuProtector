@@ -14,27 +14,23 @@ namespace StartMenuProtectorTest.Test
     {
         public static Mock<SystemStateService> SystemStateControllerMock = new Mock<SystemStateService>();
         public static SystemStateService MockSystemStateService = SystemStateControllerMock.Object;
-        public static Mock<MockableDirectory> SystemProgramsMock = new Mock<MockableDirectory>(); 
-        public static Mock<MockableDirectory> UserProgramsMock = new Mock<MockableDirectory>();
+        
+        public static Mock<MockableDirectory> SystemProgramsMock; 
+        public static Mock<MockableDirectory> UserProgramsMock;
+        
         public static Mock<MockableFile> FileToBeSavedMock;
         public static ICollection<FileSystemInfo> FilesToSave;
         public static Mock<MockableFile> FileToMoveMock;
         public static Mock<MockableDirectory> DestinationDirectoryMock;
-        public static Dictionary<StartMenuShortcutsLocation, Directory> ActiveStartMenuShortcuts = new Dictionary<StartMenuShortcutsLocation, Directory>
-        {
-            {StartMenuShortcutsLocation.System, SystemProgramsMock.Object},
-            {StartMenuShortcutsLocation.User, UserProgramsMock.Object}
-        };
         
-        public static Dictionary<StartMenuShortcutsLocation, Directory> SavedStartMenuShortcuts = new Dictionary<StartMenuShortcutsLocation, Directory>
-        {
-            {StartMenuShortcutsLocation.System, SystemProgramsMock.Object},
-            {StartMenuShortcutsLocation.User, UserProgramsMock.Object}
-        };
+        public static Dictionary<StartMenuShortcutsLocation, Directory> ActiveStartMenuShortcuts;
+        public static Dictionary<StartMenuShortcutsLocation, Directory> SavedStartMenuShortcuts;
 
         [SetUp]
         public static void Setup()
         {
+            SystemProgramsMock = new Mock<MockableDirectory>();
+            UserProgramsMock = new Mock<MockableDirectory>();
             FileToBeSavedMock = new Mock<MockableFile>();
             
             FilesToSave = new List<FileSystemInfo>
@@ -42,6 +38,17 @@ namespace StartMenuProtectorTest.Test
                 FileToBeSavedMock.Object,
                 FileToBeSavedMock.Object,
                 FileToBeSavedMock.Object
+            };
+            
+            ActiveStartMenuShortcuts = new Dictionary<StartMenuShortcutsLocation, Directory>
+            {
+                {StartMenuShortcutsLocation.System, SystemProgramsMock.Object},
+                {StartMenuShortcutsLocation.User, UserProgramsMock.Object}
+            };
+            SavedStartMenuShortcuts = new Dictionary<StartMenuShortcutsLocation, Directory>
+            {
+                {StartMenuShortcutsLocation.System, SystemProgramsMock.Object},
+                {StartMenuShortcutsLocation.User, UserProgramsMock.Object}
             };
             
             var startMenuShortcutsFromDisk = new Dictionary<StartMenuShortcutsLocation, Directory>

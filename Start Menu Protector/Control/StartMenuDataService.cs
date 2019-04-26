@@ -50,7 +50,12 @@ namespace StartMenuProtector.Control
         protected abstract Task<Dictionary<StartMenuShortcutsLocation, ICollection<FileSystemInfo>>> LoadStartMenuContentsFromAppDataDiskStorageToMemory();
 
         public abstract Task HandleRequestToMoveFileSystemItems(FileSystemItem itemRequestingMove, FileSystemItem destinationItem);
-        
+
+        public void RefreshStartMenuItems(StartMenuShortcutsLocation location)
+        {
+            Directory startMenuItemsDirectory = StartMenuItemsStorage[location];
+            startMenuItemsDirectory.RefreshContents();
+        }
         
         protected Directory FindRootStartMenuItemsStorageDirectoryForItem(FileSystemItem item)
         {
@@ -189,7 +194,7 @@ namespace StartMenuProtector.Control
                 fileSystemItem.Copy(startMenuItemsDirectory);
             }
 
-            startMenuItemsDirectory.RefreshContents();
+            RefreshStartMenuItems(location);
         }
 
         public override async Task HandleRequestToMoveFileSystemItems(FileSystemItem itemRequestingMove, FileSystemItem destinationItem)
