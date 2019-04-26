@@ -66,7 +66,11 @@ namespace StartMenuProtectorTest.Test
             
             UserProgramsMock.Setup(
                     (self) => self.Self)
-                .Returns((DirectoryInfo) null);
+                .Returns((DirectoryInfo) null);            
+            
+            UserProgramsMock.Setup(
+                    (self) => self.RefreshContents())
+                .Returns(new List<EnhancedFileSystemInfo>());
 
             SystemProgramsMock.Setup((self) => self.DeleteContents());
 
@@ -102,7 +106,6 @@ namespace StartMenuProtectorTest.Test
             service.SaveStartMenuItems(StartMenuShortcutsLocation.System, FilesToSave);
             
             FileToBeSavedMock.Verify((self) => self.Copy(SystemProgramsMock.Object), Times.Never);
-
         }
 
         [Test]
@@ -118,12 +121,23 @@ namespace StartMenuProtectorTest.Test
         [Test]
         public static void ShouldSaveStartMenuShortcutsFromSpecifiedLocationOnly()
         {
-            var service = new SavedStartMenuDataService(MockSystemStateService) { StartMenuItemsStorage = ActiveStartMenuShortcuts};
+            var service = new SavedStartMenuDataService(MockSystemStateService) { StartMenuItemsStorage = SavedStartMenuShortcuts};
 
             service.SaveStartMenuItems(StartMenuShortcutsLocation.User, FilesToSave);
             
             FileToBeSavedMock.Verify((self) => self.Copy(UserProgramsMock.Object), Times.AtLeastOnce);
             FileToBeSavedMock.Verify((self) => self.Copy(SystemProgramsMock.Object), Times.Never);
+        }
+        
+        
+        [Test]
+        public static void SavedStartMenuDataServiceShouldRefreshStartMenuItemsStorageAfterSaving()
+        {
+            StartMenuDataService service = new SavedStartMenuDataService(MockSystemStateService){ StartMenuItemsStorage = SavedStartMenuShortcuts};
+            
+            service.SaveStartMenuItems(StartMenuShortcutsLocation.User, FilesToSave);
+            
+            UserProgramsMock.Verify((self) => self.RefreshContents());
         }
 
         [Test]

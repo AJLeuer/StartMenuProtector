@@ -167,6 +167,8 @@ namespace StartMenuProtector.Control
                 EnhancedFileSystemInfo enhancedFileSystemItem = EnhancedFileSystemInfo.Create(fileSystemItem);
                 enhancedFileSystemItem.Copy(programShortcutsSaveDirectory);
             }
+
+            programShortcutsSaveDirectory.RefreshContents();
         }
 
         public override async Task HandleRequestToMoveFileSystemItems(EnhancedFileSystemInfo itemRequestingMove, EnhancedFileSystemInfo destinationItem)

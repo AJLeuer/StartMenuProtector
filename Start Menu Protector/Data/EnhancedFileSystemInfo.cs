@@ -251,7 +251,7 @@ namespace StartMenuProtector.Data
             }
         }
 
-        public List<EnhancedFileSystemInfo> RefreshContents()
+        public virtual List<EnhancedFileSystemInfo> RefreshContents()
         {
             InitializeContents();
             return Contents;
