@@ -37,7 +37,7 @@ namespace StartMenuProtectorTest.Test
                 .Returns((StartMenuShortcutsLocation location) => { return CreateStubbedStartMenuContentsRetrievalTask(view: StartMenuProtectorViewType.Active, location: location); });
 
             ActiveDataServiceMock
-                .Setup((self) => self.SaveStartMenuItems(It.IsAny<StartMenuShortcutsLocation>(), It.IsAny<IEnumerable<FileSystemInfo>>()));
+                .Setup((self) => self.SaveStartMenuItems(It.IsAny<IEnumerable<FileSystemInfo>>(), It.IsAny<StartMenuShortcutsLocation>()));
 
             ActiveDataServiceMock
                 .Setup((self) => self.HandleRequestToMoveFileSystemItems(It.IsAny<FileSystemItem>(), It.IsAny<FileSystemItem>()))
@@ -52,7 +52,7 @@ namespace StartMenuProtectorTest.Test
                 .Returns((StartMenuShortcutsLocation location) => { return CreateStubbedStartMenuContentsRetrievalTask(view: StartMenuProtectorViewType.Saved, location: location); });
 
             SavedDataServiceMock
-                .Setup((self) => self.SaveStartMenuItems(It.IsAny<StartMenuShortcutsLocation>(), It.IsAny<IEnumerable<FileSystemInfo>>()));
+                .Setup((self) => self.SaveStartMenuItems(It.IsAny<IEnumerable<FileSystemInfo>>(), It.IsAny<StartMenuShortcutsLocation>()));
 
             StartMenuItemMock.Setup(
                     (self) => self.File)
@@ -82,7 +82,7 @@ namespace StartMenuProtectorTest.Test
 
             viewController.SaveCurrentStartMenuItems();
             
-            SavedDataServiceMock.Verify((self) => self.SaveStartMenuItems(viewController.StartMenuStartMenuShortcutsLocation, viewController.StartMenuContents), Times.Once());
+            SavedDataServiceMock.Verify((self) => self.SaveStartMenuItems(viewController.StartMenuContents, viewController.StartMenuStartMenuShortcutsLocation), Times.Once());
         }
         
         [Test]
@@ -92,7 +92,7 @@ namespace StartMenuProtectorTest.Test
 
             viewController.SaveCurrentStartMenuItems();
             
-            ActiveDataServiceMock.Verify((self) => self.SaveStartMenuItems(viewController.StartMenuStartMenuShortcutsLocation, viewController.StartMenuContents), Times.Never);
+            ActiveDataServiceMock.Verify((self) => self.SaveStartMenuItems(viewController.StartMenuContents, viewController.StartMenuStartMenuShortcutsLocation), Times.Never);
         }
         
         [Test]

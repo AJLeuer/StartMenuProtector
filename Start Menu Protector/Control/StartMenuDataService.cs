@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Threading.Tasks;
 using StartMenuProtector.Data;
@@ -36,16 +37,7 @@ namespace StartMenuProtector.Control
             return startMenuContents;
         }
 
-        protected async Task ClearAppDataStartMenuItemsFromDisk()
-        {
-            await Task.Run(() =>
-            {
-                StartMenuItemsStorage[StartMenuShortcutsLocation.System].DeleteContents();
-                StartMenuItemsStorage[StartMenuShortcutsLocation.User].DeleteContents();
-            });
-        }
-
-        public abstract void SaveStartMenuItems(StartMenuShortcutsLocation location, IEnumerable<FileSystemInfo> startMenuItems);
+        public abstract void SaveStartMenuItems(IEnumerable<FileSystemInfo> startMenuItems, StartMenuShortcutsLocation location);
         protected async Task<Dictionary<StartMenuShortcutsLocation, ICollection<FileSystemInfo>>> LoadStartMenuContentsFromAppDataDiskStorageToMemory()
         {
             var startMenuContents = new Dictionary<StartMenuShortcutsLocation, ICollection<FileSystemInfo>>
@@ -69,6 +61,21 @@ namespace StartMenuProtector.Control
         {
             Directory startMenuItemsDirectory = StartMenuItemsStorage[location];
             startMenuItemsDirectory.RefreshContents();
+        }
+
+        protected void ClearStartMenuItems(StartMenuShortcutsLocation location)
+        {
+            Directory startMenuItemsDirectory = StartMenuItemsStorage[location];
+            startMenuItemsDirectory.DeleteContents();
+        }
+        
+        protected async Task ClearAllStartMenuItems()
+        {
+            await Task.Run(() =>
+            {
+                ClearStartMenuItems(StartMenuShortcutsLocation.System);
+                ClearStartMenuItems(StartMenuShortcutsLocation.User);
+            });
         }
         
         protected Directory FindRootStartMenuItemsStorageDirectoryForItem(FileSystemItem item)
@@ -111,7 +118,7 @@ namespace StartMenuProtector.Control
         {
             ICollection<FileSystemInfo> startMenuContents = await Task.Run(() =>
             {
-                ClearAppDataStartMenuItemsFromDisk().Wait();
+                ClearAllStartMenuItems().Wait();
                 CopyCurrentActiveStartMenuItemsFromOSEnvironmentToAppDataDiskStorage();
                 Dictionary<StartMenuShortcutsLocation, ICollection<FileSystemInfo>> startMenuContentsFromAppData = LoadStartMenuContentsFromAppDataDiskStorageToMemory().Result;
                 return startMenuContentsFromAppData[location];
@@ -132,7 +139,7 @@ namespace StartMenuProtector.Control
             startMenuContents[StartMenuShortcutsLocation.User].Copy(StartMenuItemsStorage[StartMenuShortcutsLocation.User]);
         }
 
-        public override void SaveStartMenuItems(StartMenuShortcutsLocation location, IEnumerable<FileSystemInfo> startMenuItems)
+        public override void SaveStartMenuItems(IEnumerable<FileSystemInfo> startMenuItems, StartMenuShortcutsLocation location)
         {
             /* Do nothing */
         }
@@ -164,8 +171,10 @@ namespace StartMenuProtector.Control
         {
         }
 
-        public override void SaveStartMenuItems(StartMenuShortcutsLocation location, IEnumerable<FileSystemInfo> startMenuItems)
+        public override void SaveStartMenuItems(IEnumerable<FileSystemInfo> startMenuItems, StartMenuShortcutsLocation location)
         {
+            ClearStartMenuItems(location);
+            
             Directory startMenuItemsDirectory = StartMenuItemsStorage[location];
             
             foreach (var startMenuItem in startMenuItems)

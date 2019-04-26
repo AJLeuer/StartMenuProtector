@@ -290,31 +290,30 @@ namespace StartMenuProtector.Data
                 return contents;
             }
         }
-
-        public virtual bool Contains(FileSystemItem item)
+        
+        private void InitializeContents()
         {
-            bool contained = false;
-            
-            if (Contents.Contains(item))
+            lock (contentsAccessLock)
             {
-                contained = true;
-            }
-            else
-            {
-                foreach (Directory subdirectory in Directories)
+                var currentContents = new List<FileSystemItem>();
+                var subdirectories = new List<Directory>(Self.GetDirectoriesEnhanced());
+                var currentFiles = new List<File>(Self.GetFilesEnhanced());
+
+                foreach (Directory subdirectory in subdirectories)
                 {
-                    if (subdirectory.Contains(item))
-                    {
-                        contained = true;
-                        break;
-                    }
+                    subdirectory.InitializeContents();
                 }
+
+                currentContents.AddAll(subdirectories);
+                currentContents.AddAll(currentFiles);
+
+                files = currentFiles;
+                directories = subdirectories;
+                contents = currentContents;
             }
-
-            return contained;
         }
-
-        public virtual List<FileSystemItem> RefreshContents()
+        
+        public virtual List<FileSystemItem> RefreshContents() 
         {
             if ((files == null) || (directories == null) || (contents == null))
             {
@@ -342,28 +341,21 @@ namespace StartMenuProtector.Data
             return Contents;
         }
 
-        private void InitializeContents()
+        public virtual void DeleteContents()
         {
-            lock (contentsAccessLock)
+            foreach (FileSystemItem fileSystemItem in Contents)
             {
-                var currentContents = new List<FileSystemItem>();
-                var subdirectories = new List<Directory>(Self.GetDirectoriesEnhanced());
-                var currentFiles = new List<File>(Self.GetFilesEnhanced());
-
-                foreach (Directory subdirectory in subdirectories)
-                {
-                    subdirectory.InitializeContents();
-                }
-
-                currentContents.AddAll(subdirectories);
-                currentContents.AddAll(currentFiles);
-
-                files = currentFiles;
-                directories = subdirectories;
-                contents = currentContents;
+                fileSystemItem.Delete();
             }
+            
+            contents.Clear();
         }
-
+        
+        public override void Delete()
+        {
+            Self.Delete(true);
+        }
+        
         /// <summary>
         /// Recursively copies this directory inside of the directory given by destination 
         /// </summary>
@@ -385,20 +377,28 @@ namespace StartMenuProtector.Data
                 }
             }
         }
-
-        public override void Delete()
+        
+        public virtual bool Contains(FileSystemItem item)
         {
-            Self.Delete(true);
-        }
-
-        public virtual void DeleteContents()
-        {
-            foreach (FileSystemItem fileSystemItem in Contents)
-            {
-                fileSystemItem.Delete();
-            }
+            bool contained = false;
             
-            contents.Clear();
+            if (Contents.Contains(item))
+            {
+                contained = true;
+            }
+            else
+            {
+                foreach (Directory subdirectory in Directories)
+                {
+                    if (subdirectory.Contains(item))
+                    {
+                        contained = true;
+                        break;
+                    }
+                }
+            }
+
+            return contained;
         }
     }
     

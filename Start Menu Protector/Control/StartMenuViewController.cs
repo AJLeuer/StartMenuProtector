@@ -71,7 +71,7 @@ namespace StartMenuProtector.Control
         
         public override void SaveCurrentStartMenuItems()
         {
-            SavedDataService.SaveStartMenuItems(StartMenuStartMenuShortcutsLocation, StartMenuContents);
+            SavedDataService.SaveStartMenuItems(StartMenuContents, StartMenuStartMenuShortcutsLocation);
             CurrentContentState = ContentState.MirroringOSEnvironment;
         }
         
