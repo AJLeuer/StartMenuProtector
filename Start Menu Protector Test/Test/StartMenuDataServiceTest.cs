@@ -67,15 +67,7 @@ namespace StartMenuProtectorTest.Test
             UserProgramsMock.Setup(
                     (self) => self.FullName)
                 .Returns("");
-            
-            SystemProgramsMock.Setup(
-                    (self) => self.Self)
-                .Returns((DirectoryInfo) null);
-            
-            UserProgramsMock.Setup(
-                    (self) => self.Self)
-                .Returns((DirectoryInfo) null);  
-            
+
             SystemProgramsMock.Setup(
                     (self) => self.RefreshContents())
                 .Returns(new List<FileSystemItem>());
@@ -102,6 +94,9 @@ namespace StartMenuProtectorTest.Test
         [Test]
         public static void ActiveStartMenuDataServiceShouldClearOldActiveStartMenuDataWhenStartMenuContentsAreRetrieved()
         {
+            SystemProgramsMock.Setup((self) => self.Contents).Returns(new List<FileSystemItem>());
+            UserProgramsMock.Setup((self) => self.Contents).Returns(new List<FileSystemItem>());
+            
             StartMenuDataService service = new ActiveStartMenuDataService(MockSystemStateService) { StartMenuItemsStorage = ActiveStartMenuShortcuts};
             
             service.GetStartMenuContents(StartMenuShortcutsLocation.System).Wait();

@@ -46,8 +46,22 @@ namespace StartMenuProtector.Control
         }
 
         public abstract void SaveStartMenuItems(StartMenuShortcutsLocation location, IEnumerable<FileSystemInfo> startMenuItems);
-        
-        protected abstract Task<Dictionary<StartMenuShortcutsLocation, ICollection<FileSystemInfo>>> LoadStartMenuContentsFromAppDataDiskStorageToMemory();
+        protected async Task<Dictionary<StartMenuShortcutsLocation, ICollection<FileSystemInfo>>> LoadStartMenuContentsFromAppDataDiskStorageToMemory()
+        {
+            var startMenuContents = new Dictionary<StartMenuShortcutsLocation, ICollection<FileSystemInfo>>
+            {
+                { StartMenuShortcutsLocation.System, new List<FileSystemInfo>() },
+                { StartMenuShortcutsLocation.User,   new List<FileSystemInfo>() }
+            };
+            
+            await Task.Run(() =>
+            {
+                startMenuContents[StartMenuShortcutsLocation.System].AddAll(StartMenuItemsStorage[StartMenuShortcutsLocation.System].RefreshContents());
+                startMenuContents[StartMenuShortcutsLocation.User].AddAll(StartMenuItemsStorage[StartMenuShortcutsLocation.User].RefreshContents());
+            });
+
+            return startMenuContents;
+        }
 
         public abstract Task HandleRequestToMoveFileSystemItems(FileSystemItem itemRequestingMove, FileSystemItem destinationItem);
 
@@ -113,28 +127,11 @@ namespace StartMenuProtector.Control
         
         private void CopyCurrentActiveStartMenuItemsFromOSEnvironmentToAppDataDiskStorage()
         {
-            Dictionary<StartMenuShortcutsLocation, Directory> startMenuPrograms = SystemStateService.LoadSystemAndUserStartMenuProgramShortcutsFromDisk();
-            startMenuPrograms[StartMenuShortcutsLocation.System].Copy(StartMenuItemsStorage[StartMenuShortcutsLocation.System]);
-            startMenuPrograms[StartMenuShortcutsLocation.User].Copy(StartMenuItemsStorage[StartMenuShortcutsLocation.User]);
+            Dictionary<StartMenuShortcutsLocation, Directory> startMenuContents = SystemStateService.LoadSystemAndUserStartMenuProgramShortcutsFromDisk();
+            startMenuContents[StartMenuShortcutsLocation.System].Copy(StartMenuItemsStorage[StartMenuShortcutsLocation.System]);
+            startMenuContents[StartMenuShortcutsLocation.User].Copy(StartMenuItemsStorage[StartMenuShortcutsLocation.User]);
         }
-        
-        protected sealed override async Task<Dictionary<StartMenuShortcutsLocation, ICollection<FileSystemInfo>>> LoadStartMenuContentsFromAppDataDiskStorageToMemory()
-        {
-            var startMenuContents = new Dictionary<StartMenuShortcutsLocation, ICollection<FileSystemInfo>>
-            {
-                { StartMenuShortcutsLocation.System, new List<FileSystemInfo>() },
-                { StartMenuShortcutsLocation.User,   new List<FileSystemInfo>() }
-            };
-            
-            await Task.Run(() =>
-            {
-                startMenuContents[StartMenuShortcutsLocation.System].AddAll(ActiveSystemStartMenuItems.Contents);
-                startMenuContents[StartMenuShortcutsLocation.User].AddAll(ActiveUserStartMenuItems.Contents);
-            });
 
-            return startMenuContents;
-        }
-        
         public override void SaveStartMenuItems(StartMenuShortcutsLocation location, IEnumerable<FileSystemInfo> startMenuItems)
         {
             /* Do nothing */
@@ -165,23 +162,6 @@ namespace StartMenuProtector.Control
         public SavedStartMenuDataService(SystemStateService systemStateService) 
             : base(systemStateService)
         {
-        }
-
-        protected sealed override async Task<Dictionary<StartMenuShortcutsLocation, ICollection<FileSystemInfo>>> LoadStartMenuContentsFromAppDataDiskStorageToMemory()
-        {
-            var startMenuContents = new Dictionary<StartMenuShortcutsLocation, ICollection<FileSystemInfo>>
-            {
-                { StartMenuShortcutsLocation.System, new List<FileSystemInfo>() },
-                { StartMenuShortcutsLocation.User,   new List<FileSystemInfo>() }
-            };
-            
-            await Task.Run(() =>
-            {
-                startMenuContents[StartMenuShortcutsLocation.System].AddAll(SavedSystemStartMenuItems.Contents);
-                startMenuContents[StartMenuShortcutsLocation.User].AddAll(SavedUserStartMenuItems.Contents);
-            });
-
-            return startMenuContents;
         }
 
         public override void SaveStartMenuItems(StartMenuShortcutsLocation location, IEnumerable<FileSystemInfo> startMenuItems)

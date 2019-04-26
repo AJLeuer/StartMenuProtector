@@ -11,7 +11,7 @@ using StartMenuProtector.View;
 using StartMenuProtectorTest.Utility;
 using static StartMenuProtectorTest.Utility.StartMenuViewControllerTestSetupUtility;
 
-namespace StartMenuProtectorTest.Test
+namespace StartMenuProtectorTest.Test 
 {
     public static class StartMenuViewControllerTest
     {
@@ -84,8 +84,7 @@ namespace StartMenuProtectorTest.Test
             
             SavedDataServiceMock.Verify((self) => self.SaveStartMenuItems(viewController.StartMenuStartMenuShortcutsLocation, viewController.StartMenuContents), Times.Once());
         }
-
-
+        
         [Test]
         public static void SavedStartMenuViewControllerShouldDoNothingWhenRequestedToSaveStartMenuShortcuts()
         {

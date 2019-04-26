@@ -182,6 +182,9 @@
     <Content Include="..\ReadMe.md">
       <Link>ReadMe.md</Link>
     </Content>
+    <Content Include="..\To Dos.md">
+      <Link>To Dos.md</Link>
+    </Content>
     <Resource Include="Assets\ApplicationIcon.ico" />
     <Resource Include="Assets\TrayIcon.ico" />
   </ItemGroup>

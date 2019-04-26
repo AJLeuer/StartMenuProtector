@@ -278,7 +278,7 @@ namespace StartMenuProtector.Data
 
         private readonly object contentsAccessLock = new Object();
         private List<FileSystemItem> contents = null;
-        public List<FileSystemItem> Contents 
+        public virtual List<FileSystemItem> Contents 
         {
             get
             {
@@ -316,7 +316,29 @@ namespace StartMenuProtector.Data
 
         public virtual List<FileSystemItem> RefreshContents()
         {
-            InitializeContents();
+            if ((files == null) || (directories == null) || (contents == null))
+            {
+                InitializeContents();
+            }
+            else
+            {
+                var currentContents = new List<FileSystemItem>();
+                var subdirectories = new List<Directory>(Self.GetDirectoriesEnhanced());
+                var currentFiles = new List<File>(Self.GetFilesEnhanced());
+
+                foreach (Directory subdirectory in subdirectories)
+                {
+                    subdirectory.RefreshContents();
+                }
+
+                currentContents.AddAll(subdirectories);
+                currentContents.AddAll(currentFiles);
+
+                files.ReplaceAll(currentFiles);
+                directories.ReplaceAll(subdirectories);
+                contents.ReplaceAll(currentContents);
+            }
+            
             return Contents;
         }
 
@@ -375,6 +397,8 @@ namespace StartMenuProtector.Data
             {
                 fileSystemItem.Delete();
             }
+            
+            contents.Clear();
         }
     }
     
