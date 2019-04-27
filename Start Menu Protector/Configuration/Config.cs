@@ -11,6 +11,8 @@ namespace StartMenuProtector.Configuration
         public const double MainWindowHeight = 720;
         public const ushort FontSize = 18;
         
+        public static readonly FontFamily DefaultFontFamily = new FontFamily("Roboto");
+
         public const string ApplicationIconFilePath = "/Assets/ApplicationIcon.ico";
         public const string TrayIconFilePath = "/Assets/TrayIcon.ico";
 

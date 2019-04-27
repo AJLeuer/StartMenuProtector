@@ -9,8 +9,9 @@
         Title="{x:Static config:Globals.ApplicationName}" Width="{x:Static config:Config.MainWindowWidth}" Height="{x:Static config:Config.MainWindowHeight}">
 
     <Grid>
-        <TabControl FontSize="20" HorizontalAlignment="Stretch">
-            <TabItem Header="Active" >
+        <Button></Button>
+        <TabControl FontSize="20" HorizontalAlignment="Stretch" FontFamily="{x:Static config:Config.DefaultFontFamily}">
+            <TabItem Header="Active">
                 <view:ActiveStartMenuShortcutsView x:Name="ActiveProgramShortcutsView"/>
             </TabItem>
             <TabItem Header="Saved" >
