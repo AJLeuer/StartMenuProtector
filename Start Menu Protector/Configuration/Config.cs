@@ -7,9 +7,13 @@ namespace StartMenuProtector.Configuration
 {
     public static class Config
     {
+        public const double MainWindowWidth = 1280;
+        public const double MainWindowHeight = 720;
+        public const ushort FontSize = 18;
+        
         public const string ApplicationIconFilePath = "/Assets/ApplicationIcon.ico";
         public const string TrayIconFilePath = "/Assets/TrayIcon.ico";
-        public const ushort FontSize = 18;
+
         public static readonly Color TextColor = Colors.Black;
         public static readonly Color BackgroundColor = Colors.White;
         public static readonly Color OutlineColor = Colors.LightGray;

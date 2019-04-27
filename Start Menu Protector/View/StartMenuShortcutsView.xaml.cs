@@ -37,7 +37,7 @@ namespace StartMenuProtector.View
             
             Loaded += (object sender, RoutedEventArgs routedEvent) =>
             {
-                Controller.UpdateCurrentShortcuts();
+                Controller?.UpdateCurrentShortcuts();
             };
         }
         
