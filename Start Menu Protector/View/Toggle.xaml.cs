@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
@@ -11,15 +12,44 @@ namespace StartMenuProtector.View
     /// </summary>
     public partial class Toggle : ToggleButton
     {
+        public static readonly DependencyProperty EnabledTextProperty  = DependencyProperty.Register(nameof (EnabledText), typeof (String), typeof (Toggle), new FrameworkPropertyMetadata { BindsTwoWayByDefault = true });
+        public static readonly DependencyProperty DisabledTextProperty  = DependencyProperty.Register(nameof (DisabledText), typeof (String), typeof (Toggle), new FrameworkPropertyMetadata { BindsTwoWayByDefault = true });
         public static readonly DependencyProperty EnabledColorProperty  = DependencyProperty.Register(nameof (EnabledColor), typeof (Brush), typeof (Toggle), new FrameworkPropertyMetadata { BindsTwoWayByDefault = true });
         public static readonly DependencyProperty DisabledColorProperty = DependencyProperty.Register(nameof (DisabledColor), typeof (Brush), typeof (Toggle), new FrameworkPropertyMetadata { BindsTwoWayByDefault = true });
 
-
         public static readonly Brush DefaultEnabledColor = Config.PositiveChangeSymbolicFillColor;
-
         public static readonly Brush DefaultDisabledColor = Config.NegativeChangeSymbolicFillColor;
 
-            [Bindable(true)]
+        
+        [Bindable(true)]
+        [Category("Appearance")]
+        public String EnabledText 
+        {
+            get
+            {
+                return (String) this.GetValue(EnabledTextProperty);
+            }
+            set
+            {
+                this.SetValue(EnabledTextProperty, (object) value);
+            }
+        }  
+        
+        [Bindable(true)]
+        [Category("Appearance")]
+        public String DisabledText 
+        {
+            get
+            {
+                return (String) this.GetValue(DisabledTextProperty);
+            }
+            set
+            {
+                this.SetValue(DisabledTextProperty, (object) value);
+            }
+        }  
+        
+        [Bindable(true)]
         [Category("Appearance")]
         public Brush EnabledColor 
         {
@@ -52,22 +82,32 @@ namespace StartMenuProtector.View
             InitializeComponent();
 
             Style = this.Resources["Style"] as Style;
+
+            if (EnabledColor == null)
+            {
+                EnabledColor = DefaultEnabledColor;
+            }
             
-            EnabledColor = DefaultEnabledColor;
-            DisabledColor = DefaultDisabledColor;
+            if (DisabledColor == null)
+            {
+                DisabledColor = DefaultDisabledColor;
+            }
 
             this.IsChecked = false;
-            Background = Config.BackgroundFillColor;
+            IndicatorLight.Fill = DisabledColor;
+            Text.Content = DisabledText;
         }
 
         private void ProcessToggledOn(object sender, RoutedEventArgs @event)
         {
-            Background = EnabledColor;
+            IndicatorLight.Fill = EnabledColor;
+            Text.Content = EnabledText;
         }
 
         private void ProcessToggledOff(object sender, RoutedEventArgs @event)
         {
-            Background = DisabledColor;
+            IndicatorLight.Fill = DisabledColor;
+            Text.Content = DisabledText;
         }
     }
 }

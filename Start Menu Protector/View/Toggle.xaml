@@ -4,15 +4,14 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:configuration="clr-namespace:StartMenuProtector.Configuration"
+             xmlns:view="clr-namespace:StartMenuProtector.View"
              mc:Ignorable="d" 
              FontFamily="{x:Static configuration:Config.DefaultFontFamily}" FontSize="20" Checked="ProcessToggledOn" Unchecked="ProcessToggledOff">
-    
+
     <ToggleButton.Resources>
         <Style x:Key="Style" TargetType="{x:Type ToggleButton}">
-            <Setter Property="Background" Value="White" />
             <Setter Property="Foreground" Value="{x:Static configuration:Config.TextStrokeColor}" />
             <Setter Property="Margin" Value="8,4,8,4" />
-            <Setter Property="Padding" Value="6" />
             <Setter Property="BorderThickness" Value="1" />
             <Setter Property="BorderBrush" Value="{x:Static configuration:Config.OutlineStrokeColor}" />
             <Setter Property="Template">
@@ -22,7 +21,8 @@
                                 Background="{TemplateBinding Background}"
                                 BorderBrush="{TemplateBinding BorderBrush}"
                                 BorderThickness="{TemplateBinding BorderThickness}"
-                                Padding="{TemplateBinding Padding}">
+                                Padding="{TemplateBinding Padding}"
+                                CornerRadius="4">
                             <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
                         </Border>
                     </ControlTemplate>
@@ -35,4 +35,8 @@
             <!-- </Style.Triggers> -->
         </Style>
     </ToggleButton.Resources>
+    <StackPanel Orientation="Horizontal">
+        <Ellipse Name="IndicatorLight" Height="15" Width="15" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="15, 0, 0, 0" Stretch="Uniform" Fill="#FFF4F4F5" Stroke="{x:Static configuration:Config.OutlineStrokeColor}"/>
+        <Label x:Name="Text" Content="Button" FontFamily="{x:Static configuration:Config.DefaultFontFamily}" FontSize="20" Width="205" Height="35" Margin="15, 0, 0, 0" VerticalContentAlignment="Center"/>
+    </StackPanel>
 </ToggleButton>
