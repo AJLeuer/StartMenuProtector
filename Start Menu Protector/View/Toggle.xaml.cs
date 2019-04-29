@@ -80,6 +80,7 @@ namespace StartMenuProtector.View
         public Toggle()
         {
             InitializeComponent();
+            Loaded += CompleteInitialization;
 
             Style = this.Resources["Style"] as Style;
 
@@ -92,22 +93,43 @@ namespace StartMenuProtector.View
             {
                 DisabledColor = DefaultDisabledColor;
             }
+        }
 
-            this.IsChecked = false;
+        protected void CompleteInitialization(object sender, RoutedEventArgs @event)
+        {
+            if (IsChecked.HasValue)
+            {
+                if (IsChecked.Value == true)
+                {
+                    ToggleOn();
+                }
+                else /* if (IsChecked.Value == false) */
+                {
+                    ToggleOff();
+                }
+            }
+        }
+
+        public virtual void ToggleOn()
+        {
+            IndicatorLight.Fill = EnabledColor;
+            Text.Content = EnabledText;
+        }
+
+        public virtual void ToggleOff()
+        {
             IndicatorLight.Fill = DisabledColor;
             Text.Content = DisabledText;
         }
 
         private void ProcessToggledOn(object sender, RoutedEventArgs @event)
         {
-            IndicatorLight.Fill = EnabledColor;
-            Text.Content = EnabledText;
+            ToggleOn();
         }
 
         private void ProcessToggledOff(object sender, RoutedEventArgs @event)
         {
-            IndicatorLight.Fill = DisabledColor;
-            Text.Content = DisabledText;
+            ToggleOff();
         }
     }
 }
