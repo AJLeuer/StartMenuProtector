@@ -20,21 +20,41 @@ namespace StartMenuProtector.Control
     
     public class SystemStateService
     {
-        public virtual Dictionary<StartMenuShortcutsLocation, Directory> LoadSystemAndUserStartMenuProgramShortcutsFromDisk()
+
+        private Dictionary<StartMenuShortcutsLocation, Directory> osEnvironmentStartMenuItems = null;
+        readonly object osEnvironmentStartMenuItemsLock = new object();
+        public virtual Dictionary<StartMenuShortcutsLocation, Directory> OSEnvironmentStartMenuItems
         {
-            String systemStartMenuShortcutsPath = $@"{Environment.GetFolderPath(Environment.SpecialFolder.CommonStartMenu)}\Programs";
-            String userStartMenuShortcutsPath = $@"{Environment.GetFolderPath(Environment.SpecialFolder.StartMenu)}\Programs";
-            
-            var systemStartMenuShortcuts = new Directory(systemStartMenuShortcutsPath);
-            var userStartMenuShortcuts = new Directory(userStartMenuShortcutsPath);
-            
-            var startMenuProgramShortcuts = new Dictionary<StartMenuShortcutsLocation, Directory>
+            get
             {
-                {StartMenuShortcutsLocation.System, systemStartMenuShortcuts},
-                {StartMenuShortcutsLocation.User, userStartMenuShortcuts}
+                lock (osEnvironmentStartMenuItemsLock)
+                {
+                    if (osEnvironmentStartMenuItems == null)
+                    {
+                        LoadSystemAndUserStartMenuItemsFromOSEnvironment();
+                    }
+
+                    return osEnvironmentStartMenuItems;
+                }
+            }
+        }
+        
+        private void LoadSystemAndUserStartMenuItemsFromOSEnvironment()
+        {
+            String systemStartMenuItemsPath = $@"{Environment.GetFolderPath(Environment.SpecialFolder.CommonStartMenu)}\Programs";
+            String userStartMenuItemsPath = $@"{Environment.GetFolderPath(Environment.SpecialFolder.StartMenu)}\Programs";
+        
+            var systemStartMenuItems = new Directory(systemStartMenuItemsPath);
+            var userStartMenuItems = new Directory(userStartMenuItemsPath);
+        
+            var startMenuItems = new Dictionary<StartMenuShortcutsLocation, Directory>
+            {
+                {StartMenuShortcutsLocation.System, systemStartMenuItems},
+                {StartMenuShortcutsLocation.User, userStartMenuItems}
             };
 
-            return startMenuProgramShortcuts;
+            osEnvironmentStartMenuItems = startMenuItems;
         }
+        
     }
 }

@@ -6,8 +6,8 @@ namespace StartMenuProtector
 {
     public partial class App : Application
     {
-        private readonly StartMenuSentinel sentinel = new StartMenuSentinel();
         private readonly SystemStateService systemStateService = new SystemStateService();
+        private StartMenuSentinel sentinel;
         private ActiveStartMenuDataService activeDataService;
         private SavedStartMenuDataService savedDataService;
         private StartMenuViewController activeStartMenuItemsViewController;
@@ -17,6 +17,8 @@ namespace StartMenuProtector
 
         protected override void OnStartup(StartupEventArgs startup)
         {
+            sentinel = new StartMenuSentinel(systemStateService);
+            
             activeDataService = new ActiveStartMenuDataService(systemStateService);
             savedDataService = new SavedStartMenuDataService(systemStateService);
             

@@ -85,7 +85,7 @@ namespace StartMenuProtectorTest.Test
                 (self) => self.Copy(It.IsAny<Directory>()));
 
             SystemStateControllerMock.Setup(
-                    (self) => self.LoadSystemAndUserStartMenuProgramShortcutsFromDisk())
+                    (self) => self.OSEnvironmentStartMenuItems)
                 .Returns(startMenuShortcutsFromDisk);
 
             FileToMoveMock

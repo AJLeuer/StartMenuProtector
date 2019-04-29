@@ -4,14 +4,29 @@ namespace StartMenuProtector.Control
 {
     public class StartMenuSentinel
     {
-        public StartMenuSentinel()
+        private Thread Thread;
+        
+        public SystemStateService SystemStateService { private get; set; }
+
+        public StartMenuSentinel(SystemStateService service)
         {
-            new Thread(this.Run).Start();
+            this.SystemStateService = service;
+        }
+        
+        public void Start()
+        {
+            Thread = new Thread(Run);
+            Thread.Start();
         }
 
         private void Run()
         {
-            
+            CheckForDivergencesFromUsersSavedStartMenuState();
+        }
+
+        private void CheckForDivergencesFromUsersSavedStartMenuState()
+        {
+            throw new System.NotImplementedException();
         }
     }
 }

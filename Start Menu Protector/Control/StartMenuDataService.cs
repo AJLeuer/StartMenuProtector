@@ -133,7 +133,7 @@ namespace StartMenuProtector.Control
         
         private void CopyCurrentActiveStartMenuItemsFromOSEnvironmentToAppDataDiskStorage()
         {
-            Dictionary<StartMenuShortcutsLocation, Directory> startMenuContents = SystemStateService.LoadSystemAndUserStartMenuProgramShortcutsFromDisk();
+            Dictionary<StartMenuShortcutsLocation, Directory> startMenuContents = SystemStateService.OSEnvironmentStartMenuItems;
             startMenuContents[StartMenuShortcutsLocation.System].Copy(StartMenuItemsStorage[StartMenuShortcutsLocation.System]);
             startMenuContents[StartMenuShortcutsLocation.User].Copy(StartMenuItemsStorage[StartMenuShortcutsLocation.User]);
         }
