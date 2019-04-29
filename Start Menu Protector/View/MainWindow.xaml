@@ -1,4 +1,4 @@
-﻿<Window x:Class="StartMenuProtector.View.MainWindow"
+<Window x:Class="StartMenuProtector.View.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -9,8 +9,12 @@
         Title="{x:Static config:Globals.ApplicationName}" Width="{x:Static config:Config.MainWindowWidth}" Height="{x:Static config:Config.MainWindowHeight}">
 
     <Grid>
-        <Button></Button>
-        <TabControl FontSize="20" HorizontalAlignment="Stretch" FontFamily="{x:Static config:Config.DefaultFontFamily}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="1*"></RowDefinition>
+            <RowDefinition Height="14*"></RowDefinition>
+        </Grid.RowDefinitions>
+        <view:Toggle Grid.Row="0" Width="200" Height="50" VerticalAlignment="Center" HorizontalAlignment="Center"></view:Toggle>
+        <TabControl  Grid.Row="1" FontSize="20" HorizontalAlignment="Stretch" FontFamily="{x:Static config:Config.DefaultFontFamily}" VerticalAlignment="Stretch">
             <TabItem Header="Active">
                 <view:ActiveStartMenuShortcutsView x:Name="ActiveProgramShortcutsView"/>
             </TabItem>

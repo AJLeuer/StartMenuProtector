@@ -130,11 +130,18 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Control\StartMenuSentinel.cs" />
+    <Compile Include="View\Toggle.xaml.cs">
+      <DependentUpon>Toggle.xaml</DependentUpon>
+    </Compile>
     <Page Include="View\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
     <Page Include="View\StartMenuShortcutsView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Toggle.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

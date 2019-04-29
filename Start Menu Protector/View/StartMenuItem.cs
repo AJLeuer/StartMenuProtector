@@ -40,49 +40,16 @@ namespace StartMenuProtector.View
         public StartMenuItemDraggedAndDroppedEventHandler ReceivedDropHandler  { get; set; }
         public StartMenuItemMarkedExcludedEventHandler    MarkedExcludedHandler { get; set; }
 
-        public static Brush DefaultOutlineColor { get; set; } = new SolidColorBrush(Config.OutlineColor);
-        public static Brush DefaultTextColor { get; set; } = new SolidColorBrush(Config.TextColor);
-        public static Brush DefaultBackgroundColor { get; set; } = new SolidColorBrush(Config.BackgroundColor);
-        public static Brush DefaultSelectionTextColor { get; set; } = new SolidColorBrush(Config.SelectionTextColor);
-        
-        public static Brush DefaultSelectionBackgroundColor { get; } = new LinearGradientBrush
-        {
-            EndPoint = new Point(0.5, 1),
-            MappingMode = BrushMappingMode.RelativeToBoundingBox,
-            StartPoint = new Point(0.5, 0),
-            GradientStops =
-            {
-                new GradientStop { Color = Config.SelectionBackgroundColor },
-                new GradientStop { Color = Color.FromArgb(0xFF, 0x48, 0x77, 0xAA)},
-                new GradientStop { Color = Color.FromArgb(0xFF, 0x4C, 0x8D, 0xD3)}
-            }
-        };
-        
-        public static Brush DefaultMarkedDeletedBackgroundColor { get; } = new LinearGradientBrush
-        {
-            EndPoint = new Point(0.5, 1),
-            MappingMode = BrushMappingMode.RelativeToBoundingBox,
-            StartPoint = new Point(0.5, 0),
-            GradientStops =
-            {
-                new GradientStop { Color = Config.MarkedDeletedBackgroundColor },
-                new GradientStop { Color = Color.FromArgb(Config.MarkedDeletedBackgroundColor.A, Config.MarkedDeletedBackgroundColor.R, Config.MarkedDeletedBackgroundColor.G, (byte)(Config.MarkedDeletedBackgroundColor.B + 0x08))},
-                new GradientStop { Color = Color.FromArgb(Config.MarkedDeletedBackgroundColor.A, Config.MarkedDeletedBackgroundColor.R, Config.MarkedDeletedBackgroundColor.G, (byte)(Config.MarkedDeletedBackgroundColor.B + 0x0F))}
-            }
-        };        
-        
-        public static Brush DefaultDropTargetBackgroundColor { get; } = new LinearGradientBrush
-        {
-            EndPoint = new Point(0.5, 1),
-            MappingMode = BrushMappingMode.RelativeToBoundingBox,
-            StartPoint = new Point(0.5, 0),
-            GradientStops =
-            {
-                new GradientStop { Color = Config.DropTargetBackgroundColor },
-                new GradientStop { Color = Color.FromArgb(Config.DropTargetBackgroundColor.A, (byte)(Config.DropTargetBackgroundColor.R + 0x08), Config.DropTargetBackgroundColor.G, Config.DropTargetBackgroundColor.B)},
-                new GradientStop { Color = Color.FromArgb(Config.DropTargetBackgroundColor.A, (byte)(Config.DropTargetBackgroundColor.R + 0x0F), Config.DropTargetBackgroundColor.G, Config.DropTargetBackgroundColor.B)}
-            }
-        };
+        public static Brush DefaultOutlineColor { get; set; } = Config.OutlineStrokeColor;
+        public static Brush DefaultTextColor { get; set; } = Config.TextStrokeColor;
+        public static Brush DefaultBackgroundColor { get; set; } = Config.BackgroundFillColor;
+        public static Brush DefaultSelectionTextColor { get; set; } = Config.SelectionTextStrokeColor;
+
+        public static Brush DefaultSelectionBackgroundColor { get; } = Config.SelectionBackgroundFillColor;
+
+        public static Brush DefaultMarkedDeletedBackgroundColor { get; } = Config.NegativeChangeSymbolicFillColor;
+
+        public static Brush DefaultDropTargetBackgroundColor { get; } = Config.PositiveChangeSymbolicFillColor;
 
         private bool selected = false;
 
