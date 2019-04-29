@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
-using System.Reflection;
 using System.Security.AccessControl;
 using System.Security.Principal;
 using System.Windows.Media.Imaging;
@@ -400,6 +399,27 @@ namespace StartMenuProtector.Data
 
             return contained;
         }
+
+        public ICollection<FileSystemItem> FindMatchingItems(Func<FileSystemItem, bool> matcher)
+        {
+            var matchingItems = new HashSet<FileSystemItem>();
+
+            foreach (Directory subdirectory in Directories)
+            {
+                IEnumerable<FileSystemItem> matches = subdirectory.FindMatchingItems(matcher);
+                matchingItems.AddAll(matches);
+            }
+
+            foreach (FileSystemItem item in Contents)
+            {
+                if (matcher(item))
+                {
+                    matchingItems.Add(item);
+                }
+            }
+
+            return matchingItems;
+        }
     }
     
     public class File : FileSystemItem 
@@ -479,20 +499,27 @@ namespace StartMenuProtector.Data
             var shell = new Shell();
             Folder folder = shell.NameSpace(pathOnly);
             FolderItem folderItem = folder.ParseName(filenameOnly);
-            
-            if (folderItem != null)
-            {
-                ShellLinkObject link = (ShellLinkObject)folderItem.GetLink;
-                FileAttributes targetItemAttributes = System.IO.File.GetAttributes(link.Path);
 
-                if ((targetItemAttributes & FileAttributes.Directory) == FileAttributes.Directory)
+            try
+            {
+                if (folderItem != null)
                 {
-                    return Option.Some<FileSystemItem>(new Directory(link.Path));
+                    var link = (ShellLinkObject)folderItem.GetLink;
+                    FileAttributes targetItemAttributes = System.IO.File.GetAttributes(link.Path);
+
+                    if ((targetItemAttributes & FileAttributes.Directory) == FileAttributes.Directory)
+                    {
+                        return Option.Some<FileSystemItem>(new Directory(link.Path));
+                    }
+                    else /* if is file */
+                    {
+                        return Option.Some<FileSystemItem>(new File(link.Path));
+                    }
                 }
-                else /* if is file */
-                {
-                    return Option.Some<FileSystemItem>(new File(link.Path));
-                }
+            }
+            catch (Exception)
+            {
+                return Option.None<FileSystemItem>();
             }
 
             return Option.None<FileSystemItem>();
