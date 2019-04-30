@@ -532,11 +532,15 @@ namespace StartMenuProtector.Data
         {
             DirectoryInfo[] directories = directoryInfo.GetDirectories();
             var enhancedDirectories = new List<Directory>();
-            
+
             foreach (DirectoryInfo directory in directories)
             {
                 var enhancedDirectory = new Directory(directory);
-                enhancedDirectories.Add(enhancedDirectory);
+
+                if (enhancedDirectory.Filtered == false)
+                {
+                    enhancedDirectories.Add(enhancedDirectory);
+                }
             }
 
             return enhancedDirectories.ToArray();
@@ -550,7 +554,11 @@ namespace StartMenuProtector.Data
             foreach (FileInfo file in files)
             {
                 var enhancedFile = new File(file);
-                enhancedFiles.Add(enhancedFile);
+                
+                if (enhancedFile.Filtered == false)
+                {
+                    enhancedFiles.Add(enhancedFile);
+                }
             }
 
             return enhancedFiles.ToArray();
