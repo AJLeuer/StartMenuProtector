@@ -275,24 +275,28 @@ namespace StartMenuProtector.Data
             }
         }
 
-        private readonly object contentsAccessLock = new Object();
+        public object ContentsAccessLock { get; } = new Object();
+        
         private List<FileSystemItem> contents = null;
         public virtual List<FileSystemItem> Contents 
         {
             get
             {
-                if (contents == null)
+                lock (ContentsAccessLock)
                 {
-                    InitializeContents();
-                }
+                    if (contents == null)
+                    {
+                        InitializeContents();
+                    }
                 
-                return contents;
+                    return contents;   
+                }
             }
         }
         
         private void InitializeContents()
         {
-            lock (contentsAccessLock)
+            lock (ContentsAccessLock)
             {
                 var currentContents = new List<FileSystemItem>();
                 var subdirectories = new List<Directory>(Self.GetDirectoriesEnhanced());
@@ -332,9 +336,12 @@ namespace StartMenuProtector.Data
                 currentContents.AddAll(subdirectories);
                 currentContents.AddAll(currentFiles);
 
-                files.ReplaceAll(currentFiles);
-                directories.ReplaceAll(subdirectories);
-                contents.ReplaceAll(currentContents);
+                lock (ContentsAccessLock)
+                {
+                    files.ReplaceAll(currentFiles);
+                    directories.ReplaceAll(subdirectories);
+                    contents.ReplaceAll(currentContents);
+                }
             }
             
             return Contents;
@@ -342,12 +349,15 @@ namespace StartMenuProtector.Data
 
         public virtual void DeleteContents()
         {
-            foreach (FileSystemItem fileSystemItem in Contents)
+            lock (ContentsAccessLock)
             {
-                fileSystemItem.Delete();
-            }
+                foreach (FileSystemItem fileSystemItem in Contents)
+                {
+                    fileSystemItem.Delete();
+                }
             
-            contents.Clear();
+                contents.Clear();
+            }
         }
         
         public override void Delete()
@@ -363,16 +373,19 @@ namespace StartMenuProtector.Data
         {
             if (Valid)
             {
-                String pathOfCopy = System.IO.Path.Combine(destination.FullName, Name);
-                Directory directoryCopy = System.IO.Directory.Exists(pathOfCopy) ? new Directory(pathOfCopy) : new Directory(System.IO.Directory.CreateDirectory(pathOfCopy));
-
-                DirectorySecurity security = Self.GetAccessControl();
-                security.SetAccessRuleProtection(true, true);
-                directoryCopy.Self.SetAccessControl(security);
-
-                foreach (FileSystemItem itemToCopy in Contents)
+                lock (destination.ContentsAccessLock)
                 {
-                    itemToCopy.Copy(directoryCopy);
+                    String pathOfCopy = System.IO.Path.Combine(destination.FullName, Name);
+                    Directory directoryCopy = System.IO.Directory.Exists(pathOfCopy) ? new Directory(pathOfCopy) : new Directory(System.IO.Directory.CreateDirectory(pathOfCopy));
+
+                    DirectorySecurity security = Self.GetAccessControl();
+                    security.SetAccessRuleProtection(true, true);
+                    directoryCopy.Self.SetAccessControl(security);
+
+                    foreach (FileSystemItem itemToCopy in Contents)
+                    {
+                        itemToCopy.Copy(directoryCopy);
+                    }
                 }
             }
         }
@@ -475,17 +488,20 @@ namespace StartMenuProtector.Data
         {
             if (Valid)
             {
-                String pathOfCopy = System.IO.Path.Combine(destination.FullName, Name);
+                lock (destination.ContentsAccessLock)
+                {
+                    String pathOfCopy = System.IO.Path.Combine(destination.FullName, Name);
             
-                FileSecurity originalSecurity = Self.GetAccessControl();
-                originalSecurity.SetAccessRuleProtection(true, true);
+                    FileSecurity originalSecurity = Self.GetAccessControl();
+                    originalSecurity.SetAccessRuleProtection(true, true);
 
-                Self.CopyTo(pathOfCopy, true);
+                    Self.CopyTo(pathOfCopy, true);
 
-                var fileCopy = new FileInfo(pathOfCopy);
+                    var fileCopy = new FileInfo(pathOfCopy);
 
-                // ReSharper disable once AssignNullToNotNullAttribute
-                fileCopy.SetAccessControl(originalSecurity);
+                    // ReSharper disable once AssignNullToNotNullAttribute
+                    fileCopy.SetAccessControl(originalSecurity);
+                }
             }
         }
         
