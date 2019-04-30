@@ -14,10 +14,10 @@ namespace StartMenuProtectorTest.Utility
         public static readonly Mock<MockableFile> SystemStartMenuItemMock = new Mock<MockableFile>(); 
         public static readonly Mock<MockableFile> UserStartMenuItemMock   = new Mock<MockableFile>();
 
-        public static readonly List<FileSystemItem> ActiveSystemStartMenuItems = new List<FileSystemItem> { SystemStartMenuItemMock.Object, SystemStartMenuItemMock.Object, SystemStartMenuItemMock.Object };
-        public static readonly List<FileSystemItem> ActiveUserStartMenuItems   = new List<FileSystemItem> { UserStartMenuItemMock.Object,   UserStartMenuItemMock.Object,   UserStartMenuItemMock.Object   };
-        public static readonly List<FileSystemItem> SavedSystemStartMenuItems  = new List<FileSystemItem> { SystemStartMenuItemMock.Object, SystemStartMenuItemMock.Object, SystemStartMenuItemMock.Object };
-        public static readonly List<FileSystemItem> SavedUserStartMenuItems    = new List<FileSystemItem> { UserStartMenuItemMock.Object,   UserStartMenuItemMock.Object,   UserStartMenuItemMock.Object   };
+        public static readonly List<IFileSystemItem> ActiveSystemStartMenuItems = new List<IFileSystemItem> { SystemStartMenuItemMock.Object, SystemStartMenuItemMock.Object, SystemStartMenuItemMock.Object };
+        public static readonly List<IFileSystemItem> ActiveUserStartMenuItems   = new List<IFileSystemItem> { UserStartMenuItemMock.Object,   UserStartMenuItemMock.Object,   UserStartMenuItemMock.Object   };
+        public static readonly List<IFileSystemItem> SavedSystemStartMenuItems  = new List<IFileSystemItem> { SystemStartMenuItemMock.Object, SystemStartMenuItemMock.Object, SystemStartMenuItemMock.Object };
+        public static readonly List<IFileSystemItem> SavedUserStartMenuItems    = new List<IFileSystemItem> { UserStartMenuItemMock.Object,   UserStartMenuItemMock.Object,   UserStartMenuItemMock.Object   };
 
         public static Task<Directory> CreateStubbedStartMenuContentsRetrievalTask(StartMenuProtectorViewType view, StartMenuShortcutsLocation location)
         {

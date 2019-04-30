@@ -13,7 +13,7 @@ using static StartMenuProtector.Configuration.Config;
 
 namespace StartMenuProtector.Data 
 {
-    public interface IFileSystemItem : IEquatable<FileSystemItem> 
+    public interface IFileSystemItem : IEquatable<IFileSystemItem> 
     {
         FileSystemInfo OriginalFileSystemItem { get; set; }
         string Name { get; }
@@ -30,7 +30,6 @@ namespace StartMenuProtector.Data
         bool MarkedForExclusion { get; set; }
         bool Valid { get; }
         bool Filtered { get; }
-        bool Equals(FileSystemItem item);
         bool Equals(object @object);
         int GetHashCode();
 
@@ -49,8 +48,8 @@ namespace StartMenuProtector.Data
         DirectoryInfo Self { get; }
         List<File> Files { get; }
         List<Directory> Directories { get; }
-        List<FileSystemItem> Contents { get; }
-        List<FileSystemItem> RefreshContents();
+        List<IFileSystemItem> Contents { get; }
+        List<IFileSystemItem> RefreshContents();
         void DeleteContents();
         void Delete();
 
@@ -233,24 +232,24 @@ namespace StartMenuProtector.Data
             }
         }
         
-        public static bool operator == (FileSystemItem left, FileSystemItem right)
+        public static bool operator == (FileSystemItem left, IFileSystemItem right)
         {
             return left?.Path == right?.Path;
         }
 
-        public static bool operator != (FileSystemItem left, FileSystemItem right)
+        public static bool operator != (FileSystemItem left, IFileSystemItem right)
         {
             return (!(left == right));
         }
 
-        public bool Equals(FileSystemItem item)
+        public bool Equals(IFileSystemItem item)
         {
             return this == item;
         }
         
         public override bool Equals(object @object)
         {
-            if ((@object != null) && (@object.IsOfType<FileSystemItem>()))
+            if ((@object != null) && (@object.IsOfType<IFileSystemItem>()))
             {
                 return this.Equals((FileSystemItem) @object);
             }
@@ -282,7 +281,6 @@ namespace StartMenuProtector.Data
     
     public class Directory : FileSystemItem, IDirectory 
     {
-
         public virtual DirectoryInfo Self
         {
             get { return OriginalFileSystemItem as DirectoryInfo; }
@@ -341,8 +339,8 @@ namespace StartMenuProtector.Data
 
         public object ContentsAccessLock { get; } = new Object();
         
-        private List<FileSystemItem> contents = null;
-        public virtual List<FileSystemItem> Contents 
+        private List<IFileSystemItem> contents = null;
+        public virtual List<IFileSystemItem> Contents 
         {
             get
             {
@@ -362,7 +360,7 @@ namespace StartMenuProtector.Data
         {
             lock (ContentsAccessLock)
             {
-                var currentContents = new List<FileSystemItem>();
+                var currentContents = new List<IFileSystemItem>();
                 var subdirectories = new List<Directory>(Self.GetDirectoriesEnhanced());
                 var currentFiles = new List<File>(Self.GetFilesEnhanced());
 
@@ -380,7 +378,7 @@ namespace StartMenuProtector.Data
             }
         }
         
-        public virtual List<FileSystemItem> RefreshContents() 
+        public virtual List<IFileSystemItem> RefreshContents() 
         {
             if ((files == null) || (directories == null) || (contents == null))
             {
@@ -514,6 +512,20 @@ namespace StartMenuProtector.Data
 
             return Option.None<Directory>();
         }
+
+        /// <summary>
+        /// Recursively searches for any items in test that differ from those in sourceOfTruth. Items present in
+        /// sourceOfTruth but absent in test are returned as part of removed, items discovered in test not present
+        /// in sourceOfTruth are returned as part of added. If the item is a directory, it is returned with all its
+        /// contents present.
+        /// </summary>
+        /// <param name="sourceOfTruth"></param>
+        /// <param name="test"></param>
+        /// <returns></returns>
+        public static (ICollection<RelocatableItem> added, ICollection<RelocatableItem> removed) FindDivergences(IDirectory sourceOfTruth, IDirectory test)
+        {
+            throw new NotImplementedException();
+        }
     }
     
     public class File : FileSystemItem, IFile 
@@ -620,6 +632,93 @@ namespace StartMenuProtector.Data
             }
 
             return Option.None<FileSystemItem>();
+        }
+    }
+
+    /// <summary>
+    /// A FileSystemItem that records its original location in the file system, allowing it to be returned there
+    /// </summary>
+    public class RelocatableItem : IFileSystemItem
+    {
+        public String OriginalPath { get; }
+        public IFileSystemItem UnderlyingItem { get; }
+        public FileSystemInfo OriginalFileSystemItem
+        {
+            get { return UnderlyingItem.OriginalFileSystemItem;}
+            set { UnderlyingItem.OriginalFileSystemItem = value; }
+        }
+        public string Name
+        {
+            get { return UnderlyingItem.Name; }
+        }
+        public string PrettyName
+        {
+            get { return UnderlyingItem.PrettyName; }
+        }
+        
+        public string Path
+        {
+            get { return UnderlyingItem.Path; }
+        }
+        
+        public string FullName
+        {
+            get { return UnderlyingItem.FullName; }
+        }
+        public bool Exists
+        {
+            get { return UnderlyingItem.Exists; }
+        }
+        public OwnerType OwnerType
+        {
+            get { return UnderlyingItem.OwnerType; }
+        }
+        public bool MarkedForExclusion
+        {
+            get { return UnderlyingItem.MarkedForExclusion;}
+            set { UnderlyingItem.MarkedForExclusion = value; } 
+        }
+        public bool Valid
+        {
+            get { return UnderlyingItem.Valid; }
+        }
+        public bool Filtered
+        {
+            get
+            {
+                return UnderlyingItem.Filtered;
+            }
+        }
+
+        public RelocatableItem(IFileSystemItem underlyingItem)
+        {
+            this.UnderlyingItem = underlyingItem;
+            this.OriginalPath = UnderlyingItem.Path;
+        }
+        
+        public bool Equals(IFileSystemItem other)
+        {
+            return UnderlyingItem.Equals(other);
+        }
+
+        public void Copy(Directory destination)
+        {
+            UnderlyingItem.Copy(destination);
+        }
+
+        public void Move(Directory destination)
+        {
+            UnderlyingItem.Move(destination);
+        }
+
+        public void MoveToOriginalPath()
+        {
+            Move(new Directory(OriginalPath));
+        }
+
+        public void Delete()
+        {
+            UnderlyingItem.Delete();
         }
     }
 

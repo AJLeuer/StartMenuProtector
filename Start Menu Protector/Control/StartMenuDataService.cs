@@ -38,7 +38,7 @@ namespace StartMenuProtector.Control
             return startMenuContents;
         }
 
-        public abstract void SaveStartMenuItems(IEnumerable<FileSystemInfo> startMenuItems, StartMenuShortcutsLocation location);
+        public abstract void SaveStartMenuItems(IEnumerable<IFileSystemItem> startMenuItems, StartMenuShortcutsLocation location);
         protected async Task<Dictionary<StartMenuShortcutsLocation, Directory>> LoadStartMenuContentsFromAppDataDiskStorageToMemory()
         {
             
@@ -47,7 +47,7 @@ namespace StartMenuProtector.Control
             return StartMenuItemsStorage;
         }
 
-        public abstract Task HandleRequestToMoveFileSystemItems(FileSystemItem itemRequestingMove, FileSystemItem destinationItem);
+        public abstract Task HandleRequestToMoveFileSystemItems(IFileSystemItem itemRequestingMove, IFileSystemItem destinationItem);
 
         public void RefreshStartMenuItems(StartMenuShortcutsLocation location)
         {
@@ -148,12 +148,12 @@ namespace StartMenuProtector.Control
             }
         }
 
-        public override void SaveStartMenuItems(IEnumerable<FileSystemInfo> startMenuItems, StartMenuShortcutsLocation location)
+        public override void SaveStartMenuItems(IEnumerable<IFileSystemItem> startMenuItems, StartMenuShortcutsLocation location)
         {
             /* Do nothing */
         }
 
-        public override async Task HandleRequestToMoveFileSystemItems(FileSystemItem itemRequestingMove, FileSystemItem destinationItem)
+        public override async Task HandleRequestToMoveFileSystemItems(IFileSystemItem itemRequestingMove, IFileSystemItem destinationItem)
         {
             if (destinationItem is Directory destinationFolder)
             {
@@ -182,7 +182,7 @@ namespace StartMenuProtector.Control
         {
         }
 
-        public override void SaveStartMenuItems(IEnumerable<FileSystemInfo> startMenuItems, StartMenuShortcutsLocation location)
+        public override void SaveStartMenuItems(IEnumerable<IFileSystemItem> startMenuItems, StartMenuShortcutsLocation location)
         {
             ClearStartMenuItems(location);
             
@@ -192,15 +192,14 @@ namespace StartMenuProtector.Control
             
                 foreach (var startMenuItem in startMenuItems)
                 {
-                    FileSystemItem fileSystemItem = FileSystemItem.Create(startMenuItem);
-                    fileSystemItem.Copy(startMenuItemsDirectory);
+                    startMenuItem.Copy(startMenuItemsDirectory);
                 }
             }
             
             RefreshStartMenuItems(location);
         }
 
-        public override async Task HandleRequestToMoveFileSystemItems(FileSystemItem itemRequestingMove, FileSystemItem destinationItem)
+        public override async Task HandleRequestToMoveFileSystemItems(IFileSystemItem itemRequestingMove, IFileSystemItem destinationItem)
         {
             /* Do nothing */
             await Task.Run(() => {});

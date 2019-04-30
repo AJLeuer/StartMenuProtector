@@ -19,7 +19,7 @@ namespace StartMenuProtectorTest.Test
         public static Mock<MockableDirectory> UserProgramsMock;
         
         public static Mock<MockableFile> FileToBeSavedMock;
-        public static ICollection<FileSystemInfo> FilesToSave;
+        public static ICollection<IFileSystemItem> FilesToSave;
         public static Mock<MockableFile> FileToMoveMock;
         public static Mock<MockableDirectory> DestinationDirectoryMock;
         
@@ -33,7 +33,7 @@ namespace StartMenuProtectorTest.Test
             UserProgramsMock = new Mock<MockableDirectory>();
             FileToBeSavedMock = new Mock<MockableFile>();
             
-            FilesToSave = new List<FileSystemInfo>
+            FilesToSave = new List<IFileSystemItem>
             {
                 FileToBeSavedMock.Object,
                 FileToBeSavedMock.Object,
@@ -71,11 +71,11 @@ namespace StartMenuProtectorTest.Test
 
             SystemProgramsMock.Setup(
                     (self) => self.RefreshContents())
-                .Returns(new List<FileSystemItem>());
+                .Returns(new List<IFileSystemItem>());
             
             UserProgramsMock.Setup(
                     (self) => self.RefreshContents())
-                .Returns(new List<FileSystemItem>());
+                .Returns(new List<IFileSystemItem>());
 
             SystemProgramsMock.Setup((self) => self.DeleteContents());
 
@@ -95,8 +95,8 @@ namespace StartMenuProtectorTest.Test
         [Test]
         public static void ActiveStartMenuDataServiceShouldClearOldActiveStartMenuDataWhenStartMenuContentsAreRetrieved()
         {
-            SystemProgramsMock.Setup((self) => self.Contents).Returns(new List<FileSystemItem>());
-            UserProgramsMock.Setup((self) => self.Contents).Returns(new List<FileSystemItem>());
+            SystemProgramsMock.Setup((self) => self.Contents).Returns(new List<IFileSystemItem>());
+            UserProgramsMock.Setup((self) => self.Contents).Returns(new List<IFileSystemItem>());
             
             StartMenuDataService service = new ActiveStartMenuDataService(MockSystemStateService) { StartMenuItemsStorage = ActiveStartMenuShortcuts};
             

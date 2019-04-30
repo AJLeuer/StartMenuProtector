@@ -15,7 +15,7 @@ namespace StartMenuProtector.Control
         public SavedStartMenuDataService SavedDataService { get; set; }
         public SystemStateService SystemStateService { get; set; }
         
-        public ObservableCollection<FileSystemInfo> StartMenuContents { get;} = new AsyncObservableCollection<FileSystemInfo>();
+        public ObservableCollection<IFileSystemItem> StartMenuContents { get;} = new AsyncObservableCollection<IFileSystemItem>();
 
         public StartMenuShortcutsLocation StartMenuStartMenuShortcutsLocation { get; set; } = StartMenuShortcutsLocation.System;
 
@@ -53,7 +53,7 @@ namespace StartMenuProtector.Control
         
         public sealed override async Task UpdateCurrentShortcuts()
         {
-            ICollection<FileSystemItem> startMenuContents;
+            ICollection<IFileSystemItem> startMenuContents;
             
             switch (CurrentContentState)
             {
@@ -103,7 +103,7 @@ namespace StartMenuProtector.Control
 
         public sealed override async Task UpdateCurrentShortcuts()
         {
-            ICollection<FileSystemItem> startMenuContent = (await SavedDataService.GetStartMenuContents(StartMenuStartMenuShortcutsLocation)).Contents;
+            ICollection<IFileSystemItem> startMenuContent = (await SavedDataService.GetStartMenuContents(StartMenuStartMenuShortcutsLocation)).Contents;
             StartMenuContents.ReplaceAll(startMenuContent);
         }
 

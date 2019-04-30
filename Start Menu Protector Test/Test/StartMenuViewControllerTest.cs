@@ -37,7 +37,7 @@ namespace StartMenuProtectorTest.Test
                 .Returns((StartMenuShortcutsLocation location) => { return CreateStubbedStartMenuContentsRetrievalTask(view: StartMenuProtectorViewType.Active, location: location); });
 
             ActiveDataServiceMock
-                .Setup((self) => self.SaveStartMenuItems(It.IsAny<IEnumerable<FileSystemInfo>>(), It.IsAny<StartMenuShortcutsLocation>()));
+                .Setup((self) => self.SaveStartMenuItems(It.IsAny<IEnumerable<IFileSystemItem>>(), It.IsAny<StartMenuShortcutsLocation>()));
 
             ActiveDataServiceMock
                 .Setup((self) => self.HandleRequestToMoveFileSystemItems(It.IsAny<FileSystemItem>(), It.IsAny<FileSystemItem>()))
@@ -52,7 +52,7 @@ namespace StartMenuProtectorTest.Test
                 .Returns((StartMenuShortcutsLocation location) => { return CreateStubbedStartMenuContentsRetrievalTask(view: StartMenuProtectorViewType.Saved, location: location); });
 
             SavedDataServiceMock
-                .Setup((self) => self.SaveStartMenuItems(It.IsAny<IEnumerable<FileSystemInfo>>(), It.IsAny<StartMenuShortcutsLocation>()));
+                .Setup((self) => self.SaveStartMenuItems(It.IsAny<IEnumerable<IFileSystemItem>>(), It.IsAny<StartMenuShortcutsLocation>()));
 
             StartMenuItemMock.Setup(
                     (self) => self.File)

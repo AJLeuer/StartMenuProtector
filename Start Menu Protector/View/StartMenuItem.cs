@@ -21,7 +21,7 @@ namespace StartMenuProtector.View
         Option<Border> Border { get; }
         TextBlock TextBlock { get; set; }
         Image Image { get; set; }
-        FileSystemItem File { get; set; }
+        IFileSystemItem File { get; set; }
         UInt64 ID { get; }
         void TakeFocus(object sender, MouseButtonEventArgs @event);
         void Select(object sender, RoutedEventArgs @event);
@@ -103,9 +103,9 @@ namespace StartMenuProtector.View
         public TextBlock TextBlock { get; set; }
         public Image Image { get; set; }
 
-        private FileSystemItem file;
+        private IFileSystemItem file;
 
-        public virtual FileSystemItem File 
+        public virtual IFileSystemItem File 
         {
             get { return file; }
             set
