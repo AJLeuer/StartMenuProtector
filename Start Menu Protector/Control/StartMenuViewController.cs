@@ -58,10 +58,10 @@ namespace StartMenuProtector.Control
             switch (CurrentContentState)
             {
                 case ContentState.MirroringOSEnvironment:
-                    startMenuContents = await ActiveDataService.GetStartMenuContents(StartMenuStartMenuShortcutsLocation);
+                    startMenuContents = (await ActiveDataService.GetStartMenuContents(StartMenuStartMenuShortcutsLocation)).Contents;
                     break;
                 case ContentState.UserChangesPresent:
-                    startMenuContents = await ActiveDataService.GetStartMenuContentsFromAppDataCache(StartMenuStartMenuShortcutsLocation);
+                    startMenuContents = (await ActiveDataService.GetStartMenuContentsFromAppDataCache(StartMenuStartMenuShortcutsLocation)).Contents;
                     break;
                 default:
                     throw new InvalidEnumArgumentException("Unhandled type of ContentState");
@@ -103,7 +103,7 @@ namespace StartMenuProtector.Control
 
         public sealed override async Task UpdateCurrentShortcuts()
         {
-            ICollection<FileSystemItem> startMenuContent = await SavedDataService.GetStartMenuContents(StartMenuStartMenuShortcutsLocation);
+            ICollection<FileSystemItem> startMenuContent = (await SavedDataService.GetStartMenuContents(StartMenuStartMenuShortcutsLocation)).Contents;
             StartMenuContents.ReplaceAll(startMenuContent);
         }
 

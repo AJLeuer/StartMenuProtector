@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Moq;
 using StartMenuProtector.Control;
 using StartMenuProtector.Data;
+using Directory = StartMenuProtector.Data.Directory;
 
 namespace StartMenuProtectorTest.Utility
 {
@@ -13,48 +14,44 @@ namespace StartMenuProtectorTest.Utility
         public static readonly Mock<MockableFile> SystemStartMenuItemMock = new Mock<MockableFile>(); 
         public static readonly Mock<MockableFile> UserStartMenuItemMock   = new Mock<MockableFile>();
 
-        public static readonly ICollection<FileSystemItem> ActiveSystemStartMenuItems = new List<FileSystemItem> { SystemStartMenuItemMock.Object, SystemStartMenuItemMock.Object, SystemStartMenuItemMock.Object };
-        public static readonly ICollection<FileSystemItem> ActiveUserStartMenuItems   = new List<FileSystemItem> { UserStartMenuItemMock.Object,   UserStartMenuItemMock.Object,   UserStartMenuItemMock.Object   };
-        public static readonly ICollection<FileSystemItem> SavedSystemStartMenuItems  = new List<FileSystemItem> { SystemStartMenuItemMock.Object, SystemStartMenuItemMock.Object, SystemStartMenuItemMock.Object };
-        public static readonly ICollection<FileSystemItem> SavedUserStartMenuItems    = new List<FileSystemItem> { UserStartMenuItemMock.Object,   UserStartMenuItemMock.Object,   UserStartMenuItemMock.Object   };
+        public static readonly List<FileSystemItem> ActiveSystemStartMenuItems = new List<FileSystemItem> { SystemStartMenuItemMock.Object, SystemStartMenuItemMock.Object, SystemStartMenuItemMock.Object };
+        public static readonly List<FileSystemItem> ActiveUserStartMenuItems   = new List<FileSystemItem> { UserStartMenuItemMock.Object,   UserStartMenuItemMock.Object,   UserStartMenuItemMock.Object   };
+        public static readonly List<FileSystemItem> SavedSystemStartMenuItems  = new List<FileSystemItem> { SystemStartMenuItemMock.Object, SystemStartMenuItemMock.Object, SystemStartMenuItemMock.Object };
+        public static readonly List<FileSystemItem> SavedUserStartMenuItems    = new List<FileSystemItem> { UserStartMenuItemMock.Object,   UserStartMenuItemMock.Object,   UserStartMenuItemMock.Object   };
 
-        public static Task<ICollection<FileSystemItem>> CreateStubbedStartMenuContentsRetrievalTask(StartMenuProtectorViewType view, StartMenuShortcutsLocation location)
+        public static Task<Directory> CreateStubbedStartMenuContentsRetrievalTask(StartMenuProtectorViewType view, StartMenuShortcutsLocation location)
         {
+            var directoryMock = new Mock<MockableDirectory>();
+
             switch (view) 
             {
                 case StartMenuProtectorViewType.Active:
                 {
                     if (location == StartMenuShortcutsLocation.System)
                     {
-                        return Task.Run(() =>
-                        {
-                            return ActiveSystemStartMenuItems;
-                        });
+                        directoryMock.Setup((self) => self.Contents).Returns(ActiveSystemStartMenuItems);
+                        directoryMock.Setup((self) => self.RefreshContents()).Returns(ActiveSystemStartMenuItems);
                     }
                     else /* if (location == StartMenuShortcutsLocation.User) */
                     {
-                        return Task.Run(() =>
-                        {
-                            return ActiveUserStartMenuItems;
-                        });
+                        directoryMock.Setup((self) => self.Contents).Returns(ActiveUserStartMenuItems);
+                        directoryMock.Setup((self) => self.RefreshContents()).Returns(ActiveUserStartMenuItems);
                     }
+                    break;
                 }
                 case StartMenuProtectorViewType.Saved:
                 {
                     if (location == StartMenuShortcutsLocation.System)
                     {
-                        return Task.Run(() =>
-                        {
-                            return SavedSystemStartMenuItems;
-                        });
+                        directoryMock.Setup((self) => self.Contents).Returns(SavedSystemStartMenuItems);
+                        directoryMock.Setup((self) => self.RefreshContents()).Returns(SavedSystemStartMenuItems);
                     }
                     else /* if (location == StartMenuShortcutsLocation.User) */
                     {
-                        return Task.Run(() =>
-                        {
-                            return SavedUserStartMenuItems;
-                        });
+                        directoryMock.Setup((self) => self.Contents).Returns(SavedUserStartMenuItems);
+                        directoryMock.Setup((self) => self.RefreshContents()).Returns(SavedUserStartMenuItems);
                     }
+                    break;
                 }
                 case StartMenuProtectorViewType.Quarantine:
                 {
@@ -69,6 +66,11 @@ namespace StartMenuProtectorTest.Utility
                     throw new InvalidEnumArgumentException();
                 }
             }
+
+            return Task.Run(() =>
+            {
+                return (Directory) directoryMock.Object;
+            });
         }
     }
 }

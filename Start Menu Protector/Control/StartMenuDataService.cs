@@ -21,15 +21,15 @@ namespace StartMenuProtector.Control
             this.SystemStateService = systemStateService;
         }
 
-        public virtual async Task<ICollection<FileSystemItem>> GetStartMenuContents(StartMenuShortcutsLocation location)
+        public virtual async Task<Directory> GetStartMenuContents(StartMenuShortcutsLocation location)
         {
-            ICollection<FileSystemItem> startMenuContents = await Task.Run(() =>
+            Directory startMenuContents = await Task.Run(() =>
             {
                 /* In the the saved data service, unlike the active one, we don't clear the old contents in AppData(since that
                  happens only when saving new contents, and we also don't load from the OS environments start menu state, since 
                  our state is determined entirely by the user. So the saved data service uses this default implementation, the 
                  active overrides it */
-                Dictionary<StartMenuShortcutsLocation, ICollection<FileSystemItem>> startMenuContentsFromAppData = LoadStartMenuContentsFromAppDataDiskStorageToMemory().Result;
+                Dictionary<StartMenuShortcutsLocation, Directory> startMenuContentsFromAppData = LoadStartMenuContentsFromAppDataDiskStorageToMemory().Result;
                 return startMenuContentsFromAppData[location];
             });
 
@@ -37,21 +37,14 @@ namespace StartMenuProtector.Control
         }
 
         public abstract void SaveStartMenuItems(IEnumerable<FileSystemInfo> startMenuItems, StartMenuShortcutsLocation location);
-        protected async Task<Dictionary<StartMenuShortcutsLocation, ICollection<FileSystemItem>>> LoadStartMenuContentsFromAppDataDiskStorageToMemory()
+        protected async Task<Dictionary<StartMenuShortcutsLocation, Directory>> LoadStartMenuContentsFromAppDataDiskStorageToMemory()
         {
-            var startMenuContents = new Dictionary<StartMenuShortcutsLocation, ICollection<FileSystemItem>>
-            {
-                { StartMenuShortcutsLocation.System, new List<FileSystemItem>() },
-                { StartMenuShortcutsLocation.User,   new List<FileSystemItem>() }
-            };
-            
             await Task.Run(() =>
             {
-                startMenuContents[StartMenuShortcutsLocation.System].AddAll(StartMenuItemsStorage[StartMenuShortcutsLocation.System].RefreshContents());
-                startMenuContents[StartMenuShortcutsLocation.User].AddAll(StartMenuItemsStorage[StartMenuShortcutsLocation.User].RefreshContents());
+                StartMenuItemsStorage.Values.ForEach((Directory directory) => { directory.RefreshContents(); });
             });
 
-            return startMenuContents;
+            return StartMenuItemsStorage;
         }
 
         public abstract Task HandleRequestToMoveFileSystemItems(FileSystemItem itemRequestingMove, FileSystemItem destinationItem);
@@ -113,20 +106,20 @@ namespace StartMenuProtector.Control
         /// </summary>
         /// <param name="location"></param>
         /// <returns>The up-to-date contents of the environment's Start Menu</returns>
-        public override async Task<ICollection<FileSystemItem>> GetStartMenuContents(StartMenuShortcutsLocation location)
+        public override async Task<Directory> GetStartMenuContents(StartMenuShortcutsLocation location)
         {
-            ICollection<FileSystemItem> startMenuContents = await Task.Run(() =>
+            Directory startMenuContents = await Task.Run(() =>
             {
                 ClearAllStartMenuItems().Wait();
                 CopyCurrentActiveStartMenuItemsFromOSEnvironmentToAppDataDiskStorage();
-                Dictionary<StartMenuShortcutsLocation, ICollection<FileSystemItem>> startMenuContentsFromAppData = LoadStartMenuContentsFromAppDataDiskStorageToMemory().Result;
+                Dictionary<StartMenuShortcutsLocation, Directory> startMenuContentsFromAppData = LoadStartMenuContentsFromAppDataDiskStorageToMemory().Result;
                 return startMenuContentsFromAppData[location];
             });
 
             return startMenuContents;
         }
         
-        public virtual async Task<ICollection<FileSystemItem>> GetStartMenuContentsFromAppDataCache(StartMenuShortcutsLocation location)
+        public virtual async Task<Directory> GetStartMenuContentsFromAppDataCache(StartMenuShortcutsLocation location)
         {
             return await base.GetStartMenuContents(location);
         }
