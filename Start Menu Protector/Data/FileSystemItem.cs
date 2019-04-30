@@ -13,10 +13,72 @@ using static StartMenuProtector.Configuration.Config;
 
 namespace StartMenuProtector.Data 
 {
-    public abstract class FileSystemItem : FileSystemInfo, IEquatable<FileSystemItem> 
+    public interface IFileSystemItem : IEquatable<FileSystemItem> 
+    {
+        FileSystemInfo OriginalFileSystemItem { get; set; }
+        string Name { get; }
+
+        /// <summary>
+        /// The Name of the item without its file extension
+        /// </summary>
+        string PrettyName { get; }
+
+        string Path { get; }
+        string FullName { get; }
+        bool Exists { get; }
+        OwnerType OwnerType { get; }
+        bool MarkedForExclusion { get; set; }
+        bool Valid { get; }
+        bool Filtered { get; }
+        bool Equals(FileSystemItem item);
+        bool Equals(object @object);
+        int GetHashCode();
+
+        /// <summary>
+        /// Copies this item inside of the directory given by destination 
+        /// </summary>
+        /// <param name="destination">The directory to copy into</param>
+        void Copy(Directory destination);
+
+        void Move(Directory destination);
+        void Delete();
+    }
+    
+    public interface IDirectory : IFileSystemItem 
+    {
+        DirectoryInfo Self { get; }
+        List<File> Files { get; }
+        List<Directory> Directories { get; }
+        List<FileSystemItem> Contents { get; }
+        List<FileSystemItem> RefreshContents();
+        void DeleteContents();
+        void Delete();
+
+        /// <summary>
+        /// Recursively copies this directory inside of the directory given by destination 
+        /// </summary>
+        /// <param name="destination">The directory to copy into</param>
+        void Copy(Directory destination);
+
+        bool Contains(FileSystemItem item);
+        ICollection<FileSystemItem> FindMatchingItems(Func<FileSystemItem, bool> matcher);
+
+        /// <summary>
+        /// Returns the first immediate subdirectory of this directory that matches name.
+        /// If none exists, returns an empty optional. Does not search recursively.
+        /// </summary>
+        Option<Directory> GetSubdirectory(String name);
+    }
+
+    public interface IFile : IFileSystemItem
+    {
+        Option<FileSystemItem> GetShortcutTarget();
+    }
+    
+    public abstract class FileSystemItem : FileSystemInfo, IFileSystemItem 
     {
         protected static ulong IDs = 0;
-        protected FileSystemInfo OriginalFileSystemItem { get; set; }
+        public FileSystemInfo OriginalFileSystemItem { get; set; }
 
         public readonly ulong ID = IDs++;
 
@@ -103,7 +165,8 @@ namespace StartMenuProtector.Data
         public abstract OwnerType OwnerType { get; }
 
         public bool MarkedForExclusion { get; set; } = false;
-        protected bool Valid
+
+        public bool Valid
         {
             get
             {
@@ -216,8 +279,8 @@ namespace StartMenuProtector.Data
         
         public override void Delete() { OriginalFileSystemItem.Delete(); }
     }
-
-    public class Directory : FileSystemItem 
+    
+    public class Directory : FileSystemItem, IDirectory 
     {
 
         public virtual DirectoryInfo Self
@@ -453,7 +516,7 @@ namespace StartMenuProtector.Data
         }
     }
     
-    public class File : FileSystemItem 
+    public class File : FileSystemItem, IFile 
     {
         protected FileInfo Self 
         {
