@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using StartMenuProtector.Data;
 using StartMenuProtector.Util;
 using static StartMenuProtector.Configuration.Globals;
+using static StartMenuProtector.Util.Util;
 using Directory = StartMenuProtector.Data.Directory;
 
 
@@ -15,6 +16,7 @@ namespace StartMenuProtector.Control
         public SystemStateService SystemStateService { get; set; }
 
         public abstract Dictionary<StartMenuShortcutsLocation, Directory> StartMenuItemsStorage { protected get; set; }
+        protected abstract Object StartMenuItemsStorageAccessLock { get; }
 
         public StartMenuDataService(SystemStateService systemStateService)
         {
@@ -39,10 +41,8 @@ namespace StartMenuProtector.Control
         public abstract void SaveStartMenuItems(IEnumerable<FileSystemInfo> startMenuItems, StartMenuShortcutsLocation location);
         protected async Task<Dictionary<StartMenuShortcutsLocation, Directory>> LoadStartMenuContentsFromAppDataDiskStorageToMemory()
         {
-            await Task.Run(() =>
-            {
-                StartMenuItemsStorage.Values.ForEach((Directory directory) => { directory.RefreshContents(); });
-            });
+            
+            await Task.Run(RefreshAllStartMenuItems);
 
             return StartMenuItemsStorage;
         }
@@ -51,14 +51,25 @@ namespace StartMenuProtector.Control
 
         public void RefreshStartMenuItems(StartMenuShortcutsLocation location)
         {
-            Directory startMenuItemsDirectory = StartMenuItemsStorage[location];
-            startMenuItemsDirectory.RefreshContents();
+            lock (StartMenuItemsStorageAccessLock)
+            {
+                Directory startMenuItemsDirectory = StartMenuItemsStorage[location];
+                startMenuItemsDirectory.RefreshContents();
+            }
+        }
+        
+        public void RefreshAllStartMenuItems()
+        {
+            GetEnumValues<StartMenuShortcutsLocation>().ForEach(RefreshStartMenuItems); 
         }
 
         protected void ClearStartMenuItems(StartMenuShortcutsLocation location)
         {
-            Directory startMenuItemsDirectory = StartMenuItemsStorage[location];
-            startMenuItemsDirectory.DeleteContents();
+            lock (StartMenuItemsStorageAccessLock)
+            {
+                Directory startMenuItemsDirectory = StartMenuItemsStorage[location];
+                startMenuItemsDirectory.DeleteContents();
+            }
         }
         
         protected async Task ClearAllStartMenuItems()
@@ -94,6 +105,8 @@ namespace StartMenuProtector.Control
             { StartMenuShortcutsLocation.System, ActiveSystemStartMenuItems }, 
             { StartMenuShortcutsLocation.User, ActiveUserStartMenuItems }
         };
+        
+        protected override Object StartMenuItemsStorageAccessLock { get; } = new Object();
 
         public ActiveStartMenuDataService(SystemStateService systemStateService) 
             : base(systemStateService)
@@ -127,8 +140,12 @@ namespace StartMenuProtector.Control
         private void CopyCurrentActiveStartMenuItemsFromOSEnvironmentToAppDataDiskStorage()
         {
             Dictionary<StartMenuShortcutsLocation, Directory> startMenuContents = SystemStateService.OSEnvironmentStartMenuItems;
-            startMenuContents[StartMenuShortcutsLocation.System].Copy(StartMenuItemsStorage[StartMenuShortcutsLocation.System]);
-            startMenuContents[StartMenuShortcutsLocation.User].Copy(StartMenuItemsStorage[StartMenuShortcutsLocation.User]);
+            
+            lock (StartMenuItemsStorageAccessLock)
+            {
+                startMenuContents[StartMenuShortcutsLocation.System].Copy(StartMenuItemsStorage[StartMenuShortcutsLocation.System]);
+                startMenuContents[StartMenuShortcutsLocation.User].Copy(StartMenuItemsStorage[StartMenuShortcutsLocation.User]);
+            }
         }
 
         public override void SaveStartMenuItems(IEnumerable<FileSystemInfo> startMenuItems, StartMenuShortcutsLocation location)
@@ -157,7 +174,9 @@ namespace StartMenuProtector.Control
             {StartMenuShortcutsLocation.System, SavedSystemStartMenuItems}, 
             {StartMenuShortcutsLocation.User, SavedUserStartMenuItems}
         };
-        
+
+        protected override Object StartMenuItemsStorageAccessLock { get; } = new Object();
+
         public SavedStartMenuDataService(SystemStateService systemStateService) 
             : base(systemStateService)
         {
@@ -167,14 +186,17 @@ namespace StartMenuProtector.Control
         {
             ClearStartMenuItems(location);
             
-            Directory startMenuItemsDirectory = StartMenuItemsStorage[location];
-            
-            foreach (var startMenuItem in startMenuItems)
+            lock (StartMenuItemsStorageAccessLock)
             {
-                FileSystemItem fileSystemItem = FileSystemItem.Create(startMenuItem);
-                fileSystemItem.Copy(startMenuItemsDirectory);
+                Directory startMenuItemsDirectory = StartMenuItemsStorage[location];
+            
+                foreach (var startMenuItem in startMenuItems)
+                {
+                    FileSystemItem fileSystemItem = FileSystemItem.Create(startMenuItem);
+                    fileSystemItem.Copy(startMenuItemsDirectory);
+                }
             }
-
+            
             RefreshStartMenuItems(location);
         }
 

@@ -79,22 +79,22 @@ namespace StartMenuProtector.Data
             get { return OriginalFileSystemItem.CreationTimeUtc; }
         }
 
-        public new DateTime LastAccessTime
+        public new DateTime LastAccessTime 
         {
             get { return OriginalFileSystemItem.LastAccessTime; }
         }
 
-        public DateTime LastAccessTimeUTC
+        public DateTime LastAccessTimeUTC 
         {
             get { return OriginalFileSystemItem.LastAccessTimeUtc; }
         }
 
-        public new DateTime LastWriteTime
+        public new DateTime LastWriteTime 
         {
             get { return OriginalFileSystemItem.LastWriteTime; }
         }
 
-        public DateTime LastWriteTimeUTC
+        public DateTime LastWriteTimeUTC 
         {
             get { return OriginalFileSystemItem.LastWriteTimeUtc; }
         }
@@ -140,7 +140,7 @@ namespace StartMenuProtector.Data
             }
         }
 
-        protected FileSystemItem(FileSystemInfo originalFileSystemItem)
+        protected FileSystemItem(FileSystemInfo originalFileSystemItem) 
         {
             OriginalFileSystemItem = originalFileSystemItem;
         }

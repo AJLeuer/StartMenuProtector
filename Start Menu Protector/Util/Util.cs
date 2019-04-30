@@ -1,9 +1,11 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
+using System.Linq;
 using System.Windows.Media.Imaging;
 
 namespace StartMenuProtector.Util
@@ -39,6 +41,11 @@ namespace StartMenuProtector.Util
             {
                 return false;
             }
+        }
+        
+        public static IEnumerable<E> GetEnumValues<E>() where E : Enum 
+        {
+            return Enum.GetValues(typeof(E)).Cast<E>();
         }
     }
 
