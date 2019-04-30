@@ -17,11 +17,11 @@ namespace StartMenuProtector
 
         protected override void OnStartup(StartupEventArgs startup)
         {
-            sentinel = new StartMenuSentinel(systemStateService);
-            
             activeDataService = new ActiveStartMenuDataService(systemStateService);
             savedDataService = new SavedStartMenuDataService(systemStateService);
             
+            sentinel = new StartMenuSentinel(systemStateService, savedDataService);
+
             activeStartMenuItemsViewController = new ActiveStartMenuViewController(activeDataService, savedDataService, systemStateService);
             savedStartMenuItemsViewController = new SavedStartMenuViewController(activeDataService, savedDataService, systemStateService);
 
@@ -31,6 +31,8 @@ namespace StartMenuProtector
             
             activeStartMenuItemsView.Controller = activeStartMenuItemsViewController;
             savedStartMenuItemsView.Controller = savedStartMenuItemsViewController;
+            
+            sentinel.Start();
             
             MainWindow.Show();
         }

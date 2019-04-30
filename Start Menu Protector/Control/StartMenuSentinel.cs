@@ -1,4 +1,8 @@
-﻿using System.Threading;
+﻿using System.Collections.Generic;
+using System.Threading;
+using Optional.Unsafe;
+using StartMenuProtector.Data;
+using static StartMenuProtector.Util.Util;
 
 namespace StartMenuProtector.Control
 {
@@ -7,10 +11,12 @@ namespace StartMenuProtector.Control
         private Thread Thread;
         
         public SystemStateService SystemStateService { private get; set; }
+        public SavedStartMenuDataService SavedStartMenuDataService { private get; set; }
 
-        public StartMenuSentinel(SystemStateService service)
+        public StartMenuSentinel(SystemStateService systemStateService, SavedStartMenuDataService savedStartMenuDataService)
         {
-            this.SystemStateService = service;
+            this.SystemStateService = systemStateService;
+            this.SavedStartMenuDataService = savedStartMenuDataService;
         }
         
         public void Start()
@@ -26,7 +32,17 @@ namespace StartMenuProtector.Control
 
         private void CheckForDivergencesFromUsersSavedStartMenuState()
         {
-            throw new System.NotImplementedException();
+            foreach (StartMenuShortcutsLocation location in GetEnumValues<StartMenuShortcutsLocation>())
+            {
+                var appDataSavedStartMenuContents = SavedStartMenuDataService.GetStartMenuContents(location).Result.GetSubdirectory("Start Menu");
+
+                if (appDataSavedStartMenuContents.HasValue)
+                {
+                    SystemStateService.OSEnvironmentStartMenuItems[location].RefreshContents();
+                    Directory currentStartMenuItemsDirectoryState = SystemStateService.OSEnvironmentStartMenuItems[location];
+                    Directory expectedStartMenuStateDirectoryState = appDataSavedStartMenuContents.ValueOrFailure();
+                }
+            }
         }
     }
 }

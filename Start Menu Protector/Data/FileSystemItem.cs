@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Security.AccessControl;
 using System.Security.Principal;
 using System.Windows.Media.Imaging;
@@ -432,6 +433,23 @@ namespace StartMenuProtector.Data
             }
 
             return matchingItems;
+        }
+
+        /// <summary>
+        /// Returns the first immediate subdirectory of this directory that matches name.
+        /// If none exists, returns an empty optional. Does not search recursively.
+        /// </summary>
+        public Option<Directory> GetSubdirectory(String name)
+        {
+            foreach (Directory directory in Directories)
+            {
+                if (directory.Name == name)
+                {
+                    return Option.Some<Directory>(directory);
+                }
+            }
+
+            return Option.None<Directory>();
         }
     }
     
