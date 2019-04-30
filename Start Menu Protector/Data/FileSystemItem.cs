@@ -566,7 +566,7 @@ namespace StartMenuProtector.Data
                 
                 foreach (var expectedFile in expectedFiles)
                 {
-                    if (expectedFile.Equals(file))
+                    if (expectedFile.Name == file.Name)
                     {
                         matchFound = true;
                         break;
@@ -586,7 +586,7 @@ namespace StartMenuProtector.Data
         {
             ICollection<RelocatableItem> unexpectedItems = new HashSet<RelocatableItem>();
 
-            if (expected.Equals(test) == false)
+            if (expected.Name != test.Name)
             {
                 unexpectedItems.Add(new RelocatableItem(test));
                 return unexpectedItems;
@@ -594,14 +594,13 @@ namespace StartMenuProtector.Data
             
             unexpectedItems.AddAll(FindUnexpectedFiles(expected: expected.Files, test: test.Files));
 
-            
             foreach (var directory in test.Directories)
             {
                 bool matchFound = false;
 
                 foreach (var expectedDirectory in expected.Directories)
                 {
-                    if (expectedDirectory.Equals(directory))
+                    if (expectedDirectory.Name == directory.Name)
                     {
                         matchFound = true;
                         unexpectedItems.AddAll(FindUnexpectedItems(expected: expectedDirectory, test: directory));

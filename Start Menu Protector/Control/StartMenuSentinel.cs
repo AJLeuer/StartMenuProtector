@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using Optional.Unsafe;
 using StartMenuProtector.Data;
@@ -27,11 +28,13 @@ namespace StartMenuProtector.Control
 
         private void Run()
         {
-            CheckForDivergencesFromUsersSavedStartMenuState();
+            var (unexpected, missing) = CheckForDivergencesFromUsersSavedStartMenuState();
         }
 
-        private void CheckForDivergencesFromUsersSavedStartMenuState()
+        private  (ICollection<RelocatableItem> unexpected, ICollection<RelocatableItem> missing) CheckForDivergencesFromUsersSavedStartMenuState()
         {
+            ICollection<RelocatableItem> unexpected = new RelocatableItem[] {}, absent = new RelocatableItem[] {};
+            
             foreach (StartMenuShortcutsLocation location in GetEnumValues<StartMenuShortcutsLocation>())
             {
                 var appDataSavedStartMenuContents = SavedStartMenuDataService.GetStartMenuContents(location).Result.GetSubdirectory("Start Menu");
@@ -41,8 +44,22 @@ namespace StartMenuProtector.Control
                     SystemStateService.OSEnvironmentStartMenuItems[location].RefreshContents();
                     Directory currentStartMenuItemsDirectoryState = SystemStateService.OSEnvironmentStartMenuItems[location];
                     Directory expectedStartMenuStateDirectoryState = appDataSavedStartMenuContents.ValueOrFailure();
+
+                    (unexpected, absent) = Directory.FindDivergences(sourceOfTruth: expectedStartMenuStateDirectoryState, test: currentStartMenuItemsDirectoryState);
                 }
             }
+
+            return (unexpected, absent);
+        }
+
+        /// <summary>
+        /// For all potentiallyDisplacedItems that are shortcuts, looks through
+        /// </summary>
+        /// <param name="potentiallyDisplacedItems"></param>
+        /// <exception cref="NotImplementedException"></exception>
+        public void PlaceShortcutsMovedOutOfPositionIntoOriginalExpectedPosition(out ICollection<RelocatableItem> potentiallyDisplacedItems)
+        {
+            throw new NotImplementedException();
         }
     }
 }

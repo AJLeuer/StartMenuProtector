@@ -50,14 +50,22 @@ namespace StartMenuProtectorTest.Test
             FileOnlyInOriginalMock.Setup((IFile self) => self.Path).Returns("/Directory1A/SubDirectory1A/File2");
             FileOnlyInTestMock    .Setup((IFile self) => self.Path).Returns("/Directory1A/SubDirectory1A/FileB");
             
+            FileMock              .Setup((IFile self) => self.Name).Returns("File1A");
+            FileOnlyInOriginalMock.Setup((IFile self) => self.Name).Returns("File2");
+            FileOnlyInTestMock    .Setup((IFile self) => self.Name).Returns("FileB");
+            
             SetupDirectoryMockWithContents(SubDirectoryInBothOriginalVersionMock, FileMock.Object, FileOnlyInOriginalMock.Object);
             SetupDirectoryMockWithContents(SubDirectoryInBothTestVersionMock,     FileMock.Object, FileOnlyInTestMock.Object);
 
             SubDirectoryInBothOriginalVersionMock.Setup((IDirectory self) => self.Path).Returns("/Directory1A/SubDirectory1A/");
             SubDirectoryInBothTestVersionMock    .Setup((IDirectory self) => self.Path).Returns("/Directory1A/SubDirectory1A/");
-
-            SubDirectoryInOriginalOnlyMock.Setup((IDirectory self) => self.Path).Returns("/Directory1A/SubDirectory2/");
-            SubDirectoryInTestOnlyMock    .Setup((IDirectory self) => self.Path).Returns("/Directory1A/SubDirectoryB/");
+            SubDirectoryInOriginalOnlyMock       .Setup((IDirectory self) => self.Path).Returns("/Directory1A/SubDirectory2/");
+            SubDirectoryInTestOnlyMock           .Setup((IDirectory self) => self.Path).Returns("/Directory1A/SubDirectoryB/");
+            
+            SubDirectoryInBothOriginalVersionMock.Setup((IDirectory self) => self.Name).Returns("SubDirectory1A");
+            SubDirectoryInBothTestVersionMock    .Setup((IDirectory self) => self.Name).Returns("SubDirectory1A");
+            SubDirectoryInOriginalOnlyMock       .Setup((IDirectory self) => self.Name).Returns("SubDirectory2");
+            SubDirectoryInTestOnlyMock           .Setup((IDirectory self) => self.Name).Returns("SubDirectoryB");
 
             SetupDirectoryMockWithContents(OriginalDirectoryMock, SubDirectoryInBothOriginalVersionMock.Object, SubDirectoryInOriginalOnlyMock.Object);
             SetupDirectoryMockWithContents(TestDirectoryMock,     SubDirectoryInBothTestVersionMock.Object,     SubDirectoryInTestOnlyMock.Object);
@@ -65,15 +73,8 @@ namespace StartMenuProtectorTest.Test
             OriginalDirectoryMock.Setup((IDirectory self) => self.Path).Returns("/Directory1A/");
             TestDirectoryMock    .Setup((IDirectory self) => self.Path).Returns("/Directory1A/");
             
-            OriginalDirectoryMock                .Setup((IDirectory self) => self.Equals(It.IsAny<IFileSystemItem>())).Returns((IFileSystemItem other) => FileSystemItem.AreEqual(OriginalDirectoryMock.Object, other));
-            TestDirectoryMock                    .Setup((IDirectory self) => self.Equals(It.IsAny<IFileSystemItem>())).Returns((IFileSystemItem other) => FileSystemItem.AreEqual(TestDirectoryMock.Object, other));
-            SubDirectoryInBothOriginalVersionMock.Setup((IDirectory self) => self.Equals(It.IsAny<IFileSystemItem>())).Returns((IFileSystemItem other) => FileSystemItem.AreEqual(SubDirectoryInBothOriginalVersionMock.Object, other));
-            SubDirectoryInBothTestVersionMock    .Setup((IDirectory self) => self.Equals(It.IsAny<IFileSystemItem>())).Returns((IFileSystemItem other) => FileSystemItem.AreEqual(SubDirectoryInBothTestVersionMock.Object, other));
-            SubDirectoryInOriginalOnlyMock       .Setup((IDirectory self) => self.Equals(It.IsAny<IFileSystemItem>())).Returns((IFileSystemItem other) => FileSystemItem.AreEqual(SubDirectoryInOriginalOnlyMock.Object, other));
-            SubDirectoryInTestOnlyMock           .Setup((IDirectory self) => self.Equals(It.IsAny<IFileSystemItem>())).Returns((IFileSystemItem other) => FileSystemItem.AreEqual(SubDirectoryInTestOnlyMock.Object, other));
-            FileMock                             .Setup((IFile self)      => self.Equals(It.IsAny<IFileSystemItem>())).Returns((IFileSystemItem other) => FileSystemItem.AreEqual(FileMock.Object, other));
-            FileOnlyInOriginalMock               .Setup((IFile self)      => self.Equals(It.IsAny<IFileSystemItem>())).Returns((IFileSystemItem other) => FileSystemItem.AreEqual(FileOnlyInOriginalMock.Object, other));
-            FileOnlyInTestMock                   .Setup((IFile self)      => self.Equals(It.IsAny<IFileSystemItem>())).Returns((IFileSystemItem other) => FileSystemItem.AreEqual(FileOnlyInTestMock.Object, other));
+            OriginalDirectoryMock.Setup((IDirectory self) => self.Name).Returns("Directory1A");
+            TestDirectoryMock    .Setup((IDirectory self) => self.Name).Returns("Directory1A");
         }
 
         [Test]
