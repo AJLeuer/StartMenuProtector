@@ -31,6 +31,7 @@ namespace StartMenuProtector.Data
         bool Valid { get; }
         bool Filtered { get; }
         bool Equals(object @object);
+        
         int GetHashCode();
 
         /// <summary>
@@ -46,8 +47,8 @@ namespace StartMenuProtector.Data
     public interface IDirectory : IFileSystemItem 
     {
         DirectoryInfo Self { get; }
-        List<File> Files { get; }
-        List<Directory> Directories { get; }
+        List<IFile> Files { get; }
+        List<IDirectory> Directories { get; }
         List<IFileSystemItem> Contents { get; }
         List<IFileSystemItem> RefreshContents();
         void DeleteContents();
@@ -60,7 +61,7 @@ namespace StartMenuProtector.Data
         void Copy(Directory destination);
 
         bool Contains(FileSystemItem item);
-        ICollection<FileSystemItem> FindMatchingItems(Func<FileSystemItem, bool> matcher);
+        ICollection<IFileSystemItem> FindMatchingItems(Func<IFileSystemItem, bool> matcher);
 
         /// <summary>
         /// Returns the first immediate subdirectory of this directory that matches name.
@@ -234,15 +235,25 @@ namespace StartMenuProtector.Data
         
         public static bool operator == (FileSystemItem left, IFileSystemItem right)
         {
-            return left?.Path == right?.Path;
+            return AreEqual(right, left);
         }
 
         public static bool operator != (FileSystemItem left, IFileSystemItem right)
         {
             return (!(left == right));
         }
+        
+        public static bool AreEqual(IFileSystemItem firstItem, IFileSystemItem secondItem)
+        {
+            if (ReferenceEquals(firstItem, null) || ReferenceEquals(secondItem, null))
+            {
+                return false;
+            }
 
-        public bool Equals(IFileSystemItem item)
+            return firstItem.Path == secondItem.Path;
+        }
+        
+        public virtual bool Equals(IFileSystemItem item)
         {
             return this == item;
         }
@@ -308,9 +319,9 @@ namespace StartMenuProtector.Data
             
         }
 
-        private List<File> files = null;
+        private List<IFile> files = null;
         
-        public List<File> Files 
+        public virtual List<IFile> Files 
         {
             get
             {
@@ -323,8 +334,8 @@ namespace StartMenuProtector.Data
             }
         }
 
-        private List<Directory> directories = null;
-        public List<Directory> Directories 
+        private List<IDirectory> directories = null;
+        public virtual List<IDirectory> Directories 
         {
             get
             {
@@ -361,12 +372,15 @@ namespace StartMenuProtector.Data
             lock (ContentsAccessLock)
             {
                 var currentContents = new List<IFileSystemItem>();
-                var subdirectories = new List<Directory>(Self.GetDirectoriesEnhanced());
-                var currentFiles = new List<File>(Self.GetFilesEnhanced());
+                var subdirectories = new List<IDirectory>(Self.GetDirectoriesEnhanced());
+                var currentFiles = new List<IFile>(Self.GetFilesEnhanced());
 
-                foreach (Directory subdirectory in subdirectories)
+                foreach (IDirectory subdirectory in subdirectories)
                 {
-                    subdirectory.InitializeContents();
+                    if (subdirectory is Directory childDirectory)
+                    {
+                        childDirectory.InitializeContents();
+                    }
                 }
 
                 currentContents.AddAll(subdirectories);
@@ -413,7 +427,7 @@ namespace StartMenuProtector.Data
         {
             lock (ContentsAccessLock)
             {
-                foreach (FileSystemItem fileSystemItem in Contents)
+                foreach (IFileSystemItem fileSystemItem in Contents)
                 {
                     fileSystemItem.Delete();
                 }
@@ -444,7 +458,7 @@ namespace StartMenuProtector.Data
                     security.SetAccessRuleProtection(true, true);
                     directoryCopy.Self.SetAccessControl(security);
 
-                    foreach (FileSystemItem itemToCopy in Contents)
+                    foreach (IFileSystemItem itemToCopy in Contents)
                     {
                         itemToCopy.Copy(directoryCopy);
                     }
@@ -462,7 +476,7 @@ namespace StartMenuProtector.Data
             }
             else
             {
-                foreach (Directory subdirectory in Directories)
+                foreach (IDirectory subdirectory in Directories)
                 {
                     if (subdirectory.Contains(item))
                     {
@@ -475,17 +489,17 @@ namespace StartMenuProtector.Data
             return contained;
         }
 
-        public ICollection<FileSystemItem> FindMatchingItems(Func<FileSystemItem, bool> matcher)
+        public ICollection<IFileSystemItem> FindMatchingItems(Func<IFileSystemItem, bool> matcher)
         {
-            var matchingItems = new HashSet<FileSystemItem>();
+            var matchingItems = new HashSet<IFileSystemItem>();
 
-            foreach (Directory subdirectory in Directories)
+            foreach (IDirectory subdirectory in Directories)
             {
-                IEnumerable<FileSystemItem> matches = subdirectory.FindMatchingItems(matcher);
+                IEnumerable<IFileSystemItem> matches = subdirectory.FindMatchingItems(matcher);
                 matchingItems.AddAll(matches);
             }
 
-            foreach (FileSystemItem item in Contents)
+            foreach (IFileSystemItem item in Contents)
             {
                 if (matcher(item))
                 {
@@ -502,11 +516,11 @@ namespace StartMenuProtector.Data
         /// </summary>
         public Option<Directory> GetSubdirectory(String name)
         {
-            foreach (Directory directory in Directories)
+            foreach (IDirectory directory in Directories)
             {
-                if (directory.Name == name)
+                if ((directory.Name == name) && (directory is Directory subdirectory))
                 {
-                    return Option.Some<Directory>(directory);
+                    return Option.Some(subdirectory);
                 }
             }
 
@@ -524,7 +538,84 @@ namespace StartMenuProtector.Data
         /// <returns></returns>
         public static (ICollection<RelocatableItem> added, ICollection<RelocatableItem> removed) FindDivergences(IDirectory sourceOfTruth, IDirectory test)
         {
-            throw new NotImplementedException();
+            ICollection<RelocatableItem> added = FindAddedItems(sourceOfTruth, test), removed = FindRemovedItems(sourceOfTruth, test);
+
+            return (added, removed);
+        }
+
+        private static ICollection<RelocatableItem> FindRemovedItems(IDirectory sourceOfTruth, IDirectory test)
+        {
+            ICollection<RelocatableItem> removed = FindUnexpectedItems(expected: test, test: sourceOfTruth);
+            return removed;
+        }
+
+        private static ICollection<RelocatableItem> FindAddedItems(IDirectory sourceOfTruth, IDirectory test)
+        {
+            ICollection<RelocatableItem> added = FindUnexpectedItems(expected: sourceOfTruth, test: test);
+            return added;
+        }
+
+        private static ICollection<RelocatableItem> FindUnexpectedFiles<FileItemType>(IEnumerable<FileItemType> expected, IEnumerable<FileItemType> test) where FileItemType : IFile
+        {
+            ICollection<RelocatableItem> unexpectedFiles = new HashSet<RelocatableItem>();
+            IEnumerable<FileItemType> expectedFiles = expected.ToList();
+            
+            foreach (var file in test)
+            {
+                bool matchFound = false;
+                
+                foreach (var expectedFile in expectedFiles)
+                {
+                    if (expectedFile.Equals(file))
+                    {
+                        matchFound = true;
+                        break;
+                    }
+                }
+
+                if (matchFound == false)
+                {
+                    unexpectedFiles.Add(new RelocatableItem(file));
+                }
+            }
+
+            return unexpectedFiles;
+        }
+        
+        private static ICollection<RelocatableItem> FindUnexpectedItems(IDirectory expected, IDirectory test)
+        {
+            ICollection<RelocatableItem> unexpectedItems = new HashSet<RelocatableItem>();
+
+            if (expected.Equals(test) == false)
+            {
+                unexpectedItems.Add(new RelocatableItem(test));
+                return unexpectedItems;
+            }
+            
+            unexpectedItems.AddAll(FindUnexpectedFiles(expected: expected.Files, test: test.Files));
+
+            
+            foreach (var directory in test.Directories)
+            {
+                bool matchFound = false;
+
+                foreach (var expectedDirectory in expected.Directories)
+                {
+                    if (expectedDirectory.Equals(directory))
+                    {
+                        matchFound = true;
+                        unexpectedItems.AddAll(FindUnexpectedItems(expected: expectedDirectory, test: directory));
+                        break;
+                    }        
+                }
+
+                if (matchFound == false)
+                {
+                    unexpectedItems.Add(new RelocatableItem(directory));
+                }
+            }
+
+            return unexpectedItems;
         }
     }
     

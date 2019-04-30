@@ -62,6 +62,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Test\FileSystemItemTest.cs" />
     <Compile Include="Test\StartMenuDataServiceTest.cs" />
     <Compile Include="Test\StartMenuItemTest.cs" />
     <Compile Include="Test\StartMenuViewControllerTest.cs" />
