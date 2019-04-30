@@ -41,8 +41,8 @@ namespace StartMenuProtector.Control
         
         private void LoadSystemAndUserStartMenuItemsFromOSEnvironment()
         {
-            String systemStartMenuItemsPath = $@"{Environment.GetFolderPath(Environment.SpecialFolder.CommonStartMenu)}\Programs";
-            String userStartMenuItemsPath = $@"{Environment.GetFolderPath(Environment.SpecialFolder.StartMenu)}\Programs";
+            String systemStartMenuItemsPath = $@"{Environment.GetFolderPath(Environment.SpecialFolder.CommonStartMenu)}";
+            String userStartMenuItemsPath = $@"{Environment.GetFolderPath(Environment.SpecialFolder.StartMenu)}";
         
             var systemStartMenuItems = new Directory(systemStartMenuItemsPath);
             var userStartMenuItems = new Directory(userStartMenuItemsPath);

@@ -71,7 +71,7 @@ namespace StartMenuProtector.Configuration
         
         public static readonly ISet<Func<FileSystemItem, Boolean>> FileSystemItemFilters = new HashSet<Func<FileSystemItem, Boolean>>
         {
-            (FileSystemItem item) => { return ((item.OwnerType == OwnerType.OS) && (item.PrettyName != "Programs")); },
+            (FileSystemItem item) => { return ((item.OwnerType == OwnerType.OS) && (item.PrettyName != "Programs") && (item.PrettyName != "Start Menu")); },
             (FileSystemItem item) => { return (String.Equals(item.Name,"desktop.ini", StringComparison.OrdinalIgnoreCase)); }
         };
     }
