@@ -3,6 +3,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Threading.Tasks;
+using StartMenuProtector.Data;
 using StartMenuProtector.Util;
 using StartMenuProtector.View;
 
@@ -52,7 +53,7 @@ namespace StartMenuProtector.Control
         
         public sealed override async Task UpdateCurrentShortcuts()
         {
-            ICollection<FileSystemInfo> startMenuContents;
+            ICollection<FileSystemItem> startMenuContents;
             
             switch (CurrentContentState)
             {
@@ -102,7 +103,7 @@ namespace StartMenuProtector.Control
 
         public sealed override async Task UpdateCurrentShortcuts()
         {
-            ICollection<FileSystemInfo> startMenuContent = await SavedDataService.GetStartMenuContents(StartMenuStartMenuShortcutsLocation);
+            ICollection<FileSystemItem> startMenuContent = await SavedDataService.GetStartMenuContents(StartMenuStartMenuShortcutsLocation);
             StartMenuContents.ReplaceAll(startMenuContent);
         }
 

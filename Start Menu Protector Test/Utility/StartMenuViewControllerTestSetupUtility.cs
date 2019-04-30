@@ -4,6 +4,7 @@ using System.IO;
 using System.Threading.Tasks;
 using Moq;
 using StartMenuProtector.Control;
+using StartMenuProtector.Data;
 
 namespace StartMenuProtectorTest.Utility
 {
@@ -12,12 +13,12 @@ namespace StartMenuProtectorTest.Utility
         public static readonly Mock<MockableFile> SystemStartMenuItemMock = new Mock<MockableFile>(); 
         public static readonly Mock<MockableFile> UserStartMenuItemMock   = new Mock<MockableFile>();
 
-        public static readonly ICollection<FileSystemInfo> ActiveSystemStartMenuItems = new List<FileSystemInfo> { SystemStartMenuItemMock.Object, SystemStartMenuItemMock.Object, SystemStartMenuItemMock.Object };
-        public static readonly ICollection<FileSystemInfo> ActiveUserStartMenuItems   = new List<FileSystemInfo> { UserStartMenuItemMock.Object,   UserStartMenuItemMock.Object,   UserStartMenuItemMock.Object   };
-        public static readonly ICollection<FileSystemInfo> SavedSystemStartMenuItems  = new List<FileSystemInfo> { SystemStartMenuItemMock.Object, SystemStartMenuItemMock.Object, SystemStartMenuItemMock.Object };
-        public static readonly ICollection<FileSystemInfo> SavedUserStartMenuItems    = new List<FileSystemInfo> { UserStartMenuItemMock.Object,   UserStartMenuItemMock.Object,   UserStartMenuItemMock.Object   };
+        public static readonly ICollection<FileSystemItem> ActiveSystemStartMenuItems = new List<FileSystemItem> { SystemStartMenuItemMock.Object, SystemStartMenuItemMock.Object, SystemStartMenuItemMock.Object };
+        public static readonly ICollection<FileSystemItem> ActiveUserStartMenuItems   = new List<FileSystemItem> { UserStartMenuItemMock.Object,   UserStartMenuItemMock.Object,   UserStartMenuItemMock.Object   };
+        public static readonly ICollection<FileSystemItem> SavedSystemStartMenuItems  = new List<FileSystemItem> { SystemStartMenuItemMock.Object, SystemStartMenuItemMock.Object, SystemStartMenuItemMock.Object };
+        public static readonly ICollection<FileSystemItem> SavedUserStartMenuItems    = new List<FileSystemItem> { UserStartMenuItemMock.Object,   UserStartMenuItemMock.Object,   UserStartMenuItemMock.Object   };
 
-        public static Task<ICollection<FileSystemInfo>> CreateStubbedStartMenuContentsRetrievalTask(StartMenuProtectorViewType view, StartMenuShortcutsLocation location)
+        public static Task<ICollection<FileSystemItem>> CreateStubbedStartMenuContentsRetrievalTask(StartMenuProtectorViewType view, StartMenuShortcutsLocation location)
         {
             switch (view) 
             {
