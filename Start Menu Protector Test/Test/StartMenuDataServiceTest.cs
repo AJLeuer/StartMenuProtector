@@ -97,7 +97,7 @@ namespace StartMenuProtectorTest.Test
             SystemProgramsMock.Setup((self) => self.Contents).Returns(new List<IFileSystemItem>());
             UserProgramsMock.Setup((self) => self.Contents).Returns(new List<IFileSystemItem>());
             
-            StartMenuDataService service = new ActiveStartMenuDataService(MockSystemStateService) { StartMenuItemsStorage = ActiveStartMenuShortcuts};
+            StartMenuDataService service = new ActiveDataService(MockSystemStateService) { StartMenuItemsStorage = ActiveStartMenuShortcuts};
             
             service.GetStartMenuContentDirectory(StartMenuShortcutsLocation.System).Wait();
 
@@ -108,7 +108,7 @@ namespace StartMenuProtectorTest.Test
         [Test]
         public static void ActiveStartMenuDataServiceShouldDoNothingWhenRequestedToSaveStartMenuShortcuts()
         {
-            StartMenuDataService service = new ActiveStartMenuDataService(MockSystemStateService) { StartMenuItemsStorage = ActiveStartMenuShortcuts};
+            StartMenuDataService service = new ActiveDataService(MockSystemStateService) { StartMenuItemsStorage = ActiveStartMenuShortcuts};
 
             service.SaveStartMenuItems(FilesToSave, StartMenuShortcutsLocation.System);
             
@@ -118,7 +118,7 @@ namespace StartMenuProtectorTest.Test
         [Test]
         public static void SavedStartMenuDataServiceShouldSaveAllRequestedStartMenuShortcuts()
         {
-            StartMenuDataService service = new SavedStartMenuDataService(MockSystemStateService) { StartMenuItemsStorage = SavedStartMenuShortcuts};
+            StartMenuDataService service = new SavedDataService(MockSystemStateService) { StartMenuItemsStorage = SavedStartMenuShortcuts};
 
             service.SaveStartMenuItems(FilesToSave, StartMenuShortcutsLocation.System);
             
@@ -128,7 +128,7 @@ namespace StartMenuProtectorTest.Test
         [Test]
         public static void SavedStartMenuDataServiceShouldSaveStartMenuShortcutsFromSpecifiedLocationOnly()
         {
-            var service = new SavedStartMenuDataService(MockSystemStateService) { StartMenuItemsStorage = SavedStartMenuShortcuts};
+            var service = new SavedDataService(MockSystemStateService) { StartMenuItemsStorage = SavedStartMenuShortcuts};
 
             service.SaveStartMenuItems(FilesToSave, StartMenuShortcutsLocation.User);
             
@@ -139,7 +139,7 @@ namespace StartMenuProtectorTest.Test
         [Test]
         public static void SavedStartMenuDataServiceShouldClearOldStartMenuItemsBeforeSaving()
         {
-            StartMenuDataService service = new SavedStartMenuDataService(MockSystemStateService){ StartMenuItemsStorage = SavedStartMenuShortcuts};
+            StartMenuDataService service = new SavedDataService(MockSystemStateService){ StartMenuItemsStorage = SavedStartMenuShortcuts};
             
             service.SaveStartMenuItems(FilesToSave, StartMenuShortcutsLocation.System);
             
@@ -150,7 +150,7 @@ namespace StartMenuProtectorTest.Test
         [Test]
         public static void SavedStartMenuDataServiceShouldRefreshStartMenuItemsStorageAfterSaving()
         {
-            StartMenuDataService service = new SavedStartMenuDataService(MockSystemStateService){ StartMenuItemsStorage = SavedStartMenuShortcuts};
+            StartMenuDataService service = new SavedDataService(MockSystemStateService){ StartMenuItemsStorage = SavedStartMenuShortcuts};
             
             service.SaveStartMenuItems(FilesToSave, StartMenuShortcutsLocation.User);
             
@@ -161,7 +161,7 @@ namespace StartMenuProtectorTest.Test
         public static void ActiveStartMenuDataServiceShouldMoveItemsWhenRequestedToMoveFileSystemItems()
         {
             SystemProgramsMock.Setup((self) => self.Contains(DestinationDirectoryMock.Object)).Returns(true);
-            StartMenuDataService service = new ActiveStartMenuDataService(MockSystemStateService) { StartMenuItemsStorage = ActiveStartMenuShortcuts};
+            StartMenuDataService service = new ActiveDataService(MockSystemStateService) { StartMenuItemsStorage = ActiveStartMenuShortcuts};
 
             Task fileMoveTask = service.HandleRequestToMoveFileSystemItems(itemRequestingMove: FileToMoveMock.Object, destinationItem: DestinationDirectoryMock.Object);
             fileMoveTask.Wait();
@@ -174,7 +174,7 @@ namespace StartMenuProtectorTest.Test
         {
             SystemProgramsMock.Setup((self) => self.Contains(DestinationDirectoryMock.Object)).Returns(false);
             UserProgramsMock.Setup((self) => self.Contains(DestinationDirectoryMock.Object)).Returns(true);
-            StartMenuDataService service = new ActiveStartMenuDataService(MockSystemStateService) { StartMenuItemsStorage = ActiveStartMenuShortcuts};
+            StartMenuDataService service = new ActiveDataService(MockSystemStateService) { StartMenuItemsStorage = ActiveStartMenuShortcuts};
 
             Task fileMoveTask = service.HandleRequestToMoveFileSystemItems(itemRequestingMove: FileToMoveMock.Object, destinationItem: DestinationDirectoryMock.Object);
             fileMoveTask.Wait();
@@ -185,7 +185,7 @@ namespace StartMenuProtectorTest.Test
         [Test]
         public static void SavedStartMenuDataServiceShouldDoNothingWhenRequestedToMoveFileSystemItems()
         {
-            StartMenuDataService service = new SavedStartMenuDataService(MockSystemStateService){ StartMenuItemsStorage = SavedStartMenuShortcuts};
+            StartMenuDataService service = new SavedDataService(MockSystemStateService){ StartMenuItemsStorage = SavedStartMenuShortcuts};
 
             Task fileMoveTask = service.HandleRequestToMoveFileSystemItems(itemRequestingMove: FileToMoveMock.Object, destinationItem: DestinationDirectoryMock.Object);
             fileMoveTask.Wait();

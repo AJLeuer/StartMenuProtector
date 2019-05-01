@@ -22,7 +22,7 @@ namespace StartMenuProtector.Control
         private Thread Thread { get; set; }
         
         public SystemStateService SystemStateService { private get; set; }
-        public SavedStartMenuDataService SavedStartMenuDataService { private get; set; }
+        public SavedDataService SavedDataService { private get; set; }
         
         public readonly Dictionary<StartMenuShortcutsLocation, ICollection<IFileSystemItem>> ItemsToRestore = new Dictionary<StartMenuShortcutsLocation, ICollection<IFileSystemItem>>
         {
@@ -36,14 +36,14 @@ namespace StartMenuProtector.Control
             { StartMenuShortcutsLocation.System, new HashSet<IFileSystemItem>() }
         };
 
-        public StartMenuSentinel(SystemStateService systemStateService, SavedStartMenuDataService savedStartMenuDataService)
+        public StartMenuSentinel(SystemStateService systemStateService, SavedDataService savedDataService)
         {
             this.SystemStateService = systemStateService;
-            this.SavedStartMenuDataService = savedStartMenuDataService;
+            this.SavedDataService = savedDataService;
         }
         
-        public StartMenuSentinel(SystemStateService systemStateService, SavedStartMenuDataService savedStartMenuDataService, Toggleable toggle):
-            this(systemStateService, savedStartMenuDataService)
+        public StartMenuSentinel(SystemStateService systemStateService, SavedDataService savedDataService, Toggleable toggle):
+            this(systemStateService, savedDataService)
         {
             toggle.ToggleOnEvent += Enable;
             toggle.ToggleOffEvent += Disable;
@@ -126,7 +126,7 @@ namespace StartMenuProtector.Control
                 
             ICollection<RelocatableItem> absent     = new HashSet<RelocatableItem>();
 
-            Option<Directory> appDataSavedStartMenuContents = SavedStartMenuDataService.GetStartMenuContentDirectoryMainSubdirectory(location).Result;
+            Option<Directory> appDataSavedStartMenuContents = SavedDataService.GetStartMenuContentDirectoryMainSubdirectory(location).Result;
 
             if (appDataSavedStartMenuContents.HasValue)
             {
@@ -143,7 +143,7 @@ namespace StartMenuProtector.Control
         
         private void UpdateSavedDataWithNewerItemCounterParts(StartMenuShortcutsLocation location, ICollection<RelocatableItem> unexpectedItems)
         {
-            Option<Directory> appDataSavedStartMenuContents = SavedStartMenuDataService.GetStartMenuContentDirectoryMainSubdirectory(location).Result;
+            Option<Directory> appDataSavedStartMenuContents = SavedDataService.GetStartMenuContentDirectoryMainSubdirectory(location).Result;
 
             if (appDataSavedStartMenuContents.HasValue)
             {

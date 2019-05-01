@@ -10,18 +10,18 @@ namespace StartMenuProtector.Control
 {
     public abstract class StartMenuViewController 
     {
-        public ActiveStartMenuDataService ActiveDataService { get; set; }
-        public SavedStartMenuDataService SavedDataService { get; set; }
+        public ActiveDataService ActiveDataService { get; set; }
+        public SavedDataService SavedDataService { get; set; }
         public SystemStateService SystemStateService { get; set; }
         
         public ObservableCollection<IFileSystemItem> StartMenuContents { get;} = new AsyncObservableCollection<IFileSystemItem>();
 
         public StartMenuShortcutsLocation StartMenuStartMenuShortcutsLocation { get; set; } = StartMenuShortcutsLocation.System;
 
-        protected StartMenuViewController(ActiveStartMenuDataService activeStartMenuDataService, SavedStartMenuDataService savedStartMenuDataService, SystemStateService systemStateService)
+        protected StartMenuViewController(ActiveDataService activeDataService, SavedDataService savedDataService, SystemStateService systemStateService)
         {
-            this.ActiveDataService  = activeStartMenuDataService;
-            this.SavedDataService   = savedStartMenuDataService;
+            this.ActiveDataService  = activeDataService;
+            this.SavedDataService   = savedDataService;
             this.SystemStateService = systemStateService;
         }
 
@@ -34,7 +34,7 @@ namespace StartMenuProtector.Control
         public abstract void HandleRequestToExcludeStartMenuItem();
     }
 
-    public class ActiveStartMenuViewController : StartMenuViewController
+    public class ActiveViewController : StartMenuViewController
     {
         public enum ContentState
         {
@@ -44,8 +44,8 @@ namespace StartMenuProtector.Control
 
         public ContentState CurrentContentState { get; set; } = ContentState.MirroringOSEnvironment;
         
-        public ActiveStartMenuViewController(ActiveStartMenuDataService activeStartMenuDataService, SavedStartMenuDataService savedStartMenuDataService, SystemStateService systemStateService) 
-            : base(activeStartMenuDataService, savedStartMenuDataService, systemStateService)
+        public ActiveViewController(ActiveDataService activeDataService, SavedDataService savedDataService, SystemStateService systemStateService) 
+            : base(activeDataService, savedDataService, systemStateService)
         {
             
         }
@@ -92,10 +92,10 @@ namespace StartMenuProtector.Control
         }
     }
     
-    public class SavedStartMenuViewController : StartMenuViewController
+    public class SavedViewController : StartMenuViewController
     {
-        public SavedStartMenuViewController(ActiveStartMenuDataService activeStartMenuDataService, SavedStartMenuDataService savedStartMenuDataService, SystemStateService systemStateService) 
-            : base(activeStartMenuDataService, savedStartMenuDataService, systemStateService)
+        public SavedViewController(ActiveDataService activeDataService, SavedDataService savedDataService, SystemStateService systemStateService) 
+            : base(activeDataService, savedDataService, systemStateService)
         {
             
         }

@@ -13,8 +13,8 @@ namespace StartMenuProtectorTest.Test
     public static class StartMenuViewControllerTest
     {
         public static SystemStateService MockSystemStateService;
-        public static Mock<ActiveStartMenuDataService> ActiveDataServiceMock;
-        public static Mock<SavedStartMenuDataService>  SavedDataServiceMock;
+        public static Mock<ActiveDataService> ActiveDataServiceMock;
+        public static Mock<SavedDataService>  SavedDataServiceMock;
         public static Mock<IStartMenuItem> StartMenuItemMock;
         public static Mock<MockableDirectory> DirectoryMock;
         
@@ -24,8 +24,8 @@ namespace StartMenuProtectorTest.Test
         public static void Setup()
         {
             MockSystemStateService = new Mock<SystemStateService>().Object;
-            ActiveDataServiceMock = new Mock<ActiveStartMenuDataService>(MockSystemStateService);
-            SavedDataServiceMock = new Mock<SavedStartMenuDataService>(MockSystemStateService);
+            ActiveDataServiceMock = new Mock<ActiveDataService>(MockSystemStateService);
+            SavedDataServiceMock = new Mock<SavedDataService>(MockSystemStateService);
             StartMenuItemMock = new Mock<IStartMenuItem>();
             DirectoryMock = new Mock<MockableDirectory>();
 
@@ -59,8 +59,8 @@ namespace StartMenuProtectorTest.Test
         [Test]
         public static void ShouldSetCurrentShortcutsToUsersWhenUserIsSelected()
         {
-            var activeViewController = new ActiveStartMenuViewController(ActiveDataServiceMock.Object, SavedDataServiceMock.Object, MockSystemStateService) { StartMenuStartMenuShortcutsLocation = StartMenuShortcutsLocation.User };
-            var savedViewController  = new SavedStartMenuViewController(ActiveDataServiceMock.Object, SavedDataServiceMock.Object, MockSystemStateService) { StartMenuStartMenuShortcutsLocation = StartMenuShortcutsLocation.User };
+            var activeViewController = new ActiveViewController(ActiveDataServiceMock.Object, SavedDataServiceMock.Object, MockSystemStateService) { StartMenuStartMenuShortcutsLocation = StartMenuShortcutsLocation.User };
+            var savedViewController  = new SavedViewController(ActiveDataServiceMock.Object, SavedDataServiceMock.Object, MockSystemStateService) { StartMenuStartMenuShortcutsLocation = StartMenuShortcutsLocation.User };
 
             activeViewController.StartMenuStartMenuShortcutsLocation = StartMenuShortcutsLocation.System;
             savedViewController.StartMenuStartMenuShortcutsLocation  = StartMenuShortcutsLocation.User;
@@ -75,7 +75,7 @@ namespace StartMenuProtectorTest.Test
         [Test]
         public static void ActiveStartMenuViewControllerShouldSaveUserShortcuts()
         {
-            var viewController = new ActiveStartMenuViewController(ActiveDataServiceMock.Object, SavedDataServiceMock.Object, MockSystemStateService) { StartMenuStartMenuShortcutsLocation = StartMenuShortcutsLocation.User };
+            var viewController = new ActiveViewController(ActiveDataServiceMock.Object, SavedDataServiceMock.Object, MockSystemStateService) { StartMenuStartMenuShortcutsLocation = StartMenuShortcutsLocation.User };
 
             viewController.SaveCurrentStartMenuItems();
             
@@ -85,7 +85,7 @@ namespace StartMenuProtectorTest.Test
         [Test]
         public static void SavedStartMenuViewControllerShouldDoNothingWhenRequestedToSaveStartMenuShortcuts()
         {
-            var viewController = new SavedStartMenuViewController(ActiveDataServiceMock.Object, SavedDataServiceMock.Object, MockSystemStateService) { StartMenuStartMenuShortcutsLocation = StartMenuShortcutsLocation.User };
+            var viewController = new SavedViewController(ActiveDataServiceMock.Object, SavedDataServiceMock.Object, MockSystemStateService) { StartMenuStartMenuShortcutsLocation = StartMenuShortcutsLocation.User };
 
             viewController.SaveCurrentStartMenuItems();
             
@@ -95,8 +95,8 @@ namespace StartMenuProtectorTest.Test
         [Test]
         public static void ActiveStartMenuViewControllerShouldRequestDataServiceToLoadLatestStartMenuItemsFromOSEnvironmentWhenUserHasNotMadeChanges()
         {
-            var viewController = new ActiveStartMenuViewController(ActiveDataServiceMock.Object, SavedDataServiceMock.Object, MockSystemStateService) { StartMenuStartMenuShortcutsLocation = StartMenuShortcutsLocation.User };
-            viewController.CurrentContentState = ActiveStartMenuViewController.ContentState.MirroringOSEnvironment;
+            var viewController = new ActiveViewController(ActiveDataServiceMock.Object, SavedDataServiceMock.Object, MockSystemStateService) { StartMenuStartMenuShortcutsLocation = StartMenuShortcutsLocation.User };
+            viewController.CurrentContentState = ActiveViewController.ContentState.MirroringOSEnvironment;
 
             viewController.UpdateCurrentShortcuts().Wait();
 
@@ -107,8 +107,8 @@ namespace StartMenuProtectorTest.Test
         [Test]
         public static void ActiveStartMenuViewControllerShouldRequestDataServiceToLoadStartMenuItemsFromAppDataCacheWhenUserHasMadeChanges()
         {
-            var viewController = new ActiveStartMenuViewController(ActiveDataServiceMock.Object, SavedDataServiceMock.Object, MockSystemStateService) { StartMenuStartMenuShortcutsLocation = StartMenuShortcutsLocation.User };
-            viewController.CurrentContentState = ActiveStartMenuViewController.ContentState.UserChangesPresent;
+            var viewController = new ActiveViewController(ActiveDataServiceMock.Object, SavedDataServiceMock.Object, MockSystemStateService) { StartMenuStartMenuShortcutsLocation = StartMenuShortcutsLocation.User };
+            viewController.CurrentContentState = ActiveViewController.ContentState.UserChangesPresent;
 
             viewController.UpdateCurrentShortcuts().Wait();
             
@@ -119,34 +119,34 @@ namespace StartMenuProtectorTest.Test
         [Test]
         public static void ActiveStartMenuViewControllerHandleRequestToMoveStartMenuItemShouldSetContentStateToUserChangesPresent()
         {
-            var viewController = new ActiveStartMenuViewController(ActiveDataServiceMock.Object, SavedDataServiceMock.Object, MockSystemStateService) { StartMenuStartMenuShortcutsLocation = StartMenuShortcutsLocation.User };
-            viewController.CurrentContentState = ActiveStartMenuViewController.ContentState.MirroringOSEnvironment;
+            var viewController = new ActiveViewController(ActiveDataServiceMock.Object, SavedDataServiceMock.Object, MockSystemStateService) { StartMenuStartMenuShortcutsLocation = StartMenuShortcutsLocation.User };
+            viewController.CurrentContentState = ActiveViewController.ContentState.MirroringOSEnvironment;
 
             viewController.HandleRequestToMoveStartMenuItem(StartMenuItemMock.Object, StartMenuItemMock.Object).Wait();
                 
-            Assert.AreEqual(ActiveStartMenuViewController.ContentState.UserChangesPresent, viewController.CurrentContentState);
+            Assert.AreEqual(ActiveViewController.ContentState.UserChangesPresent, viewController.CurrentContentState);
         }
         
         [Test]
         public static void ActiveStartMenuViewControllerHandleRequestToExcludeStartMenuItemShouldSetContentStateToUserChangesPresent()
         {
-            var viewController = new ActiveStartMenuViewController(ActiveDataServiceMock.Object, SavedDataServiceMock.Object, MockSystemStateService) { StartMenuStartMenuShortcutsLocation = StartMenuShortcutsLocation.User };
-            viewController.CurrentContentState = ActiveStartMenuViewController.ContentState.MirroringOSEnvironment;
+            var viewController = new ActiveViewController(ActiveDataServiceMock.Object, SavedDataServiceMock.Object, MockSystemStateService) { StartMenuStartMenuShortcutsLocation = StartMenuShortcutsLocation.User };
+            viewController.CurrentContentState = ActiveViewController.ContentState.MirroringOSEnvironment;
 
             viewController.HandleRequestToExcludeStartMenuItem();
                 
-            Assert.AreEqual(ActiveStartMenuViewController.ContentState.UserChangesPresent, viewController.CurrentContentState);
+            Assert.AreEqual(ActiveViewController.ContentState.UserChangesPresent, viewController.CurrentContentState);
         }
         
         [Test]
         public static void SavingShouldRevertActiveStartMenuViewControllerCurrentContentStateToMirroringOSEnvironment()
         {
-            var viewController = new ActiveStartMenuViewController(ActiveDataServiceMock.Object, SavedDataServiceMock.Object, MockSystemStateService) { StartMenuStartMenuShortcutsLocation = StartMenuShortcutsLocation.User };
-            viewController.CurrentContentState = ActiveStartMenuViewController.ContentState.UserChangesPresent;
+            var viewController = new ActiveViewController(ActiveDataServiceMock.Object, SavedDataServiceMock.Object, MockSystemStateService) { StartMenuStartMenuShortcutsLocation = StartMenuShortcutsLocation.User };
+            viewController.CurrentContentState = ActiveViewController.ContentState.UserChangesPresent;
 
             viewController.SaveCurrentStartMenuItems();
                 
-            Assert.AreEqual(ActiveStartMenuViewController.ContentState.MirroringOSEnvironment, viewController.CurrentContentState);
+            Assert.AreEqual(ActiveViewController.ContentState.MirroringOSEnvironment, viewController.CurrentContentState);
         }
     }
 }

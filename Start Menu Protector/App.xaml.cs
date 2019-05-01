@@ -8,8 +8,8 @@ namespace StartMenuProtector
     {
         private readonly SystemStateService systemStateService = new SystemStateService();
         private StartMenuSentinel sentinel;
-        private ActiveStartMenuDataService activeDataService;
-        private SavedStartMenuDataService savedDataService;
+        private ActiveDataService activeDataService;
+        private SavedDataService savedDataService;
         private StartMenuViewController activeStartMenuItemsViewController;
         private StartMenuViewController savedStartMenuItemsViewController;
         private StartMenuShortcutsView activeStartMenuItemsView;
@@ -17,11 +17,11 @@ namespace StartMenuProtector
 
         protected override void OnStartup(StartupEventArgs startup)
         {
-            activeDataService = new ActiveStartMenuDataService(systemStateService);
-            savedDataService = new SavedStartMenuDataService(systemStateService);
+            activeDataService = new ActiveDataService(systemStateService);
+            savedDataService = new SavedDataService(systemStateService);
 
-            activeStartMenuItemsViewController = new ActiveStartMenuViewController(activeDataService, savedDataService, systemStateService);
-            savedStartMenuItemsViewController = new SavedStartMenuViewController(activeDataService, savedDataService, systemStateService);
+            activeStartMenuItemsViewController = new ActiveViewController(activeDataService, savedDataService, systemStateService);
+            savedStartMenuItemsViewController = new SavedViewController(activeDataService, savedDataService, systemStateService);
                 
             MainWindow = new MainWindow();
             activeStartMenuItemsView = ((MainWindow) MainWindow).ActiveProgramShortcutsView;
