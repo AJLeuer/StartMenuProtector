@@ -6,9 +6,11 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 
-namespace StartMenuProtector.Util
+namespace StartMenuProtector.Util 
 {
     public static class Util
     {
@@ -46,6 +48,30 @@ namespace StartMenuProtector.Util
         public static IEnumerable<E> GetEnumValues<E>() where E : Enum 
         {
             return Enum.GetValues(typeof(E)).Cast<E>();
+        }
+        
+        /* Code credit: https://stackoverflow.com/questions/16720496/set-apartmentstate-on-a-task */
+        public static Task StartSTATask(Action action)
+        {
+            var task = new TaskCompletionSource<object>();
+            
+            var thread = new Thread(() =>
+            {
+                try
+                {
+                    action();
+                    task.SetResult(null);
+                }
+                catch (Exception e)
+                {
+                    task.SetException(e);
+                }
+            });
+            
+            thread.SetApartmentState(ApartmentState.STA);
+            thread.Start();
+            
+            return task.Task;
         }
     }
 
