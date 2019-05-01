@@ -99,7 +99,7 @@ namespace StartMenuProtectorTest.Test
             
             StartMenuDataService service = new ActiveStartMenuDataService(MockSystemStateService) { StartMenuItemsStorage = ActiveStartMenuShortcuts};
             
-            service.GetStartMenuContents(StartMenuShortcutsLocation.System).Wait();
+            service.GetStartMenuContentDirectory(StartMenuShortcutsLocation.System).Wait();
 
             SystemProgramsMock.Verify((self) => self.DeleteContents(), Times.Once);
             UserProgramsMock.Verify((self) => self.DeleteContents(), Times.Once);

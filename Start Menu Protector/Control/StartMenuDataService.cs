@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Optional;
 using StartMenuProtector.Data;
 using StartMenuProtector.Util;
 using static StartMenuProtector.Configuration.Globals;
@@ -22,7 +23,7 @@ namespace StartMenuProtector.Control
             this.SystemStateService = systemStateService;
         }
 
-        public virtual async Task<Directory> GetStartMenuContents(StartMenuShortcutsLocation location)
+        public virtual async Task<Directory> GetStartMenuContentDirectory(StartMenuShortcutsLocation location)
         {
             Directory startMenuContents = await Task.Run(() =>
             {
@@ -35,6 +36,12 @@ namespace StartMenuProtector.Control
             });
 
             return startMenuContents;
+        }
+
+        public async Task<Option<Directory>> GetStartMenuContentDirectoryMainSubdirectory(StartMenuShortcutsLocation location)
+        {
+            Directory directory = await GetStartMenuContentDirectory(location);
+            return directory.GetSubdirectory("Start Menu");
         }
 
         public abstract void SaveStartMenuItems(IEnumerable<IFileSystemItem> startMenuItems, StartMenuShortcutsLocation location);
@@ -118,7 +125,7 @@ namespace StartMenuProtector.Control
         /// </summary>
         /// <param name="location"></param>
         /// <returns>The up-to-date contents of the environment's Start Menu</returns>
-        public override async Task<Directory> GetStartMenuContents(StartMenuShortcutsLocation location)
+        public override async Task<Directory> GetStartMenuContentDirectory(StartMenuShortcutsLocation location)
         {
             Directory startMenuContents = await Task.Run(() =>
             {
@@ -133,7 +140,7 @@ namespace StartMenuProtector.Control
         
         public virtual async Task<Directory> GetStartMenuContentsFromAppDataCache(StartMenuShortcutsLocation location)
         {
-            return await base.GetStartMenuContents(location);
+            return await base.GetStartMenuContentDirectory(location);
         }
         
         private void CopyCurrentActiveStartMenuItemsFromOSEnvironmentToAppDataDiskStorage()

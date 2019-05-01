@@ -1,11 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading;
+using Optional;
 using Optional.Unsafe;
 using StartMenuProtector.Data;
+using StartMenuProtector.Util;
 using StartMenuProtector.View;
 using static StartMenuProtector.Util.Util;
+using static StartMenuProtector.Configuration.Globals;
+using Directory = StartMenuProtector.Data.Directory;
 
 namespace StartMenuProtector.Control
 {
@@ -18,6 +23,18 @@ namespace StartMenuProtector.Control
         
         public SystemStateService SystemStateService { private get; set; }
         public SavedStartMenuDataService SavedStartMenuDataService { private get; set; }
+        
+        public readonly Dictionary<StartMenuShortcutsLocation, ICollection<IFileSystemItem>> ItemsToRestore = new Dictionary<StartMenuShortcutsLocation, ICollection<IFileSystemItem>>
+        {
+            { StartMenuShortcutsLocation.User,   new HashSet<IFileSystemItem>() },
+            { StartMenuShortcutsLocation.System, new HashSet<IFileSystemItem>() }
+        };
+        
+        public readonly Dictionary<StartMenuShortcutsLocation, ICollection<IFileSystemItem>> ItemsToQuarantine = new Dictionary<StartMenuShortcutsLocation, ICollection<IFileSystemItem>>
+        {
+            { StartMenuShortcutsLocation.User,   new HashSet<IFileSystemItem>() },
+            { StartMenuShortcutsLocation.System, new HashSet<IFileSystemItem>() }
+        };
 
         public StartMenuSentinel(SystemStateService systemStateService, SavedStartMenuDataService savedStartMenuDataService)
         {
@@ -65,11 +82,14 @@ namespace StartMenuProtector.Control
                 {
                     lock (State)
                     {
-                        var (unexpected, missing) = CheckForDivergencesFromUsersSavedStartMenuState();
-
-                        foreach (StartMenuShortcutsLocation location in GetEnumValues<StartMenuShortcutsLocation>())
+                        try
                         {
-                            FilterOutShortcutItemsMovedOutOfPosition(unexpectedItems: unexpected[location], missingItems: missing[location]);
+                            MonitorStartMenuState();
+                        }
+                        catch (Exception exception)
+                        {
+                            //todo: need true logging
+                            Console.WriteLine(exception);
                         }
                     }
                 
@@ -83,37 +103,111 @@ namespace StartMenuProtector.Control
             }
         }
 
-        private  (Dictionary<StartMenuShortcutsLocation, ICollection<RelocatableItem>> unexpected, Dictionary<StartMenuShortcutsLocation, ICollection<RelocatableItem>> missing) CheckForDivergencesFromUsersSavedStartMenuState()
+        private void MonitorStartMenuState()
         {
-            var unexpected = new Dictionary<StartMenuShortcutsLocation, ICollection<RelocatableItem>>
-            {
-                { StartMenuShortcutsLocation.User, new HashSet<RelocatableItem>() },
-                { StartMenuShortcutsLocation.System, new HashSet<RelocatableItem>() }
-            };
-                
-            var absent = new Dictionary<StartMenuShortcutsLocation, ICollection<RelocatableItem>>
-            {
-                { StartMenuShortcutsLocation.User, new HashSet<RelocatableItem>() },
-                { StartMenuShortcutsLocation.System, new HashSet<RelocatableItem>() }
-            };
-            
             foreach (StartMenuShortcutsLocation location in GetEnumValues<StartMenuShortcutsLocation>())
             {
-                var appDataSavedStartMenuContents = SavedStartMenuDataService.GetStartMenuContents(location).Result.GetSubdirectory("Start Menu");
+                var (unexpected, missing) = CheckForDivergencesFromUsersSavedStartMenuState(location);
+                
+                UpdateSavedDataWithNewerItemCounterParts(location: location, unexpectedItems: unexpected);
+                FilterOutItemsWithTheSameName(location, unexpectedItems: unexpected, missingItems: missing);
+                FilterOutShortcutsMovedOutOfPosition(unexpectedItems: unexpected, missingItems: missing);
 
-                if (appDataSavedStartMenuContents.HasValue)
-                {
-                    SystemStateService.OSEnvironmentStartMenuItems[location].RefreshContents();
-                    Directory currentStartMenuItemsDirectoryState = SystemStateService.OSEnvironmentStartMenuItems[location];
-                    Directory expectedStartMenuStateDirectoryState = appDataSavedStartMenuContents.ValueOrFailure();
-
-                    (unexpected[location], absent[location]) = Directory.FindDivergences(sourceOfTruth: expectedStartMenuStateDirectoryState, test: currentStartMenuItemsDirectoryState);
-                }
+                ItemsToQuarantine[location].AddAll(unexpected);
+                ItemsToRestore[location]   .AddAll(missing);
+                
+                RestoreStartMenuItems(location);
             }
-
-            return (unexpected, absent);
         }
 
+        private (ICollection<RelocatableItem> unexpected, ICollection<RelocatableItem> missing) CheckForDivergencesFromUsersSavedStartMenuState(StartMenuShortcutsLocation location)
+        {
+            ICollection<RelocatableItem> unexpected = new HashSet<RelocatableItem>();
+                
+            ICollection<RelocatableItem> absent     = new HashSet<RelocatableItem>();
+
+            Option<Directory> appDataSavedStartMenuContents = SavedStartMenuDataService.GetStartMenuContentDirectoryMainSubdirectory(location).Result;
+
+            if (appDataSavedStartMenuContents.HasValue)
+            {
+                SystemStateService.OSEnvironmentStartMenuItems[location].RefreshContents();
+                Directory currentStartMenuItemsDirectoryState = SystemStateService.OSEnvironmentStartMenuItems[location];
+                Directory expectedStartMenuStateDirectoryState = appDataSavedStartMenuContents.ValueOrFailure();
+
+                (unexpected, absent) = Directory.FindDivergences(sourceOfTruth: expectedStartMenuStateDirectoryState, test: currentStartMenuItemsDirectoryState);
+            }
+            
+            return (unexpected, absent);
+        }
+        
+        
+        private void UpdateSavedDataWithNewerItemCounterParts(StartMenuShortcutsLocation location, ICollection<RelocatableItem> unexpectedItems)
+        {
+            Option<Directory> appDataSavedStartMenuContents = SavedStartMenuDataService.GetStartMenuContentDirectoryMainSubdirectory(location).Result;
+
+            if (appDataSavedStartMenuContents.HasValue)
+            {
+                ICollection<IFileSystemItem> allUnexpectedItems = ExtractFlatListOfItems(unexpectedItems);
+                ICollection<IFileSystemItem> savedStartMenuItems = appDataSavedStartMenuContents.ValueOrFailure().GetFlatContents();
+
+                foreach (IFileSystemItem unexpectedItem in allUnexpectedItems)
+                {
+                    foreach (IFileSystemItem savedStartMenuItem in savedStartMenuItems)
+                    {
+                        if (savedStartMenuItem.Name == unexpectedItem.Name)
+                        {
+                            string savedDataLocation = savedStartMenuItem.ParentDirectoryPath;
+                            savedStartMenuItem.Delete();
+
+                            IEnumerable<RelocatableItem> toRemoveFromUnexpected = unexpectedItems.Where((RelocatableItem item) => item.Name == unexpectedItem.Name );
+                            
+                            foreach (var itemInUnexpected in toRemoveFromUnexpected.ToArray())
+                            {
+                                unexpectedItems.Remove(itemInUnexpected);
+                            }
+                            
+                            Option<IFileSystemItem> itemToRestore = unexpectedItem.Move(savedDataLocation);
+
+                            if (itemToRestore.HasValue)
+                            {
+                                ItemsToRestore[location].Add(itemToRestore.ValueOrFailure());
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        
+        public void FilterOutItemsWithTheSameName(StartMenuShortcutsLocation location, ICollection<RelocatableItem> unexpectedItems, ICollection<RelocatableItem> missingItems)
+        {
+            var allUnexpectedItems = unexpectedItems.ToArray();
+            var allMissingItems = missingItems.ToArray(); 
+            
+            foreach (RelocatableItem unexpectedItem in allUnexpectedItems)
+            {
+                foreach (RelocatableItem missingItem in allMissingItems)
+                {
+                    if (missingItem.Name == unexpectedItem.Name)
+                    {
+                        //we'll move the unexpected item to take the place of the missing item, since it's target might
+                        //be a newer version of the original executable
+                        string missingItemPath = missingItem.ParentDirectoryPath;
+                        
+                        Option<IFileSystemItem> itemToRestore = unexpectedItem.Move(missingItemPath);
+                        missingItems.Remove(missingItem);
+                        
+                        missingItems.Remove(unexpectedItem);
+                        unexpectedItems.Remove(unexpectedItem);
+                        
+                        if (itemToRestore.HasValue)
+                        {
+                            ItemsToRestore[location].Add(itemToRestore.ValueOrFailure());
+                        }
+                    }
+                }
+            }
+        }
+        
         /// <summary>
         /// Reconciles unexpectedItems with missing items by looking for items that are shortcuts and getting their target file. Any unexpectedItem
         /// with the same target file as a missingItem is assumed to be that item. When two such matching items are found, they are removed from their
@@ -122,7 +216,7 @@ namespace StartMenuProtector.Control
         /// <param name="unexpectedItems"></param>
         /// <param name="missingItems"></param>
         /// <exception cref="NotImplementedException"></exception>
-        public void FilterOutShortcutItemsMovedOutOfPosition(ICollection<RelocatableItem> unexpectedItems, ICollection<RelocatableItem> missingItems)
+        public void FilterOutShortcutsMovedOutOfPosition(ICollection<RelocatableItem> unexpectedItems, ICollection<RelocatableItem> missingItems)
         {
             Action filterOutShortcutItemsMovedOutOfPosition = () =>
             {
@@ -154,6 +248,60 @@ namespace StartMenuProtector.Control
             } ;
 
             StartSTATask(filterOutShortcutItemsMovedOutOfPosition).Wait();
+        }
+        
+        
+        private void RestoreStartMenuItems(StartMenuShortcutsLocation location)
+        {
+            foreach (IFileSystemItem item in ItemsToRestore[location])
+            {
+                IFileSystemItem itemToRestore;
+                
+                if (item is RelocatableItem relocatableItem)
+                {
+                    itemToRestore = relocatableItem.UnderlyingItem;
+                }
+                else
+                {
+                    itemToRestore = item;
+                }
+                
+                String relativePath = itemToRestore.Path.Substring((SavedStartMenuItemsSubdirectory[location].Path + @"\Start Menu").Length + 1);
+                String restoredPath = Path.Combine(StartMenuItemsPath[location], relativePath);
+
+                if (itemToRestore.IsOfType<IDirectory>())
+                {
+                    restoredPath =  Path.GetDirectoryName(restoredPath); //gets parent's directory
+                    itemToRestore.Copy(restoredPath);
+                }
+                else /* if file */
+                {
+                    restoredPath = Path.GetDirectoryName(restoredPath);
+                    itemToRestore.Copy(restoredPath);
+                }
+
+            }
+            
+            ItemsToRestore[location].Clear();
+        }
+
+        private static ICollection<IFileSystemItem> ExtractFlatListOfItems(ICollection<RelocatableItem> items)
+        {
+            ICollection<IFileSystemItem> flatContents = new HashSet<IFileSystemItem>();
+
+            foreach (var item in items)
+            {
+                if (item.UnderlyingItem is IFile file)
+                {
+                    flatContents.Add(file);
+                }
+                else if (item.UnderlyingItem is IDirectory directory)
+                {
+                    flatContents.AddAll(directory.GetFlatContents());
+                }
+            }
+
+            return flatContents;
         }
     }
 

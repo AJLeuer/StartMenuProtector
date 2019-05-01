@@ -57,7 +57,7 @@ namespace StartMenuProtector.Control
             switch (CurrentContentState)
             {
                 case ContentState.MirroringOSEnvironment:
-                    startMenuContents = (await ActiveDataService.GetStartMenuContents(StartMenuStartMenuShortcutsLocation)).Contents;
+                    startMenuContents = (await ActiveDataService.GetStartMenuContentDirectory(StartMenuStartMenuShortcutsLocation)).Contents;
                     break;
                 case ContentState.UserChangesPresent:
                     startMenuContents = (await ActiveDataService.GetStartMenuContentsFromAppDataCache(StartMenuStartMenuShortcutsLocation)).Contents;
@@ -102,7 +102,7 @@ namespace StartMenuProtector.Control
 
         public sealed override async Task UpdateCurrentShortcuts()
         {
-            ICollection<IFileSystemItem> startMenuContent = (await SavedDataService.GetStartMenuContents(StartMenuStartMenuShortcutsLocation)).Contents;
+            ICollection<IFileSystemItem> startMenuContent = (await SavedDataService.GetStartMenuContentDirectory(StartMenuStartMenuShortcutsLocation)).Contents;
             StartMenuContents.ReplaceAll(startMenuContent);
         }
 

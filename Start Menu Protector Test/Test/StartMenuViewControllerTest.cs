@@ -30,7 +30,7 @@ namespace StartMenuProtectorTest.Test
             DirectoryMock = new Mock<MockableDirectory>();
 
             ActiveDataServiceMock.Setup(
-                (self) => self.GetStartMenuContents(It.IsAny<StartMenuShortcutsLocation>()))
+                (self) => self.GetStartMenuContentDirectory(It.IsAny<StartMenuShortcutsLocation>()))
                 .Returns((StartMenuShortcutsLocation location) => { return CreateStubbedStartMenuContentsRetrievalTask(view: StartMenuProtectorViewType.Active, location: location); });
 
             ActiveDataServiceMock
@@ -45,7 +45,7 @@ namespace StartMenuProtectorTest.Test
                 .Returns((StartMenuShortcutsLocation location) => { return CreateStubbedStartMenuContentsRetrievalTask(view: StartMenuProtectorViewType.Saved, location: location); });
             
             SavedDataServiceMock.Setup(
-                    (self) => self.GetStartMenuContents(It.IsAny<StartMenuShortcutsLocation>()))
+                    (self) => self.GetStartMenuContentDirectory(It.IsAny<StartMenuShortcutsLocation>()))
                 .Returns((StartMenuShortcutsLocation location) => { return CreateStubbedStartMenuContentsRetrievalTask(view: StartMenuProtectorViewType.Saved, location: location); });
 
             SavedDataServiceMock
@@ -100,7 +100,7 @@ namespace StartMenuProtectorTest.Test
 
             viewController.UpdateCurrentShortcuts().Wait();
 
-            ActiveDataServiceMock.Verify((self) => self.GetStartMenuContents(It.IsAny<StartMenuShortcutsLocation>()), Times.Once);
+            ActiveDataServiceMock.Verify((self) => self.GetStartMenuContentDirectory(It.IsAny<StartMenuShortcutsLocation>()), Times.Once);
             ActiveDataServiceMock.Verify((self) => self.GetStartMenuContentsFromAppDataCache(It.IsAny<StartMenuShortcutsLocation>()), Times.Never);
         }
         
@@ -112,7 +112,7 @@ namespace StartMenuProtectorTest.Test
 
             viewController.UpdateCurrentShortcuts().Wait();
             
-            ActiveDataServiceMock.Verify((self) => self.GetStartMenuContents(It.IsAny<StartMenuShortcutsLocation>()), Times.Never);
+            ActiveDataServiceMock.Verify((self) => self.GetStartMenuContentDirectory(It.IsAny<StartMenuShortcutsLocation>()), Times.Never);
             ActiveDataServiceMock.Verify((self) => self.GetStartMenuContentsFromAppDataCache(It.IsAny<StartMenuShortcutsLocation>()), Times.Once);
         }
         

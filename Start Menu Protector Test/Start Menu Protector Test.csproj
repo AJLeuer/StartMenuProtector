@@ -41,6 +41,10 @@
       <HintPath>..\packages\Moq.4.10.1\lib\net45\Moq.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Optional, Version=4.1.0.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\packages\Optional.5.0.0-alpha\lib\net45\Optional.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />

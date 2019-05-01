@@ -30,6 +30,7 @@ namespace StartMenuProtector.Data
         bool MarkedForExclusion { get; set; }
         bool Valid { get; }
         bool Filtered { get; }
+        String ParentDirectoryPath { get; }
         bool Equals(object @object);
         
         int GetHashCode();
@@ -38,9 +39,32 @@ namespace StartMenuProtector.Data
         /// Copies this item inside of the directory given by destination 
         /// </summary>
         /// <param name="destination">The directory to copy into</param>
-        void Copy(Directory destination);
+        /// <returns>The new file created from the copy operation</returns>
+        Option<IFileSystemItem> Copy(Directory destination);
 
-        void Move(Directory destination);
+        /// <summary>
+        /// Copies this item inside of the directory given by destination 
+        /// </summary>
+        /// <param name="path">The path of the directory to copy into</param>
+        /// <returns>The new file created from the copy operation</returns>
+        Option<IFileSystemItem> Copy(string path);
+
+        /// <summary>
+        /// Copies this item to the path specified, deletes this,
+        /// and returns the new file created from the copy operation
+        /// </summary>
+        /// <param name="destination"></param>
+        /// <returns>The new file created from the copy operation</returns>
+        Option<IFileSystemItem> Move(Directory destination);
+
+        /// <summary>
+        /// Copies this item to the path specified, deletes this,
+        /// and returns the new file created from the copy operation
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns>The new file created from the copy operation</returns>
+        Option<IFileSystemItem> Move(string path);
+        
         void Delete();
     }
     
@@ -50,6 +74,8 @@ namespace StartMenuProtector.Data
         List<IFile> Files { get; }
         List<IDirectory> Directories { get; }
         List<IFileSystemItem> Contents { get; }
+
+        ICollection<IFileSystemItem> GetFlatContents();
         List<IFileSystemItem> RefreshContents();
         void DeleteContents();
         
@@ -61,6 +87,7 @@ namespace StartMenuProtector.Data
         /// If none exists, returns an empty optional. Does not search recursively.
         /// </summary>
         Option<Directory> GetSubdirectory(String name);
+        
     }
 
     public interface IFile : IFileSystemItem
@@ -95,6 +122,14 @@ namespace StartMenuProtector.Data
         public virtual string Path
         {
             get { return FullName; }
+        }
+
+        public virtual string ParentDirectoryPath
+        {
+            get
+            {
+                return System.IO.Path.GetDirectoryName(Path);
+            }
         }
         public override string FullName 
         {
@@ -272,14 +307,25 @@ namespace StartMenuProtector.Data
         /// Copies this item inside of the directory given by destination 
         /// </summary>
         /// <param name="destination">The directory to copy into</param>
-        public abstract void Copy(Directory destination);
-
-        public virtual void Move(Directory destination)
+        public virtual Option<IFileSystemItem> Copy(Directory destination)
         {
-            Copy(destination);
-            Delete();
+            return Copy(destination.FullName);
         }
-        
+
+        public abstract Option<IFileSystemItem> Copy(string path);
+
+        public virtual Option<IFileSystemItem> Move(Directory destination)
+        {
+            return Move(destination.FullName);
+        }
+
+        public Option<IFileSystemItem> Move(string path)
+        {
+            Option<IFileSystemItem> copy = Copy(path);
+            Delete();
+            return copy;
+        }
+
         public override void Delete() { OriginalFileSystemItem.Delete(); }
     }
     
@@ -384,6 +430,26 @@ namespace StartMenuProtector.Data
                 contents = currentContents;
             }
         }
+
+        public ICollection<IFileSystemItem> GetFlatContents()
+        {
+            var flatContents = new HashSet<IFileSystemItem>();
+
+            foreach (IDirectory subDirectory in Directories)
+            {
+                ICollection<IFileSystemItem> subdirectoryContents = subDirectory.GetFlatContents();
+                flatContents.AddAll(subdirectoryContents);
+            }
+
+            foreach (IFileSystemItem item in Contents)
+            {
+                flatContents.Add(item);
+            }
+
+            flatContents.Add(this);
+
+            return flatContents;
+        }
         
         public virtual List<IFileSystemItem> RefreshContents() 
         {
@@ -433,32 +499,41 @@ namespace StartMenuProtector.Data
         {
             Self.Delete(true);
         }
-        
+
         /// <summary>
         /// Recursively copies this directory inside of the directory given by destination 
         /// </summary>
         /// <param name="destination">The directory to copy into</param>
-        public override void Copy(Directory destination)
+        public override Option<IFileSystemItem> Copy(Directory destination)
         {
-            if (Valid)
+            lock (destination.ContentsAccessLock)
             {
-                lock (destination.ContentsAccessLock)
-                {
-                    String pathOfCopy = System.IO.Path.Combine(destination.FullName, Name);
-                    Directory directoryCopy = System.IO.Directory.Exists(pathOfCopy) ? new Directory(pathOfCopy) : new Directory(System.IO.Directory.CreateDirectory(pathOfCopy));
-
-                    DirectorySecurity security = Self.GetAccessControl();
-                    security.SetAccessRuleProtection(true, true);
-                    directoryCopy.Self.SetAccessControl(security);
-
-                    foreach (IFileSystemItem itemToCopy in Contents)
-                    {
-                        itemToCopy.Copy(directoryCopy);
-                    }
-                }
+                return Copy(destination.FullName);
             }
         }
         
+        public override Option<IFileSystemItem> Copy(string path)
+        {
+            if (Valid)
+            {
+                String pathOfCopy = System.IO.Path.Combine(path, Name);
+                Directory directoryCopy = System.IO.Directory.Exists(pathOfCopy) ? new Directory(pathOfCopy) : new Directory(System.IO.Directory.CreateDirectory(pathOfCopy));
+
+                DirectorySecurity security = Self.GetAccessControl();
+                security.SetAccessRuleProtection(true, true);
+                directoryCopy.Self.SetAccessControl(security);
+
+                foreach (IFileSystemItem itemToCopy in Contents)
+                {
+                    itemToCopy.Copy(directoryCopy);
+                }
+                
+                return Option.Some<IFileSystemItem>(new Directory(pathOfCopy));
+            }
+
+            return Option.None<IFileSystemItem>();
+        }
+
         public virtual bool Contains(FileSystemItem item)
         {
             bool contained = false;
@@ -659,26 +734,35 @@ namespace StartMenuProtector.Data
         {
             
         }
+        
+        public override Option<IFileSystemItem> Copy(Directory destination)
+        {
+            lock (destination.ContentsAccessLock)
+            {
+                return Copy(destination.FullName);
+            }
+        }
 
-        public override void Copy(Directory destination)
+        public override Option<IFileSystemItem> Copy(String path)
         {
             if (Valid)
             {
-                lock (destination.ContentsAccessLock)
-                {
-                    String pathOfCopy = System.IO.Path.Combine(destination.FullName, Name);
-            
-                    FileSecurity originalSecurity = Self.GetAccessControl();
-                    originalSecurity.SetAccessRuleProtection(true, true);
+                String pathOfCopy = System.IO.Path.Combine(path, Name);
+        
+                FileSecurity originalSecurity = Self.GetAccessControl();
+                originalSecurity.SetAccessRuleProtection(true, true);
 
-                    Self.CopyTo(pathOfCopy, true);
+                Self.CopyTo(pathOfCopy, true);
 
-                    var fileCopy = new FileInfo(pathOfCopy);
+                var fileCopy = new FileInfo(pathOfCopy);
 
-                    // ReSharper disable once AssignNullToNotNullAttribute
-                    fileCopy.SetAccessControl(originalSecurity);
-                }
+                // ReSharper disable once AssignNullToNotNullAttribute
+                fileCopy.SetAccessControl(originalSecurity);
+
+                return Option.Some<IFileSystemItem>(new File(pathOfCopy));
             }
+            
+            return Option.None<IFileSystemItem>();
         }
         
         /// <returns>If this is a shortcut, returns the FileSystemItem this points to.
@@ -739,9 +823,15 @@ namespace StartMenuProtector.Data
             get { return UnderlyingItem.PrettyName; }
         }
         
-        public string Path
+        public string Path 
         {
             get { return UnderlyingItem.Path; }
+        }
+
+
+        public string ParentDirectoryPath
+        {
+            get { return UnderlyingItem.ParentDirectoryPath; }
         }
         
         public string FullName
@@ -775,6 +865,11 @@ namespace StartMenuProtector.Data
 
         public RelocatableItem(IFileSystemItem underlyingItem)
         {
+            if (underlyingItem.IsOfType<RelocatableItem>())
+            {
+                throw new ArgumentException("RelocatableItem cannot be created with an underlying RelocatableItem");
+            }
+            
             this.UnderlyingItem = underlyingItem;
             this.OriginalPath = UnderlyingItem.Path;
         }
@@ -784,14 +879,24 @@ namespace StartMenuProtector.Data
             return UnderlyingItem.Equals(other);
         }
 
-        public void Copy(Directory destination)
+        public Option<IFileSystemItem> Copy(Directory destination)
         {
-            UnderlyingItem.Copy(destination);
+            return UnderlyingItem.Copy(destination);
+        }
+        
+        public Option<IFileSystemItem> Copy(String path)
+        {
+            return UnderlyingItem.Copy(path);
         }
 
-        public void Move(Directory destination)
+        public Option<IFileSystemItem> Move(Directory destination)
         {
-            UnderlyingItem.Move(destination);
+            return UnderlyingItem.Move(destination);
+        }
+        
+        public Option<IFileSystemItem> Move(string path)
+        {
+            return UnderlyingItem.Move(path);
         }
 
         public void MoveToOriginalPath()

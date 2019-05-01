@@ -6,3 +6,4 @@
 *   Todo: Active view does not refresh its contents from the file system after save.
 *   Todo: The top level directory objects in Global (e.g. `ActiveStartMenuItems`, `SavedSystemStartMenuItems`, etc.) could be organized into Dictionaries by the type of view they represent (Active, Saved, etc.).
 *   Todo: User should only be able to make changes in Active view while protector is disabled
+*   Todo: Add logging

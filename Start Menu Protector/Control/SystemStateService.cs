@@ -1,6 +1,6 @@
-using System;
 using System.Collections.Generic;
 using StartMenuProtector.Data;
+using static StartMenuProtector.Configuration.Globals;
 
 namespace StartMenuProtector.Control
 {
@@ -41,11 +41,8 @@ namespace StartMenuProtector.Control
         
         private void LoadSystemAndUserStartMenuItemsFromOSEnvironment()
         {
-            String systemStartMenuItemsPath = $@"{Environment.GetFolderPath(Environment.SpecialFolder.CommonStartMenu)}";
-            String userStartMenuItemsPath = $@"{Environment.GetFolderPath(Environment.SpecialFolder.StartMenu)}";
-        
-            var systemStartMenuItems = new Directory(systemStartMenuItemsPath);
-            var userStartMenuItems = new Directory(userStartMenuItemsPath);
+            var systemStartMenuItems = new Directory(SystemStartMenuItemsPath);
+            var userStartMenuItems = new Directory(UserStartMenuItemsPath);
         
             var startMenuItems = new Dictionary<StartMenuShortcutsLocation, Directory>
             {
