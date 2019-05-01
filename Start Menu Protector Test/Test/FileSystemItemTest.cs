@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Linq;
-using Castle.DynamicProxy.Generators.Emitters.SimpleAST;
 using Moq;
 using NUnit.Framework;
 using StartMenuProtector.Data;

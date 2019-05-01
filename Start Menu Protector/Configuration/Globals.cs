@@ -1,5 +1,4 @@
 using System.IO;
-using StartMenuProtector.Data;
 using Syroot.Windows.IO;
 using Directory = StartMenuProtector.Data.Directory;
 
