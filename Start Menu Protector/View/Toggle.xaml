@@ -4,11 +4,11 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:configuration="clr-namespace:StartMenuProtector.Configuration"
-             xmlns:view="clr-namespace:StartMenuProtector.View"
              mc:Ignorable="d" 
              FontFamily="{x:Static configuration:Config.DefaultFontFamily}" FontSize="20" Checked="ProcessToggledOn" Unchecked="ProcessToggledOff">
 
     <ToggleButton.Resources>
+        <!-- ReSharper disable once Xaml.RedundantResource -->
         <Style x:Key="Style" TargetType="{x:Type ToggleButton}">
             <Setter Property="Foreground" Value="{x:Static configuration:Config.TextStrokeColor}" />
             <Setter Property="Margin" Value="8,4,8,4" />

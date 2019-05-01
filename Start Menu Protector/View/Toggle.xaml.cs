@@ -37,7 +37,7 @@ namespace StartMenuProtector.View
             }
             set
             {
-                this.SetValue(EnabledTextProperty, (object) value);
+                this.SetValue(EnabledTextProperty, value);
             }
         }  
         
@@ -51,7 +51,7 @@ namespace StartMenuProtector.View
             }
             set
             {
-                this.SetValue(DisabledTextProperty, (object) value);
+                this.SetValue(DisabledTextProperty, value);
             }
         }  
         
@@ -65,7 +65,7 @@ namespace StartMenuProtector.View
             }
             set
             {
-                this.SetValue(EnabledColorProperty, (object) value);
+                this.SetValue(EnabledColorProperty, value);
             }
         }        
         
@@ -79,7 +79,7 @@ namespace StartMenuProtector.View
             }
             set
             {
-                this.SetValue(DisabledColorProperty, (object) value);
+                this.SetValue(DisabledColorProperty, value);
             }
         }
 

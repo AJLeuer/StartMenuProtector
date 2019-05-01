@@ -22,6 +22,7 @@ namespace StartMenuProtector.Util
         private static extern IntPtr GetConsoleWindow();
 
         [DllImport(Kernel32_DllName)]
+        // ReSharper disable once UnusedMember.Local
         private static extern int GetConsoleOutputCP();
 
         public static bool HasConsole
