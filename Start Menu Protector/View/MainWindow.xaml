@@ -13,7 +13,7 @@
             <RowDefinition Height="1*"></RowDefinition>
             <RowDefinition Height="9*"></RowDefinition>
         </Grid.RowDefinitions>
-        <view:Toggle Width="250" Height="60" EnabledText="Protector Active" DisabledText="Protector Disabled" Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Center"></view:Toggle>
+        <view:Toggle x:Name="SentinelToggleButton" Width="250" Height="60" EnabledText="Protector Active" DisabledText="Protector Disabled" Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Center"></view:Toggle>
         <TabControl  Grid.Row="1" FontSize="20" HorizontalAlignment="Stretch" FontFamily="{x:Static config:Config.DefaultFontFamily}" VerticalAlignment="Stretch">
             <TabItem Header="Active">
                 <view:ActiveStartMenuShortcutsView x:Name="ActiveProgramShortcutsView"/>

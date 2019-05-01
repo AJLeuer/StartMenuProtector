@@ -19,12 +19,10 @@ namespace StartMenuProtector
         {
             activeDataService = new ActiveStartMenuDataService(systemStateService);
             savedDataService = new SavedStartMenuDataService(systemStateService);
-            
-            sentinel = new StartMenuSentinel(systemStateService, savedDataService);
 
             activeStartMenuItemsViewController = new ActiveStartMenuViewController(activeDataService, savedDataService, systemStateService);
             savedStartMenuItemsViewController = new SavedStartMenuViewController(activeDataService, savedDataService, systemStateService);
-
+                
             MainWindow = new MainWindow();
             activeStartMenuItemsView = ((MainWindow) MainWindow).ActiveProgramShortcutsView;
             savedStartMenuItemsView = ((MainWindow) MainWindow).SavedProgramShortcutsView;
@@ -32,6 +30,7 @@ namespace StartMenuProtector
             activeStartMenuItemsView.Controller = activeStartMenuItemsViewController;
             savedStartMenuItemsView.Controller = savedStartMenuItemsViewController;
             
+            sentinel = new StartMenuSentinel(systemStateService, savedDataService, ((MainWindow) MainWindow).SentinelToggleButton);
             sentinel.Start();
             
             MainWindow.Show();

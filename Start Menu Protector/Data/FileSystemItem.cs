@@ -52,14 +52,7 @@ namespace StartMenuProtector.Data
         List<IFileSystemItem> Contents { get; }
         List<IFileSystemItem> RefreshContents();
         void DeleteContents();
-        void Delete();
-
-        /// <summary>
-        /// Recursively copies this directory inside of the directory given by destination 
-        /// </summary>
-        /// <param name="destination">The directory to copy into</param>
-        void Copy(Directory destination);
-
+        
         bool Contains(FileSystemItem item);
         ICollection<IFileSystemItem> FindMatchingItems(Func<IFileSystemItem, bool> matcher);
 

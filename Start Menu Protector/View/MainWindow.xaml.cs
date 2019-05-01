@@ -11,8 +11,7 @@ namespace StartMenuProtector.View
     /// Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class MainWindow : Window
-    {   
-        
+    {
         private TaskbarIcon TrayIcon = new TaskbarIcon { ToolTipText = "Start Menu Protector", IconSource = new BitmapImage(GetResourceURI(TrayIconFilePath))};
 
         public MainWindow()

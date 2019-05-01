@@ -4,13 +4,17 @@ using System.Linq;
 using System.Threading;
 using Optional.Unsafe;
 using StartMenuProtector.Data;
+using StartMenuProtector.View;
 using static StartMenuProtector.Util.Util;
 
 namespace StartMenuProtector.Control
 {
     public class StartMenuSentinel
     {
-        private Thread Thread;
+        public RunningState State { get; private set; } = RunningState.Disabled;
+        private readonly AutoResetEvent ReenabledFlag = new AutoResetEvent (false);
+
+        private Thread Thread { get; set; }
         
         public SystemStateService SystemStateService { private get; set; }
         public SavedStartMenuDataService SavedStartMenuDataService { private get; set; }
@@ -21,19 +25,61 @@ namespace StartMenuProtector.Control
             this.SavedStartMenuDataService = savedStartMenuDataService;
         }
         
+        public StartMenuSentinel(SystemStateService systemStateService, SavedStartMenuDataService savedStartMenuDataService, Toggleable toggle):
+            this(systemStateService, savedStartMenuDataService)
+        {
+            toggle.ToggleOnEvent += Enable;
+            toggle.ToggleOffEvent += Disable;
+        }
+        
         public void Start()
         {
             Thread = new Thread(Run);
+            Enable();
             Thread.Start();
         }
 
+        public void Enable()
+        {
+            lock (State)
+            {
+                this.State = RunningState.Enabled;
+            }
+            
+            ReenabledFlag.Set();
+        }
+        
+        public void Disable()
+        {
+            lock (State)
+            {
+                this.State = RunningState.Disabled;
+            }
+        }
+        
         private void Run()
         {
-            var (unexpected, missing) = CheckForDivergencesFromUsersSavedStartMenuState();
-
-            foreach (StartMenuShortcutsLocation location in GetEnumValues<StartMenuShortcutsLocation>())
+            while (true)
             {
-                FilterOutShortcutItemsMovedOutOfPosition(unexpectedItems: unexpected[location], missingItems: missing[location]);
+                while (State == RunningState.Enabled)
+                {
+                    lock (State)
+                    {
+                        var (unexpected, missing) = CheckForDivergencesFromUsersSavedStartMenuState();
+
+                        foreach (StartMenuShortcutsLocation location in GetEnumValues<StartMenuShortcutsLocation>())
+                        {
+                            FilterOutShortcutItemsMovedOutOfPosition(unexpectedItems: unexpected[location], missingItems: missing[location]);
+                        }
+                    }
+                
+                    Thread.Sleep(TimeSpan.FromSeconds(2));
+                }
+
+                if (State == RunningState.Disabled)
+                {
+                    ReenabledFlag.WaitOne();
+                }
             }
         }
 
@@ -109,7 +155,24 @@ namespace StartMenuProtector.Control
 
             StartSTATask(filterOutShortcutItemsMovedOutOfPosition).Wait();
         }
+    }
+
+    public class RunningState
+    {
+        public enum Value
+        {
+            On,
+            Off
+        }
         
+        public Value State { get; }
         
+        public static RunningState Enabled  { get; } = new RunningState(state: Value.On);
+        public static RunningState Disabled { get; } = new RunningState(state: Value.Off);
+
+        private RunningState(Value state)
+        {
+            this.State = state;
+        }
     }
 }
