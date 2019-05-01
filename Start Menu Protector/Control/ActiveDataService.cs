@@ -8,7 +8,7 @@ namespace StartMenuProtector.Control
 {
     public class ActiveDataService : StartMenuDataService
     {
-        public override Dictionary<StartMenuShortcutsLocation, Directory> StartMenuItemsStorage { protected get; set; } = new Dictionary<StartMenuShortcutsLocation, Directory> 
+        public override Dictionary<StartMenuShortcutsLocation, Directory> StartMenuItemsStorage { get; set; } = new Dictionary<StartMenuShortcutsLocation, Directory> 
         {
             { StartMenuShortcutsLocation.System, Globals.ActiveSystemStartMenuItems }, 
             { StartMenuShortcutsLocation.User, Globals.ActiveUserStartMenuItems }

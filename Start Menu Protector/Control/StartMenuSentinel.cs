@@ -266,23 +266,19 @@ namespace StartMenuProtector.Control
                     itemToRestore = item;
                 }
                 
-                String relativePath = itemToRestore.Path.Substring((SavedStartMenuItemsSubdirectory[location].Path + @"\Start Menu").Length + 1);
-                String restoredPath = Path.Combine(StartMenuItemsPath[location], relativePath);
-
-                if (itemToRestore.IsOfType<IDirectory>())
-                {
-                    restoredPath =  Path.GetDirectoryName(restoredPath); //gets parent's directory
-                    itemToRestore.Copy(restoredPath);
-                }
-                else /* if file */
-                {
-                    restoredPath = Path.GetDirectoryName(restoredPath);
-                    itemToRestore.Copy(restoredPath);
-                }
-
+                String relativePath = itemToRestore.Path.Substring(GetSavedStartMenuItemsPath(location).Length + 1);
+                String restoredPath = Path.Combine(EnvironmentStartMenuItemsPath[location], relativePath);
+                restoredPath =  Path.GetDirectoryName(restoredPath); //gets parent's directory
+                
+                itemToRestore.Copy(restoredPath);
             }
             
             ItemsToRestore[location].Clear();
+
+            string GetSavedStartMenuItemsPath(StartMenuShortcutsLocation startMenuShortcutsLocation)
+            {
+                return (SavedDataService.StartMenuItemsStorage[startMenuShortcutsLocation].Path + @"\Start Menu");
+            }
         }
 
         private static ICollection<IFileSystemItem> ExtractFlatListOfItems(ICollection<RelocatableItem> items)

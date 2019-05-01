@@ -14,7 +14,7 @@ namespace StartMenuProtector.Control
     {
         public SystemStateService SystemStateService { get; set; }
 
-        public abstract Dictionary<StartMenuShortcutsLocation, Directory> StartMenuItemsStorage { protected get; set; }
+        public abstract Dictionary<StartMenuShortcutsLocation, Directory> StartMenuItemsStorage { get; set; }
         protected abstract Object StartMenuItemsStorageAccessLock { get; }
 
         public StartMenuDataService(SystemStateService systemStateService)

@@ -8,10 +8,10 @@ namespace StartMenuProtector.Control
 {
     public class SavedDataService : StartMenuDataService
     {
-        public override Dictionary<StartMenuShortcutsLocation, Directory> StartMenuItemsStorage { protected get; set; } = new Dictionary<StartMenuShortcutsLocation, Directory> 
+        public override Dictionary<StartMenuShortcutsLocation, Directory> StartMenuItemsStorage { get; set; } = new Dictionary<StartMenuShortcutsLocation, Directory> 
         {
-            {StartMenuShortcutsLocation.System, Globals.SavedSystemStartMenuItems}, 
-            {StartMenuShortcutsLocation.User, Globals.SavedUserStartMenuItems}
+            { StartMenuShortcutsLocation.System, Globals.SavedSystemStartMenuItems }, 
+            { StartMenuShortcutsLocation.User,   Globals.SavedUserStartMenuItems }
         };
 
         protected override Object StartMenuItemsStorageAccessLock { get; } = new Object();
