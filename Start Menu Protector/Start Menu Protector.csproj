@@ -46,6 +46,9 @@
   <PropertyGroup>
     <ApplicationManifest>Properties\app.manifest</ApplicationManifest>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>ApplicationIcon.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Hardcodet.Wpf.TaskbarNotification, Version=1.0.5.0, Culture=neutral, PublicKeyToken=null">
       <HintPath>..\packages\Hardcodet.NotifyIcon.Wpf.1.0.8\lib\net451\Hardcodet.Wpf.TaskbarNotification.dll</HintPath>
@@ -195,6 +198,7 @@
     <Content Include="..\To Dos.md">
       <Link>To Dos.md</Link>
     </Content>
+    <Resource Include="ApplicationIcon.ico" />
     <Resource Include="Assets\ApplicationIcon.ico" />
     <Resource Include="Assets\TrayIcon.ico" />
   </ItemGroup>
