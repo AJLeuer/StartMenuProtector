@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using Moq;
 using StartMenuProtector.Control;
 using StartMenuProtector.Data;
-using Directory = StartMenuProtector.Data.Directory;
 
 namespace StartMenuProtectorTest.Utility
 {
@@ -18,7 +17,7 @@ namespace StartMenuProtectorTest.Utility
         public static readonly List<IFileSystemItem> SavedSystemStartMenuItems  = new List<IFileSystemItem> { SystemStartMenuItemMock.Object, SystemStartMenuItemMock.Object, SystemStartMenuItemMock.Object };
         public static readonly List<IFileSystemItem> SavedUserStartMenuItems    = new List<IFileSystemItem> { UserStartMenuItemMock.Object,   UserStartMenuItemMock.Object,   UserStartMenuItemMock.Object   };
 
-        public static Task<Directory> CreateStubbedStartMenuContentsRetrievalTask(StartMenuProtectorViewType view, StartMenuShortcutsLocation location)
+        public static Task<IDirectory> CreateStubbedStartMenuContentsRetrievalTask(StartMenuProtectorViewType view, StartMenuShortcutsLocation location)
         {
             var directoryMock = new Mock<MockableDirectory>();
 
@@ -68,7 +67,7 @@ namespace StartMenuProtectorTest.Utility
 
             return Task.Run(() =>
             {
-                return (Directory) directoryMock.Object;
+                return (IDirectory) directoryMock.Object;
             });
         }
     }

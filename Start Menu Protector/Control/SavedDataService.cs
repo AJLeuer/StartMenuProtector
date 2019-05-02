@@ -8,7 +8,7 @@ namespace StartMenuProtector.Control
 {
     public class SavedDataService : StartMenuDataService
     {
-        public override Dictionary<StartMenuShortcutsLocation, Directory> StartMenuItemsStorage { get; set; } = new Dictionary<StartMenuShortcutsLocation, Directory> 
+        public override Dictionary<StartMenuShortcutsLocation, IDirectory> StartMenuItemsStorage { get; set; } = new Dictionary<StartMenuShortcutsLocation, IDirectory> 
         {
             { StartMenuShortcutsLocation.System, Globals.SavedSystemStartMenuItems }, 
             { StartMenuShortcutsLocation.User,   Globals.SavedUserStartMenuItems }
@@ -27,7 +27,7 @@ namespace StartMenuProtector.Control
             
             lock (StartMenuItemsStorageAccessLock)
             {
-                Directory startMenuItemsDirectory = StartMenuItemsStorage[location];
+                IDirectory startMenuItemsDirectory = StartMenuItemsStorage[location];
             
                 foreach (var startMenuItem in startMenuItems)
                 {
@@ -38,7 +38,7 @@ namespace StartMenuProtector.Control
             RefreshStartMenuItems(location);
         }
 
-        public override async Task HandleRequestToMoveFileSystemItems(IFileSystemItem itemRequestingMove, IFileSystemItem destinationItem)
+        public override async Task MoveFileSystemItems(IFileSystemItem destinationItem, params IFileSystemItem[] itemsRequestingMove)
         {
             /* Do nothing */
             await Task.Run(() => {});

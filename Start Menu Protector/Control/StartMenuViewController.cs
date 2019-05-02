@@ -97,7 +97,7 @@ namespace StartMenuProtector.Control
             
             await Task.Run(() =>
             {
-                ActiveDataService.HandleRequestToMoveFileSystemItems(itemRequestingMove: itemRequestingMove.File, destinationItem: destinationItem.File).Wait();
+                ActiveDataService.MoveFileSystemItems(destinationItem: destinationItem.File, itemsRequestingMove: itemRequestingMove.File).Wait();
                 UpdateCurrentShortcuts().Wait();
             });
         }

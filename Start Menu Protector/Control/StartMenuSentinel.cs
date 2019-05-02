@@ -12,9 +12,9 @@ using static StartMenuProtector.Util.Util;
 using static StartMenuProtector.Configuration.Globals;
 using Directory = StartMenuProtector.Data.Directory;
 
-namespace StartMenuProtector.Control
+namespace StartMenuProtector.Control 
 {
-    public class StartMenuSentinel
+    public class StartMenuSentinel 
     {
         public RunningState State { get; private set; } = RunningState.Disabled;
         private readonly AutoResetEvent ReenabledFlag = new AutoResetEvent (false);
@@ -23,7 +23,9 @@ namespace StartMenuProtector.Control
         
         public SystemStateService SystemStateService { private get; set; }
         public SavedDataService SavedDataService { private get; set; }
-        
+        public QuarantineDataService QuarantineDataService { private get; set; }
+
+
         public readonly Dictionary<StartMenuShortcutsLocation, ICollection<IFileSystemItem>> ItemsToRestore = new Dictionary<StartMenuShortcutsLocation, ICollection<IFileSystemItem>>
         {
             { StartMenuShortcutsLocation.User,   new HashSet<IFileSystemItem>() },
@@ -36,14 +38,15 @@ namespace StartMenuProtector.Control
             { StartMenuShortcutsLocation.System, new HashSet<IFileSystemItem>() }
         };
 
-        public StartMenuSentinel(SystemStateService systemStateService, SavedDataService savedDataService)
+        public StartMenuSentinel(SystemStateService systemStateService, SavedDataService savedDataService, QuarantineDataService quarantineDataService)
         {
             this.SystemStateService = systemStateService;
             this.SavedDataService = savedDataService;
+            this.QuarantineDataService = quarantineDataService;
         }
         
-        public StartMenuSentinel(SystemStateService systemStateService, SavedDataService savedDataService, Toggleable toggle):
-            this(systemStateService, savedDataService)
+        public StartMenuSentinel(SystemStateService systemStateService, SavedDataService savedDataService, QuarantineDataService quarantineDataService, Toggleable toggle):
+            this(systemStateService, savedDataService, quarantineDataService)
         {
             toggle.ToggleOnEvent += Enable;
             toggle.ToggleOffEvent += Disable;
@@ -116,7 +119,8 @@ namespace StartMenuProtector.Control
                 ItemsToQuarantine[location].AddAll(unexpected);
                 ItemsToRestore[location]   .AddAll(missing);
                 
-                RestoreStartMenuItems(location);
+                RestoreExpectedStartMenuItems(location);
+                QuarantineUnrecognizedStartMenuItems(location);
             }
         }
 
@@ -126,13 +130,13 @@ namespace StartMenuProtector.Control
                 
             ICollection<RelocatableItem> absent     = new HashSet<RelocatableItem>();
 
-            Option<Directory> appDataSavedStartMenuContents = SavedDataService.GetStartMenuContentDirectoryMainSubdirectory(location).Result;
+            Option<IDirectory> appDataSavedStartMenuContents = SavedDataService.GetStartMenuContentDirectoryMainSubdirectory(location).Result;
 
             if (appDataSavedStartMenuContents.HasValue)
             {
                 SystemStateService.OSEnvironmentStartMenuItems[location].RefreshContents();
                 Directory currentStartMenuItemsDirectoryState = SystemStateService.OSEnvironmentStartMenuItems[location];
-                Directory expectedStartMenuStateDirectoryState = appDataSavedStartMenuContents.ValueOrFailure();
+                IDirectory expectedStartMenuStateDirectoryState = appDataSavedStartMenuContents.ValueOrFailure();
 
                 (unexpected, absent) = Directory.FindDivergences(sourceOfTruth: expectedStartMenuStateDirectoryState, test: currentStartMenuItemsDirectoryState);
             }
@@ -143,7 +147,7 @@ namespace StartMenuProtector.Control
         
         private void UpdateSavedDataWithNewerItemCounterParts(StartMenuShortcutsLocation location, ICollection<RelocatableItem> unexpectedItems)
         {
-            Option<Directory> appDataSavedStartMenuContents = SavedDataService.GetStartMenuContentDirectoryMainSubdirectory(location).Result;
+            Option<IDirectory> appDataSavedStartMenuContents = SavedDataService.GetStartMenuContentDirectoryMainSubdirectory(location).Result;
 
             if (appDataSavedStartMenuContents.HasValue)
             {
@@ -251,7 +255,7 @@ namespace StartMenuProtector.Control
         }
         
         
-        private void RestoreStartMenuItems(StartMenuShortcutsLocation location)
+        private void RestoreExpectedStartMenuItems(StartMenuShortcutsLocation location)
         {
             foreach (IFileSystemItem item in ItemsToRestore[location])
             {
@@ -268,7 +272,7 @@ namespace StartMenuProtector.Control
                 
                 String relativePath = itemToRestore.Path.Substring(GetSavedStartMenuItemsPath(location).Length + 1);
                 String restoredPath = Path.Combine(EnvironmentStartMenuItemsPath[location], relativePath);
-                restoredPath =  Path.GetDirectoryName(restoredPath); //gets parent's directory
+                restoredPath        = Path.GetDirectoryName(restoredPath); //gets parent's directory
                 
                 itemToRestore.Copy(restoredPath);
             }
@@ -280,6 +284,14 @@ namespace StartMenuProtector.Control
                 return (SavedDataService.StartMenuItemsStorage[startMenuShortcutsLocation].Path + @"\Start Menu");
             }
         }
+        
+        private void QuarantineUnrecognizedStartMenuItems(StartMenuShortcutsLocation location)
+        {
+            QuarantineDataService.MoveFileSystemItems(QuarantineDataService.StartMenuItemsStorage[location], ItemsToQuarantine[location].ToArray()).Wait();
+            
+            ItemsToQuarantine[location].Clear();
+        }
+
 
         private static ICollection<IFileSystemItem> ExtractFlatListOfItems(ICollection<RelocatableItem> items)
         {
@@ -301,7 +313,7 @@ namespace StartMenuProtector.Control
         }
     }
 
-    public class RunningState
+    public class RunningState 
     {
         public enum Value
         {

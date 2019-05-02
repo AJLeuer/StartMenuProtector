@@ -5,7 +5,6 @@ using Optional;
 using StartMenuProtector.Data;
 using StartMenuProtector.Util;
 using static StartMenuProtector.Util.Util;
-using Directory = StartMenuProtector.Data.Directory;
 
 
 namespace StartMenuProtector.Control 
@@ -14,7 +13,7 @@ namespace StartMenuProtector.Control
     {
         public SystemStateService SystemStateService { get; set; }
 
-        public abstract Dictionary<StartMenuShortcutsLocation, Directory> StartMenuItemsStorage { get; set; }
+        public abstract Dictionary<StartMenuShortcutsLocation, IDirectory> StartMenuItemsStorage { get; set; }
         protected abstract Object StartMenuItemsStorageAccessLock { get; }
 
         public StartMenuDataService(SystemStateService systemStateService)
@@ -22,29 +21,29 @@ namespace StartMenuProtector.Control
             this.SystemStateService = systemStateService;
         }
 
-        public virtual async Task<Directory> GetStartMenuContentDirectory(StartMenuShortcutsLocation location)
+        public virtual async Task<IDirectory> GetStartMenuContentDirectory(StartMenuShortcutsLocation location)
         {
-            Directory startMenuContents = await Task.Run(() =>
+            IDirectory startMenuContents = await Task.Run(() =>
             {
                 /* In the the saved data service, unlike the active one, we don't clear the old contents in AppData(since that
                  happens only when saving new contents, and we also don't load from the OS environments start menu state, since 
                  our state is determined entirely by the user. So the saved data service uses this default implementation, the 
                  active overrides it */
-                Dictionary<StartMenuShortcutsLocation, Directory> startMenuContentsFromAppData = LoadStartMenuContentsFromAppDataDiskStorageToMemory().Result;
+                Dictionary<StartMenuShortcutsLocation, IDirectory> startMenuContentsFromAppData = LoadStartMenuContentsFromAppDataDiskStorageToMemory().Result;
                 return startMenuContentsFromAppData[location];
             });
 
             return startMenuContents;
         }
 
-        public async Task<Option<Directory>> GetStartMenuContentDirectoryMainSubdirectory(StartMenuShortcutsLocation location)
+        public async Task<Option<IDirectory>> GetStartMenuContentDirectoryMainSubdirectory(StartMenuShortcutsLocation location)
         {
-            Directory directory = await GetStartMenuContentDirectory(location);
+            IDirectory directory = await GetStartMenuContentDirectory(location);
             return directory.GetSubdirectory("Start Menu");
         }
 
         public abstract void SaveStartMenuItems(IEnumerable<IFileSystemItem> startMenuItems, StartMenuShortcutsLocation location);
-        protected async Task<Dictionary<StartMenuShortcutsLocation, Directory>> LoadStartMenuContentsFromAppDataDiskStorageToMemory()
+        protected async Task<Dictionary<StartMenuShortcutsLocation, IDirectory>> LoadStartMenuContentsFromAppDataDiskStorageToMemory()
         {
             
             await Task.Run(RefreshAllStartMenuItems);
@@ -52,13 +51,13 @@ namespace StartMenuProtector.Control
             return StartMenuItemsStorage;
         }
 
-        public abstract Task HandleRequestToMoveFileSystemItems(IFileSystemItem itemRequestingMove, IFileSystemItem destinationItem);
+        public abstract Task MoveFileSystemItems(IFileSystemItem destinationItem, params IFileSystemItem[] itemsRequestingMove);
 
         public void RefreshStartMenuItems(StartMenuShortcutsLocation location)
         {
             lock (StartMenuItemsStorageAccessLock)
             {
-                Directory startMenuItemsDirectory = StartMenuItemsStorage[location];
+                IDirectory startMenuItemsDirectory = StartMenuItemsStorage[location];
                 startMenuItemsDirectory.RefreshContents();
             }
         }
@@ -72,7 +71,7 @@ namespace StartMenuProtector.Control
         {
             lock (StartMenuItemsStorageAccessLock)
             {
-                Directory startMenuItemsDirectory = StartMenuItemsStorage[location];
+                IDirectory startMenuItemsDirectory = StartMenuItemsStorage[location];
                 startMenuItemsDirectory.DeleteContents();
             }
         }
@@ -86,7 +85,7 @@ namespace StartMenuProtector.Control
             });
         }
         
-        protected Directory FindRootStartMenuItemsStorageDirectoryForItem(FileSystemItem item)
+        protected IDirectory FindRootStartMenuItemsStorageDirectoryForItem(IFileSystemItem item)
         {
             if (StartMenuItemsStorage[StartMenuShortcutsLocation.System].Contains(item))
             {

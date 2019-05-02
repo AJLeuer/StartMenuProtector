@@ -37,7 +37,7 @@ namespace StartMenuProtectorTest.Test
                 .Setup((self) => self.SaveStartMenuItems(It.IsAny<IEnumerable<IFileSystemItem>>(), It.IsAny<StartMenuShortcutsLocation>()));
 
             ActiveDataServiceMock
-                .Setup((self) => self.HandleRequestToMoveFileSystemItems(It.IsAny<FileSystemItem>(), It.IsAny<FileSystemItem>()))
+                .Setup((self) => self.MoveFileSystemItems(It.IsAny<FileSystemItem>(), It.IsAny<FileSystemItem>()))
                 .Returns(Task.Run(()=> { }));
             
             ActiveDataServiceMock

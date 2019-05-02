@@ -40,7 +40,7 @@ namespace StartMenuProtector.Data
         /// </summary>
         /// <param name="destination">The directory to copy into</param>
         /// <returns>The new file created from the copy operation</returns>
-        Option<IFileSystemItem> Copy(Directory destination);
+        Option<IFileSystemItem> Copy(IDirectory destination);
 
         /// <summary>
         /// Copies this item inside of the directory given by destination 
@@ -55,7 +55,7 @@ namespace StartMenuProtector.Data
         /// </summary>
         /// <param name="destination"></param>
         /// <returns>The new file created from the copy operation</returns>
-        Option<IFileSystemItem> Move(Directory destination);
+        Option<IFileSystemItem> Move(IDirectory destination);
 
         /// <summary>
         /// Copies this item to the path specified, deletes this,
@@ -73,21 +73,22 @@ namespace StartMenuProtector.Data
         DirectoryInfo Self { get; }
         List<IFile> Files { get; }
         List<IDirectory> Directories { get; }
+        
+        Object ContentsAccessLock { get; }
         List<IFileSystemItem> Contents { get; }
 
         ICollection<IFileSystemItem> GetFlatContents();
         List<IFileSystemItem> RefreshContents();
         void DeleteContents();
         
-        bool Contains(FileSystemItem item);
+        bool Contains(IFileSystemItem item);
         ICollection<IFileSystemItem> FindMatchingItems(Func<IFileSystemItem, bool> matcher);
 
         /// <summary>
         /// Returns the first immediate subdirectory of this directory that matches name.
         /// If none exists, returns an empty optional. Does not search recursively.
         /// </summary>
-        Option<Directory> GetSubdirectory(String name);
-        
+        Option<IDirectory> GetSubdirectory(string name);
     }
 
     public interface IFile : IFileSystemItem
@@ -307,14 +308,14 @@ namespace StartMenuProtector.Data
         /// Copies this item inside of the directory given by destination 
         /// </summary>
         /// <param name="destination">The directory to copy into</param>
-        public virtual Option<IFileSystemItem> Copy(Directory destination)
+        public virtual Option<IFileSystemItem> Copy(IDirectory destination)
         {
             return Copy(destination.FullName);
         }
 
         public abstract Option<IFileSystemItem> Copy(string path);
 
-        public virtual Option<IFileSystemItem> Move(Directory destination)
+        public virtual Option<IFileSystemItem> Move(IDirectory destination)
         {
             return Move(destination.FullName);
         }
@@ -504,7 +505,7 @@ namespace StartMenuProtector.Data
         /// Recursively copies this directory inside of the directory given by destination 
         /// </summary>
         /// <param name="destination">The directory to copy into</param>
-        public override Option<IFileSystemItem> Copy(Directory destination)
+        public override Option<IFileSystemItem> Copy(IDirectory destination)
         {
             lock (destination.ContentsAccessLock)
             {
@@ -534,7 +535,7 @@ namespace StartMenuProtector.Data
             return Option.None<IFileSystemItem>();
         }
 
-        public virtual bool Contains(FileSystemItem item)
+        public virtual bool Contains(IFileSystemItem item)
         {
             bool contained = false;
             
@@ -582,17 +583,17 @@ namespace StartMenuProtector.Data
         /// Returns the first immediate subdirectory of this directory that matches name.
         /// If none exists, returns an empty optional. Does not search recursively.
         /// </summary>
-        public Option<Directory> GetSubdirectory(String name)
+        public Option<IDirectory> GetSubdirectory(string name)
         {
             foreach (IDirectory directory in Directories)
             {
                 if ((directory.Name == name) && (directory is Directory subdirectory))
                 {
-                    return Option.Some(subdirectory);
+                    return Option.Some<IDirectory>(subdirectory);
                 }
             }
 
-            return Option.None<Directory>();
+            return Option.None<IDirectory>();
         }
 
         /// <summary>
@@ -735,7 +736,7 @@ namespace StartMenuProtector.Data
             
         }
         
-        public override Option<IFileSystemItem> Copy(Directory destination)
+        public override Option<IFileSystemItem> Copy(IDirectory destination)
         {
             lock (destination.ContentsAccessLock)
             {
@@ -879,7 +880,7 @@ namespace StartMenuProtector.Data
             return UnderlyingItem.Equals(other);
         }
 
-        public Option<IFileSystemItem> Copy(Directory destination)
+        public Option<IFileSystemItem> Copy(IDirectory destination)
         {
             return UnderlyingItem.Copy(destination);
         }
@@ -889,7 +890,7 @@ namespace StartMenuProtector.Data
             return UnderlyingItem.Copy(path);
         }
 
-        public Option<IFileSystemItem> Move(Directory destination)
+        public Option<IFileSystemItem> Move(IDirectory destination)
         {
             return UnderlyingItem.Move(destination);
         }
