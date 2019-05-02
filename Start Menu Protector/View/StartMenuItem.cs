@@ -33,12 +33,25 @@ namespace StartMenuProtector.View
     {
         private static UInt64 IDs = 0;
         
-        public static readonly DependencyProperty FileProperty                  = DependencyProperty.Register(nameof (File), typeof (FileSystemItem), typeof (StartMenuItem), new FrameworkPropertyMetadata(propertyChangedCallback: UpdateFile) { BindsTwoWayByDefault = false });
-        public static readonly DependencyProperty ReceivedDropHandlerProperty   = DependencyProperty.Register(nameof (ReceivedDropHandler), typeof (StartMenuItemDraggedAndDroppedEventHandler), typeof (StartMenuItem), new FrameworkPropertyMetadata(propertyChangedCallback: UpdateReceivedDropHandler) { BindsTwoWayByDefault = false });
-        public static readonly DependencyProperty MarkedExcludedHandlerProperty = DependencyProperty.Register(nameof (MarkedExcludedHandler), typeof (StartMenuItemMarkedExcludedEventHandler), typeof (StartMenuItem), new FrameworkPropertyMetadata(propertyChangedCallback: UpdateMarkedExcludedHandler) { BindsTwoWayByDefault = false });
+        public static readonly DependencyProperty FileProperty                                     = DependencyProperty.Register(nameof (File), typeof (FileSystemItem), typeof (StartMenuItem), new FrameworkPropertyMetadata(propertyChangedCallback: UpdateFile) { BindsTwoWayByDefault = false });
+        public static readonly DependencyProperty DraggedOverItemEnteredAreaEventHandlerProperty   = DependencyProperty.Register(nameof (DraggedOverItemEnteredAreaEventHandler), typeof (Action<StartMenuItem>), typeof (StartMenuItem), new FrameworkPropertyMetadata { BindsTwoWayByDefault = false });
+        public static readonly DependencyProperty DraggedOverItemExitedAreaEventHandlerProperty    = DependencyProperty.Register(nameof (DraggedOverItemExitedAreaEventHandler), typeof (Action<StartMenuItem>), typeof (StartMenuItem), new FrameworkPropertyMetadata { BindsTwoWayByDefault = false });
+        public static readonly DependencyProperty ReceivedDropHandlerProperty                      = DependencyProperty.Register(nameof (ReceivedDropHandler), typeof (StartMenuItemDraggedAndDroppedEventHandler), typeof (StartMenuItem), new FrameworkPropertyMetadata(propertyChangedCallback: UpdateReceivedDropHandler) { BindsTwoWayByDefault = false });
+        public static readonly DependencyProperty MarkedExcludedHandlerProperty                    = DependencyProperty.Register(nameof (MarkedExcludedHandler), typeof (StartMenuItemMarkedExcludedEventHandler), typeof (StartMenuItem), new FrameworkPropertyMetadata(propertyChangedCallback: UpdateMarkedExcludedHandler) { BindsTwoWayByDefault = false });
 
-        public StartMenuItemDraggedAndDroppedEventHandler ReceivedDropHandler  { get; set; }
-        public StartMenuItemMarkedExcludedEventHandler    MarkedExcludedHandler { get; set; }
+        public Action<StartMenuItem> DraggedOverItemEnteredAreaEventHandler
+        {
+            get { return (Action<StartMenuItem>) this.GetValue(DraggedOverItemEnteredAreaEventHandlerProperty);}
+            set { this.SetValue(DraggedOverItemEnteredAreaEventHandlerProperty, value);}
+        }
+
+        public Action<StartMenuItem> DraggedOverItemExitedAreaEventHandler
+        {
+            get { return (Action<StartMenuItem>) this.GetValue(DraggedOverItemExitedAreaEventHandlerProperty); }
+            set { this.SetValue(DraggedOverItemExitedAreaEventHandlerProperty, value);}
+        }
+        public StartMenuItemDraggedAndDroppedEventHandler          ReceivedDropHandler     { get; set; }
+        public StartMenuItemMarkedExcludedEventHandler             MarkedExcludedHandler   { get; set; }
 
         public static Brush DefaultOutlineColor { get; set; } = Config.OutlineStrokeColor;
         public static Brush DefaultTextColor { get; set; } = Config.TextStrokeColor;
@@ -194,7 +207,7 @@ namespace StartMenuProtector.View
 
                 if (droppedItem.HasValue)
                 {
-                    ReceivedDropHandler.Invoke(droppedStartMenuItem: droppedItem.ValueOrFailure(), recipient: this);
+                    ReceivedDropHandler.Invoke(droppedItem: droppedItem.ValueOrFailure(), recipient: this);
                 }
             }
             
@@ -205,7 +218,7 @@ namespace StartMenuProtector.View
         {
             if (DragOrDropEventOriginatedHere(dragEvent) == false)
             {
-                CandidateForDrop = true;
+                DraggedOverItemEnteredAreaEventHandler(this);
             }
         }
         
@@ -213,7 +226,7 @@ namespace StartMenuProtector.View
         {
             if (DragOrDropEventOriginatedHere(dragEvent) == false)
             {
-                CandidateForDrop = false;
+                DraggedOverItemExitedAreaEventHandler(this);
             }
         }
 
@@ -314,6 +327,6 @@ namespace StartMenuProtector.View
         }
     }
 
-    public delegate void StartMenuItemDraggedAndDroppedEventHandler(StartMenuItem droppedStartMenuItem, StartMenuItem recipient);
+    public delegate void StartMenuItemDraggedAndDroppedEventHandler(StartMenuItem droppedItem, StartMenuItem recipient);
     public delegate void StartMenuItemMarkedExcludedEventHandler(StartMenuItem itemMarkedExcluded);
 }

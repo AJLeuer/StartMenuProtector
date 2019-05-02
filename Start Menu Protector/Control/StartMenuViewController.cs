@@ -29,6 +29,22 @@ namespace StartMenuProtector.Control
 
         public abstract void SaveCurrentStartMenuItems();
 
+        public virtual void HandleDraggedItemEnteredArea(StartMenuItem target)
+        {
+            if (target.File.IsOfType<IDirectory>())
+            {
+                target.CandidateForDrop = true;
+            }
+        }
+
+        public virtual void HandleDraggedItemExitedArea(StartMenuItem target)
+        {
+            if (target.File.IsOfType<IDirectory>())
+            {
+                target.CandidateForDrop = false;
+            }
+        }
+
         public abstract Task HandleRequestToMoveStartMenuItem(IStartMenuItem itemRequestingMove, IStartMenuItem destinationItem);
 
         public abstract void HandleRequestToExcludeStartMenuItem();
@@ -107,6 +123,16 @@ namespace StartMenuProtector.Control
         }
 
         public override void SaveCurrentStartMenuItems()
+        {
+            /* Do nothing */
+        }
+        
+        public override void HandleDraggedItemEnteredArea(StartMenuItem target)
+        {
+            /* Do nothing */
+        }
+
+        public override void HandleDraggedItemExitedArea(StartMenuItem target)
         {
             /* Do nothing */
         }

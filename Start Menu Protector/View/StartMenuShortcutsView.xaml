@@ -11,13 +11,13 @@
     <UserControl.Resources>
         <HierarchicalDataTemplate x:Name="Folder" DataType="{x:Type IO:Directory}" ItemsSource="{Binding Path=Contents}">
             <Border BorderThickness="2" BorderBrush="{x:Static view:StartMenuItem.DefaultOutlineColor}" CornerRadius="4" Margin="0,2.5,0,2.5">
-                <view:StartMenuItem File="{Binding}" LastChildFill="true" ClipToBounds="True" ReceivedDropHandler="{Binding DragAndDropEventHandler, RelativeSource={RelativeSource AncestorType=view:StartMenuShortcutsView}}" MarkedExcludedHandler="{Binding ItemMarkedExcludedHandler, RelativeSource={RelativeSource AncestorType=view:StartMenuShortcutsView}}"/>
+                <view:StartMenuItem File="{Binding}" LastChildFill="true" ClipToBounds="True" DraggedOverItemEnteredAreaEventHandler="{Binding DraggedOverItemEnteredAreaEventHandler, RelativeSource={RelativeSource AncestorType=view:StartMenuShortcutsView}}" DraggedOverItemExitedAreaEventHandler="{Binding DraggedOverItemExitedAreaEventHandler, RelativeSource={RelativeSource AncestorType=view:StartMenuShortcutsView}}" ReceivedDropHandler="{Binding DragAndDropEventHandler, RelativeSource={RelativeSource AncestorType=view:StartMenuShortcutsView}}" MarkedExcludedHandler="{Binding ItemMarkedExcludedHandler, RelativeSource={RelativeSource AncestorType=view:StartMenuShortcutsView}}"/>
             </Border>
         </HierarchicalDataTemplate>
 
         <DataTemplate x:Name="File" DataType="{x:Type IO:File}">
             <Border BorderThickness="2" BorderBrush="{x:Static view:StartMenuItem.DefaultOutlineColor}" CornerRadius="4" Margin="0,2.5,0,2.5">
-                <view:StartMenuItem File="{Binding}" LastChildFill="true" ClipToBounds="True" ReceivedDropHandler="{Binding DragAndDropEventHandler, RelativeSource={RelativeSource AncestorType=view:StartMenuShortcutsView}}" MarkedExcludedHandler="{Binding ItemMarkedExcludedHandler, RelativeSource={RelativeSource AncestorType=view:StartMenuShortcutsView}}"/>
+                <view:StartMenuItem File="{Binding}" LastChildFill="true" ClipToBounds="True" DraggedOverItemEnteredAreaEventHandler="{Binding DraggedOverItemEnteredAreaEventHandler, RelativeSource={RelativeSource AncestorType=view:StartMenuShortcutsView}}" DraggedOverItemExitedAreaEventHandler="{Binding DraggedOverItemExitedAreaEventHandler, RelativeSource={RelativeSource AncestorType=view:StartMenuShortcutsView}}" ReceivedDropHandler="{Binding DragAndDropEventHandler, RelativeSource={RelativeSource AncestorType=view:StartMenuShortcutsView}}" MarkedExcludedHandler="{Binding ItemMarkedExcludedHandler, RelativeSource={RelativeSource AncestorType=view:StartMenuShortcutsView}}"/>
             </Border>
         </DataTemplate>
     </UserControl.Resources>

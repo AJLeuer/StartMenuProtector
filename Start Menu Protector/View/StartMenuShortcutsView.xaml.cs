@@ -1,3 +1,4 @@
+using System;
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
@@ -20,6 +21,16 @@ namespace StartMenuProtector.View
             get { return Controller.StartMenuContents; }
         }
 
+        public Action<StartMenuItem> DraggedOverItemEnteredAreaEventHandler
+        {
+            get { return this.HandleDraggedItemEnteredArea; }
+        }
+
+        public Action<StartMenuItem> DraggedOverItemExitedAreaEventHandler
+        {
+            get { return this.HandleDraggedItemExitedArea; }
+        }
+        
         public StartMenuItemDraggedAndDroppedEventHandler DragAndDropEventHandler
         {
             get { return this.HandleDragAndDropEvent; }
@@ -55,6 +66,16 @@ namespace StartMenuProtector.View
             Controller.SaveCurrentStartMenuItems();
         }
 
+        private void HandleDraggedItemEnteredArea(StartMenuItem target)
+        {
+            Controller.HandleDraggedItemEnteredArea(target);
+        }
+
+        private void HandleDraggedItemExitedArea(StartMenuItem target)
+        {
+            Controller.HandleDraggedItemExitedArea(target);
+        }
+        
         private void HandleDragAndDropEvent(StartMenuItem droppedStartMenuItem, StartMenuItem recipient)
         {
            Controller.HandleRequestToMoveStartMenuItem(itemRequestingMove: droppedStartMenuItem, destinationItem: recipient);

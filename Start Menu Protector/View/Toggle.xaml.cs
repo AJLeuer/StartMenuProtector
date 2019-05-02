@@ -18,7 +18,7 @@ namespace StartMenuProtector.View
     /// </summary>
     public partial class Toggle : ToggleButton, Toggleable
     {
-        public static readonly DependencyProperty EnabledTextProperty  = DependencyProperty.Register(nameof (EnabledText), typeof (String), typeof (Toggle), new FrameworkPropertyMetadata { BindsTwoWayByDefault = true });
+        public static readonly DependencyProperty EnabledTextProperty   = DependencyProperty.Register(nameof (EnabledText), typeof (String), typeof (Toggle), new FrameworkPropertyMetadata { BindsTwoWayByDefault = true });
         public static readonly DependencyProperty DisabledTextProperty  = DependencyProperty.Register(nameof (DisabledText), typeof (String), typeof (Toggle), new FrameworkPropertyMetadata { BindsTwoWayByDefault = true });
         public static readonly DependencyProperty EnabledColorProperty  = DependencyProperty.Register(nameof (EnabledColor), typeof (Brush), typeof (Toggle), new FrameworkPropertyMetadata { BindsTwoWayByDefault = true });
         public static readonly DependencyProperty DisabledColorProperty = DependencyProperty.Register(nameof (DisabledColor), typeof (Brush), typeof (Toggle), new FrameworkPropertyMetadata { BindsTwoWayByDefault = true });
