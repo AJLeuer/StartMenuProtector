@@ -16,8 +16,32 @@ namespace StartMenuProtector.Control
 {
     public class StartMenuSentinel 
     {
-        public RunningState State { get; private set; } = RunningState.Disabled;
-        private readonly AutoResetEvent ReenabledFlag = new AutoResetEvent (false);
+        private RunningState applicationState = RunningState.Disabled;
+
+        public RunningState ApplicationState
+        {
+            get
+            {
+                return applicationState;
+            }
+            private set
+            {
+                if (value == RunningState.Disabled)
+                {
+                    Disable();
+                }
+                
+                applicationState = value;
+                
+                if (value == RunningState.Disabled)
+                {
+                    ContinueRunFlag.Set();
+                }
+            }
+        }
+
+        public RunningState UserSelectedState { get; private set; } = RunningState.Disabled;
+        private readonly AutoResetEvent ContinueRunFlag = new AutoResetEvent (false);
 
         private Thread Thread { get; set; }
         
@@ -37,7 +61,7 @@ namespace StartMenuProtector.Control
             { StartMenuShortcutsLocation.User,   new HashSet<IFileSystemItem>() },
             { StartMenuShortcutsLocation.System, new HashSet<IFileSystemItem>() }
         };
-
+        
         public StartMenuSentinel(SystemStateService systemStateService, SavedDataService savedDataService, QuarantineDataService quarantineDataService)
         {
             this.SystemStateService = systemStateService;
@@ -48,42 +72,48 @@ namespace StartMenuProtector.Control
         public StartMenuSentinel(SystemStateService systemStateService, SavedDataService savedDataService, QuarantineDataService quarantineDataService, Toggleable toggle):
             this(systemStateService, savedDataService, quarantineDataService)
         {
-            toggle.ToggleOnEvent += Enable;
+            toggle.ToggleOnEvent  += Enable;
             toggle.ToggleOffEvent += Disable;
         }
         
         public void Start()
         {
+            ApplicationState = RunningState.Enabled;
             Thread = new Thread(Run);
-            Enable();
             Thread.Start();
+        }
+        
+        public void Stop()
+        {
+            ApplicationState = RunningState.Disabled;
+            Thread.Join();
         }
 
         public void Enable()
         {
-            lock (State)
+            lock (UserSelectedState)
             {
-                this.State = RunningState.Enabled;
+                this.UserSelectedState = RunningState.Enabled;
             }
             
-            ReenabledFlag.Set();
+            ContinueRunFlag.Set();
         }
         
         public void Disable()
         {
-            lock (State)
+            lock (UserSelectedState)
             {
-                this.State = RunningState.Disabled;
+                this.UserSelectedState = RunningState.Disabled;
             }
         }
         
         private void Run()
         {
-            while (true)
+            while (ApplicationState == RunningState.Enabled)
             {
-                while (State == RunningState.Enabled)
+                while (UserSelectedState == RunningState.Enabled)
                 {
-                    lock (State)
+                    lock (UserSelectedState)
                     {
                         try
                         {
@@ -96,12 +126,12 @@ namespace StartMenuProtector.Control
                         }
                     }
                 
-                    Thread.Sleep(TimeSpan.FromSeconds(2));
+                    Thread.Sleep(TimeSpan.FromMinutes(1));
                 }
 
-                if (State == RunningState.Disabled)
+                if ((ApplicationState == RunningState.Enabled) && (UserSelectedState == RunningState.Disabled))
                 {
-                    ReenabledFlag.WaitOne();
+                    ContinueRunFlag.WaitOne();
                 }
             }
         }

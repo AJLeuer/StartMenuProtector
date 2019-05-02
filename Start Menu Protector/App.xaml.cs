@@ -16,7 +16,13 @@ namespace StartMenuProtector
         private StartMenuShortcutsView      activeStartMenuItemsView;
         private StartMenuShortcutsView      savedStartMenuItemsView;
 
-        protected override void OnStartup(StartupEventArgs startup)
+        public App()
+        {
+            Startup += StartApplication;
+            Exit    += CloseApplication;
+        }
+
+        private void StartApplication(object sender, StartupEventArgs @event)
         {
             activeDataService     = new ActiveDataService(systemStateService);
             savedDataService      = new SavedDataService(systemStateService);
@@ -36,6 +42,11 @@ namespace StartMenuProtector
             sentinel.Start();
             
             MainWindow.Show();
+        }
+        
+        private void CloseApplication(object sender, ExitEventArgs @event)
+        {
+            sentinel.Stop();
         }
     }
 }
