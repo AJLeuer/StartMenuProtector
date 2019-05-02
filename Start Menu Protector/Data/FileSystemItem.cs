@@ -152,12 +152,9 @@ namespace StartMenuProtector.Data
                 return OriginalFileSystemItem.Attributes;
             }
         }
-        
-        public override bool Exists 
-        {
-            get { return OriginalFileSystemItem.Exists; }
-        }
-        
+
+        public abstract override bool Exists { get; }
+
         public new DateTime CreationTime 
         {
             get
@@ -336,7 +333,12 @@ namespace StartMenuProtector.Data
         {
             get { return OriginalFileSystemItem as DirectoryInfo; }
         }
-        
+
+        public override bool Exists
+        {
+            get { return System.IO.Directory.Exists(Path); }
+        }
+
         public override OwnerType OwnerType
         {
             get
@@ -347,18 +349,7 @@ namespace StartMenuProtector.Data
             }
         }
         
-        public Directory(DirectoryInfo directory) : 
-            base(directory)
-        {
-            
-        }
-
-        public Directory(string path) : 
-            this(new DirectoryInfo(path))
-        {
-            
-        }
-
+        
         private List<IFile> files = null;
         
         public virtual List<IFile> Files 
@@ -407,6 +398,18 @@ namespace StartMenuProtector.Data
             }
         }
         
+        public Directory(DirectoryInfo directory) : 
+            base(directory)
+        {
+            
+        }
+
+        public Directory(string path) : 
+            this(new DirectoryInfo(path))
+        {
+            
+        }
+
         private void InitializeContents()
         {
             lock (ContentsAccessLock)
@@ -698,6 +701,11 @@ namespace StartMenuProtector.Data
         public sealed override string Path 
         {
             get { return base.Path; }
+        }
+        
+        public override bool Exists
+        {
+            get { return System.IO.File.Exists(Path); }
         }
         
         public override OwnerType OwnerType 

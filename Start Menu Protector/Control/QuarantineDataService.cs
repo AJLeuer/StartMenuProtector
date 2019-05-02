@@ -35,7 +35,10 @@ namespace StartMenuProtector.Control
                 {
                     foreach (IFileSystemItem itemRequestingMove in itemsRequestingMove)
                     {
-                        itemRequestingMove.Move(destinationFolder);
+                        if (itemRequestingMove.Exists)
+                        {
+                            itemRequestingMove.Move(destinationFolder);
+                        }
                     }
                 });
             }
