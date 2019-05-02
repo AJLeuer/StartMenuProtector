@@ -13,8 +13,11 @@ namespace StartMenuProtector.View
 {
     public interface IStartMenuItem
     {
+        Action<StartMenuItem> DraggedOverItemEnteredAreaEventHandler { get; set; }
+
+        Action<StartMenuItem> DraggedOverItemExitedAreaEventHandler { get; set; }
         StartMenuItemDraggedAndDroppedEventHandler ReceivedDropHandler  { get; set; }
-        StartMenuItemMarkedExcludedEventHandler     MarkedExcludedHandler { get; set; }
+        Action<StartMenuItem> MarkedExcludedHandler { get; set; }
         bool Selected { get; }
         bool MarkedExcluded { get; }
         bool CandidateForDrop { get; set; }
@@ -37,7 +40,7 @@ namespace StartMenuProtector.View
         public static readonly DependencyProperty DraggedOverItemEnteredAreaEventHandlerProperty   = DependencyProperty.Register(nameof (DraggedOverItemEnteredAreaEventHandler), typeof (Action<StartMenuItem>), typeof (StartMenuItem), new FrameworkPropertyMetadata { BindsTwoWayByDefault = false });
         public static readonly DependencyProperty DraggedOverItemExitedAreaEventHandlerProperty    = DependencyProperty.Register(nameof (DraggedOverItemExitedAreaEventHandler), typeof (Action<StartMenuItem>), typeof (StartMenuItem), new FrameworkPropertyMetadata { BindsTwoWayByDefault = false });
         public static readonly DependencyProperty ReceivedDropHandlerProperty                      = DependencyProperty.Register(nameof (ReceivedDropHandler), typeof (StartMenuItemDraggedAndDroppedEventHandler), typeof (StartMenuItem), new FrameworkPropertyMetadata(propertyChangedCallback: UpdateReceivedDropHandler) { BindsTwoWayByDefault = false });
-        public static readonly DependencyProperty MarkedExcludedHandlerProperty                    = DependencyProperty.Register(nameof (MarkedExcludedHandler), typeof (StartMenuItemMarkedExcludedEventHandler), typeof (StartMenuItem), new FrameworkPropertyMetadata(propertyChangedCallback: UpdateMarkedExcludedHandler) { BindsTwoWayByDefault = false });
+        public static readonly DependencyProperty MarkedExcludedHandlerProperty                    = DependencyProperty.Register(nameof (MarkedExcludedHandler), typeof (Action<StartMenuItem>), typeof (StartMenuItem), new FrameworkPropertyMetadata(propertyChangedCallback: UpdateMarkedExcludedHandler) { BindsTwoWayByDefault = false });
 
         public Action<StartMenuItem> DraggedOverItemEnteredAreaEventHandler
         {
@@ -50,8 +53,8 @@ namespace StartMenuProtector.View
             get { return (Action<StartMenuItem>) this.GetValue(DraggedOverItemExitedAreaEventHandlerProperty); }
             set { this.SetValue(DraggedOverItemExitedAreaEventHandlerProperty, value);}
         }
-        public StartMenuItemDraggedAndDroppedEventHandler          ReceivedDropHandler     { get; set; }
-        public StartMenuItemMarkedExcludedEventHandler             MarkedExcludedHandler   { get; set; }
+        public StartMenuItemDraggedAndDroppedEventHandler ReceivedDropHandler     { get; set; }
+        public Action<StartMenuItem>                      MarkedExcludedHandler   { get; set; }
 
         public static Brush DefaultOutlineColor { get; set; } = Config.OutlineStrokeColor;
         public static Brush DefaultTextColor { get; set; } = Config.TextStrokeColor;
@@ -88,7 +91,7 @@ namespace StartMenuProtector.View
                 markedExcluded = value;
                 File.MarkedForExclusion = value;
                 UpdateColor();
-                MarkedExcludedHandler.Invoke(itemMarkedExcluded: this);
+                MarkedExcludedHandler.Invoke(this);
             }
         }
 
@@ -294,7 +297,7 @@ namespace StartMenuProtector.View
         {
             if (startMenuDataItem is StartMenuItem self)
             {
-                self.MarkedExcludedHandler = (StartMenuItemMarkedExcludedEventHandler) updatedValue.NewValue;
+                self.MarkedExcludedHandler = (Action<StartMenuItem>) updatedValue.NewValue;
             }
         }
 
@@ -328,5 +331,4 @@ namespace StartMenuProtector.View
     }
 
     public delegate void StartMenuItemDraggedAndDroppedEventHandler(StartMenuItem droppedItem, StartMenuItem recipient);
-    public delegate void StartMenuItemMarkedExcludedEventHandler(StartMenuItem itemMarkedExcluded);
 }

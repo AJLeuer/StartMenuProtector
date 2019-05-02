@@ -36,7 +36,7 @@ namespace StartMenuProtector.View
             get { return this.HandleDragAndDropEvent; }
         }
 
-        public StartMenuItemMarkedExcludedEventHandler ItemMarkedExcludedHandler
+        public Action<StartMenuItem> ItemMarkedExcludedHandler
         {
             get { return this.HandleItemMarkedExcludedEvent; }
         }
