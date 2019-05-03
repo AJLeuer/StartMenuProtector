@@ -87,6 +87,7 @@ namespace StartMenuProtector.Control
         public void Stop()
         {
             ApplicationState = RunningState.Disabled;
+            ContinueRunFlag.Set();
             Thread.Join();
         }
 
@@ -126,8 +127,11 @@ namespace StartMenuProtector.Control
                             Console.WriteLine(exception);
                         }
                     }
-                
-                    Thread.Sleep(TimeSpan.FromSeconds(ProtectorRunIntervalSeconds));
+                    
+                    //the vast majority of the time this particular call to WaitOne() just functions
+                    //as a Sleep(). It's only in the case of an application shutdown that we'll actually
+                    //get a signal
+                    ContinueRunFlag.WaitOne(TimeSpan.FromSeconds(ProtectorRunIntervalSeconds));
                 }
 
                 if ((ApplicationState == RunningState.Enabled) && (UserSelectedState == RunningState.Disabled))
