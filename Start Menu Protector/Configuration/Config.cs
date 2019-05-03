@@ -8,10 +8,14 @@ namespace StartMenuProtector.Configuration
 {
     public static class Config
     {
+        /// <summary>
+        /// How often Start Menu Protector should check (and possibly fix) the state of the start menu
+        /// </summary>
+        public const uint ProtectorRunIntervalSeconds = 60;
+        
         public const double MainWindowWidth = 1280;
         public const double MainWindowHeight = 720;
         public const double FontSize = 20;
-        
         public static readonly FontFamily DefaultFontFamily = new FontFamily("Roboto");
 
         public const string ApplicationIconFilePath = "/Assets/ApplicationIcon.ico";

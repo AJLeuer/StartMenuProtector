@@ -10,6 +10,7 @@ using StartMenuProtector.Util;
 using StartMenuProtector.View;
 using static StartMenuProtector.Util.Util;
 using static StartMenuProtector.Configuration.Globals;
+using static StartMenuProtector.Configuration.Config;
 using Directory = StartMenuProtector.Data.Directory;
 
 namespace StartMenuProtector.Control 
@@ -126,7 +127,7 @@ namespace StartMenuProtector.Control
                         }
                     }
                 
-                    Thread.Sleep(TimeSpan.FromMinutes(1));
+                    Thread.Sleep(TimeSpan.FromSeconds(ProtectorRunIntervalSeconds));
                 }
 
                 if ((ApplicationState == RunningState.Enabled) && (UserSelectedState == RunningState.Disabled))
