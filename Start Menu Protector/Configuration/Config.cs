@@ -10,7 +10,7 @@ namespace StartMenuProtector.Configuration
     {
         public const double MainWindowWidth = 1280;
         public const double MainWindowHeight = 720;
-        public const ushort FontSize = 18;
+        public const double FontSize = 20;
         
         public static readonly FontFamily DefaultFontFamily = new FontFamily("Roboto");
 

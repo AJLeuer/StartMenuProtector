@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:configuration="clr-namespace:StartMenuProtector.Configuration"
              mc:Ignorable="d" 
-             FontFamily="{x:Static configuration:Config.DefaultFontFamily}" FontSize="20" Checked="ProcessToggledOn" Unchecked="ProcessToggledOff">
+             FontFamily="{x:Static configuration:Config.DefaultFontFamily}" FontSize="{x:Static configuration:Config.FontSize}" Checked="ProcessToggledOn" Unchecked="ProcessToggledOff">
 
     <ToggleButton.Resources>
         <!-- ReSharper disable once Xaml.RedundantResource -->
@@ -37,6 +37,6 @@
     </ToggleButton.Resources>
     <StackPanel Orientation="Horizontal">
         <Ellipse Name="IndicatorLight" Height="15" Width="15" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="15, 0, 0, 0" Stretch="Uniform" Fill="#FFF4F4F5" Stroke="{x:Static configuration:Config.OutlineStrokeColor}"/>
-        <Label x:Name="Text" Content="Button" FontFamily="{x:Static configuration:Config.DefaultFontFamily}" FontSize="20" Width="205" Height="35" Margin="15, 0, 0, 0" VerticalContentAlignment="Center"/>
+        <Label x:Name="Text" Content="Button" FontFamily="{x:Static configuration:Config.DefaultFontFamily}" FontSize="{x:Static configuration:Config.FontSize}" Width="205" Height="35" Margin="15, 0, 0, 0" VerticalContentAlignment="Center"/>
     </StackPanel>
 </ToggleButton>
