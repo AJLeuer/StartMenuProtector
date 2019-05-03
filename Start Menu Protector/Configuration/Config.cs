@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Media;
 using StartMenuProtector.Data;
+using Syroot.Windows.IO;
 
 namespace StartMenuProtector.Configuration
 {
@@ -29,10 +30,10 @@ namespace StartMenuProtector.Configuration
         public static readonly Color NegativeChangeSymbolicColor = Color.FromArgb(0xFF, 0xFF,0x00,0x60); 
         public static readonly Color PositiveChangeSymbolicColor = Color.FromArgb(0xFF, 0x82,0xFF,0x00);
         
-        public static Brush OutlineStrokeColor { get; set; } = new SolidColorBrush(Config.OutlineColor);
-        public static Brush TextStrokeColor { get; set; } = new SolidColorBrush(Config.TextColor);
-        public static Brush BackgroundFillColor { get; set; } = new SolidColorBrush(Config.BackgroundColor);
-        public static Brush SelectionTextStrokeColor { get; set; } = new SolidColorBrush(Config.SelectionTextColor);
+        public static Brush OutlineStrokeColor { get; set; } = new SolidColorBrush(OutlineColor);
+        public static Brush TextStrokeColor { get; set; } = new SolidColorBrush(TextColor);
+        public static Brush BackgroundFillColor { get; set; } = new SolidColorBrush(BackgroundColor);
+        public static Brush SelectionTextStrokeColor { get; set; } = new SolidColorBrush(SelectionTextColor);
         
         public static Brush SelectionBackgroundFillColor { get; } = new LinearGradientBrush
         {

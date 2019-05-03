@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using StartMenuProtector.Control;
+using StartMenuProtector.Util;
 using StartMenuProtector.View;
 
 namespace StartMenuProtector
@@ -24,6 +25,10 @@ namespace StartMenuProtector
 
         private void StartApplication(object sender, StartupEventArgs @event)
         {
+            LogManager.Start();
+            
+            LogManager.Log("Starting application.");
+            
             activeDataService     = new ActiveDataService(systemStateService);
             savedDataService      = new SavedDataService(systemStateService);
             quarantineDataService = new QuarantineDataService(systemStateService);
@@ -46,7 +51,11 @@ namespace StartMenuProtector
         
         private void CloseApplication(object sender, ExitEventArgs @event)
         {
+            LogManager.Log("Closing application.");
+
             sentinel.Stop();
+            
+            LogManager.Stop();
         }
     }
 }

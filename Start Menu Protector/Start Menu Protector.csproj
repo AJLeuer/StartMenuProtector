@@ -54,10 +54,6 @@
       <HintPath>..\packages\Hardcodet.NotifyIcon.Wpf.1.0.8\lib\net451\Hardcodet.Wpf.TaskbarNotification.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c">
-      <HintPath>..\packages\NLog.4.6.3\lib\net45\NLog.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="NodaTime, Version=3.0.0.0, Culture=neutral, PublicKeyToken=4226afe0d9b296d1">
       <HintPath>..\packages\NodaTime.3.0.0-alpha01\lib\netstandard2.0\NodaTime.dll</HintPath>
       <Private>True</Private>
@@ -128,6 +124,8 @@
     <Compile Include="Data\FileSystemItem.cs" />
     <Compile Include="Util\AsyncObservableCollection.cs" />
     <Compile Include="Util\ConsoleManager.cs" />
+    <Compile Include="Util\LogManager.cs" />
+    <Compile Include="Util\RunningState.cs" />
     <Compile Include="Util\Timer.cs" />
     <Compile Include="Util\Util.cs" />
     <Compile Include="View\ActiveStartMenuShortcutsView.cs" />

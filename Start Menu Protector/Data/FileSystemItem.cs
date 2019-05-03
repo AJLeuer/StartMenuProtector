@@ -692,12 +692,27 @@ namespace StartMenuProtector.Data
     
     public class File : FileSystemItem, IFile 
     {
+        private BitmapImage icon = null;
+        public BitmapImage Icon
+        {
+            get
+            {
+                if ((icon == null) && (OriginalFileSystemItem != null))
+                {
+                    Bitmap iconBitMap = System.Drawing.Icon.ExtractAssociatedIcon(Path)?.ToBitmap();
+                    icon = iconBitMap.ConvertToImageSource();
+                    icon.Freeze();
+                }
+
+                return icon;
+            }
+        }
+
         protected FileInfo Self 
         {
             get { return OriginalFileSystemItem as FileInfo; }
         }
-        public BitmapImage Icon { get; }
-        
+
         public sealed override string Path 
         {
             get { return base.Path; }
@@ -730,12 +745,6 @@ namespace StartMenuProtector.Data
         public File(FileInfo file) : 
             base(file)
         {
-            if (file != null)
-            {
-                Bitmap icon = System.Drawing.Icon.ExtractAssociatedIcon(Path)?.ToBitmap();
-                Icon = icon.ConvertToImageSource();
-                Icon.Freeze();
-            }
         }
         
         public File(string path) : 

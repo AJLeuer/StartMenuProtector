@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using StartMenuProtector.Configuration;
 using StartMenuProtector.Data;
+using static StartMenuProtector.Util.LogManager;
+
 
 namespace StartMenuProtector.Control
 {
@@ -33,6 +35,8 @@ namespace StartMenuProtector.Control
                 {
                     startMenuItem.Copy(startMenuItemsDirectory);
                 }
+                
+                Log($"Saved {location.ToString()} start menu items.");
             }
             
             RefreshStartMenuItems(location);

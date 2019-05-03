@@ -12,6 +12,8 @@ using static StartMenuProtector.Util.Util;
 using static StartMenuProtector.Configuration.Globals;
 using static StartMenuProtector.Configuration.Config;
 using Directory = StartMenuProtector.Data.Directory;
+using static StartMenuProtector.Util.LogManager;
+
 
 namespace StartMenuProtector.Control 
 {
@@ -310,6 +312,7 @@ namespace StartMenuProtector.Control
                 restoredPath        = Path.GetDirectoryName(restoredPath); //gets parent's directory
                 
                 itemToRestore.Copy(restoredPath);
+                Log($"Restored an item: Item restored: {itemToRestore.Name}. Restored to location: {restoredPath}.");
             }
             
             ItemsToRestore[location].Clear();
@@ -345,25 +348,6 @@ namespace StartMenuProtector.Control
             }
 
             return flatContents;
-        }
-    }
-
-    public class RunningState 
-    {
-        public enum Value
-        {
-            On,
-            Off
-        }
-        
-        public Value State { get; }
-        
-        public static RunningState Enabled  { get; } = new RunningState(state: Value.On);
-        public static RunningState Disabled { get; } = new RunningState(state: Value.Off);
-
-        private RunningState(Value state)
-        {
-            this.State = state;
         }
     }
 }

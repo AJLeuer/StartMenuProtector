@@ -24,6 +24,8 @@ namespace StartMenuProtector.Configuration
 
         public static readonly Directory UserAppData                     = new Directory(new KnownFolder(KnownFolderType.RoamingAppData).Path);
         public static readonly Directory StartMenuProtectorAppData       = new Directory(System.IO.Directory.CreateDirectory(Path.Combine(UserAppData.Path, ApplicationName)));
+        
+        public static readonly Directory LogsDirectory                   = new Directory(System.IO.Directory.CreateDirectory(Path.Combine(StartMenuProtectorAppData.Path, "Logs")));
        
         public static readonly Directory ActiveStartMenuItems            = new Directory(System.IO.Directory.CreateDirectory(Path.Combine(StartMenuProtectorAppData.Path, "Active")));
         public static readonly Directory ActiveSystemStartMenuItems      = new Directory(System.IO.Directory.CreateDirectory(Path.Combine(ActiveStartMenuItems.Path, SystemShortcutsDirectoryName)));

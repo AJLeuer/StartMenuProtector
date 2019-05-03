@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using StartMenuProtector.Configuration;
 using StartMenuProtector.Data;
+using static StartMenuProtector.Util.LogManager;
+
 
 namespace StartMenuProtector.Control
 {
@@ -69,9 +71,13 @@ namespace StartMenuProtector.Control
                 {
                     foreach (IFileSystemItem itemRequestingMove in itemsRequestingMove)
                     {
+                        String startingLocation = itemRequestingMove.ParentDirectoryPath;
+                        
                         itemRequestingMove.Move(destinationFolder);
                         IDirectory startMenuItemsStorage = FindRootStartMenuItemsStorageDirectoryForItem(destinationFolder);
                         startMenuItemsStorage.RefreshContents();
+                        
+                        Log($"Moved the following item: {itemRequestingMove.Name}. Moved from: {startingLocation}. Moved to: {destinationFolder.Path}.");
                     }
                 });
             }

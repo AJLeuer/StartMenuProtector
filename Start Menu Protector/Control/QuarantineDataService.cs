@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using StartMenuProtector.Configuration;
 using StartMenuProtector.Data;
+using static StartMenuProtector.Util.LogManager;
 
 namespace StartMenuProtector.Control
 {
@@ -38,6 +39,7 @@ namespace StartMenuProtector.Control
                         if (itemRequestingMove.Exists)
                         {
                             itemRequestingMove.Move(destinationFolder);
+                            Log($"Quarantined the following item: {itemRequestingMove.Path}.");
                         }
                     }
                 });
