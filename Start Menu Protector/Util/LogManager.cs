@@ -6,9 +6,9 @@ namespace StartMenuProtector.Util
 {
     public static class LogManager
     {
-        public static File LogFile { get; private set; }
-        public static StreamWriter LogWriter = null;
-        public static NodaTime.SystemClock Clock;
+        public  static File                 LogFile { get; set; }
+        private static StreamWriter         LogWriter = null;
+        private static NodaTime.SystemClock Clock;
 
         public static void Start()
         {
@@ -26,7 +26,7 @@ namespace StartMenuProtector.Util
         {
             LogWriter?.Write($"{Clock.GetCurrentInstant().ToString()} ");
             LogWriter?.WriteLine(output);
-            LogWriter?.FlushAsync();
+            LogWriter?.Flush();
         }
     }
 }

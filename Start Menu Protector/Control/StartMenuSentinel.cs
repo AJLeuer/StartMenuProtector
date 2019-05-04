@@ -125,8 +125,8 @@ namespace StartMenuProtector.Control
                         }
                         catch (Exception exception)
                         {
-                            //todo: need true logging
-                            Console.WriteLine(exception);
+                            Log($"Application encountered the following exception: {exception}");
+                            Log($"Stack trace for exception: {exception.StackTrace}");
                         }
                     }
                     
