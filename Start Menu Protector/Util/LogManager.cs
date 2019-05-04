@@ -26,6 +26,7 @@ namespace StartMenuProtector.Util
         {
             LogWriter?.Write($"{Clock.GetCurrentInstant().ToString()} ");
             LogWriter?.WriteLine(output);
+            LogWriter?.FlushAsync();
         }
     }
 }
