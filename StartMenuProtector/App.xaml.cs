@@ -7,6 +7,9 @@ using StartMenuProtector.View;
 
 namespace StartMenuProtector
 {
+    /// <summary>
+    /// Interaction logic for App.xaml
+    /// </summary>
     public partial class App : Application
     {
         private readonly SystemStateService systemStateService = new SystemStateService();
@@ -90,5 +93,6 @@ namespace StartMenuProtector
             
             LogManager.Log($"Stack trace for exception: {exception.StackTrace}");
         }
+    
     }
 }

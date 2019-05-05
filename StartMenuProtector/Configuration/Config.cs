@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Media;
 using StartMenuProtector.Data;
+using Syroot.Windows.IO;
 
 namespace StartMenuProtector.Configuration
 {
@@ -13,8 +14,8 @@ namespace StartMenuProtector.Configuration
         /// </summary>
         public const uint ProtectorRunIntervalSeconds = 60;
         
-        public const double MainWindowWidth = 1280;
-        public const double MainWindowHeight = 720;
+        public const double MainWindowWidth = 2560;
+        public const double MainWindowHeight = 1440;
         public const double FontSize = 20;
         public static readonly FontFamily DefaultFontFamily = new FontFamily("Roboto");
 

@@ -1,0 +1,43 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>netcoreapp3.0</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <ApplicationManifest>Properties\app.manifest</ApplicationManifest>
+    <LangVersion>8</LangVersion>
+    <ApplicationIcon>Assets\ApplicationIcon.ico</ApplicationIcon>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ApplicationDefinition Update="App.xaml">
+      <SubType>Designer</SubType>
+    </ApplicationDefinition>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Assets\ApplicationIcon.ico" />
+    <Resource Include="Assets\TrayIcon.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Hardcodet.NotifyIcon.Wpf" Version="1.0.8" />
+    <PackageReference Include="NodaTime" Version="3.0.0-alpha01" />
+    <PackageReference Include="Optional" Version="5.0.0-alpha" />
+    <PackageReference Include="Syroot.Windows.IO.KnownFolders" Version="1.2.1" />
+    <PackageReference Include="System.IO.FileSystem.AccessControl" Version="4.6.0-preview4.19212.13" />
+    <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="4.6.0-preview4.19212.13" />
+    <COMReference Include="Shell32">
+        <Guid>{50A7E9B0-70EF-11D1-B75A-00A0C90564FE}</Guid>
+        <VersionMajor>1</VersionMajor>
+        <VersionMinor>0</VersionMinor>
+        <Lcid>0</Lcid>
+        <WrapperTool>tlbimp</WrapperTool>
+        <Isolated>False</Isolated>
+        <EmbedInteropTypes>True</EmbedInteropTypes>
+      </COMReference>
+  </ItemGroup>
+  
+  
+
+</Project>
