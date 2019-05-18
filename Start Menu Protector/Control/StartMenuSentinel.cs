@@ -148,8 +148,7 @@ namespace StartMenuProtector.Control
             foreach (StartMenuShortcutsLocation location in GetEnumValues<StartMenuShortcutsLocation>())
             {
                 var (unexpected, missing) = CheckForDivergencesFromUsersSavedStartMenuState(location);
-                
-                UpdateSavedDataWithNewerItemCounterParts(location: location, unexpectedItems: unexpected);
+
                 FilterOutItemsWithTheSameName(location, unexpectedItems: unexpected, missingItems: missing);
                 FilterOutShortcutsMovedOutOfPosition(unexpectedItems: unexpected, missingItems: missing);
 
@@ -180,45 +179,8 @@ namespace StartMenuProtector.Control
             
             return (unexpected, absent);
         }
-        
-        
-        private void UpdateSavedDataWithNewerItemCounterParts(StartMenuShortcutsLocation location, ICollection<RelocatableItem> unexpectedItems)
-        {
-            Option<IDirectory> appDataSavedStartMenuContents = SavedDataService.GetStartMenuContentDirectoryMainSubdirectory(location).Result;
 
-            if (appDataSavedStartMenuContents.HasValue)
-            {
-                ICollection<IFileSystemItem> allUnexpectedItems = ExtractFlatListOfItems(unexpectedItems);
-                ICollection<IFileSystemItem> savedStartMenuItems = appDataSavedStartMenuContents.ValueOrFailure().GetFlatContents();
 
-                foreach (IFileSystemItem unexpectedItem in allUnexpectedItems)
-                {
-                    foreach (IFileSystemItem savedStartMenuItem in savedStartMenuItems)
-                    {
-                        if (savedStartMenuItem.Name == unexpectedItem.Name)
-                        {
-                            string savedDataLocation = savedStartMenuItem.ParentDirectoryPath;
-                            savedStartMenuItem.Delete();
-
-                            IEnumerable<RelocatableItem> toRemoveFromUnexpected = unexpectedItems.Where((RelocatableItem item) => item.Name == unexpectedItem.Name );
-                            
-                            foreach (var itemInUnexpected in toRemoveFromUnexpected.ToArray())
-                            {
-                                unexpectedItems.Remove(itemInUnexpected);
-                            }
-                            
-                            Option<IFileSystemItem> itemToRestore = unexpectedItem.Move(savedDataLocation);
-
-                            if (itemToRestore.HasValue)
-                            {
-                                ItemsToRestore[location].Add(itemToRestore.ValueOrFailure());
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        
         public void FilterOutItemsWithTheSameName(StartMenuShortcutsLocation location, ICollection<RelocatableItem> unexpectedItems, ICollection<RelocatableItem> missingItems)
         {
             var allUnexpectedItems = unexpectedItems.ToArray();
