@@ -7,8 +7,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Start Menu Protector", "Sta
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Start Menu Protector Test", "Start Menu Protector Test\Start Menu Protector Test.csproj", "{F77AE142-4BD1-469E-B380-B118950EDA5E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StartMenuProtector", "StartMenuProtector\StartMenuProtector.csproj", "{A75A7617-F42C-4EE0-B0A4-A8CC028BAE81}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,14 +31,6 @@ Global
 		{F77AE142-4BD1-469E-B380-B118950EDA5E}.Release|Any CPU.Build.0 = Release|Any CPU
 		{F77AE142-4BD1-469E-B380-B118950EDA5E}.Release|x64.ActiveCfg = Release|Any CPU
 		{F77AE142-4BD1-469E-B380-B118950EDA5E}.Release|x64.Build.0 = Release|Any CPU
-		{A75A7617-F42C-4EE0-B0A4-A8CC028BAE81}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A75A7617-F42C-4EE0-B0A4-A8CC028BAE81}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A75A7617-F42C-4EE0-B0A4-A8CC028BAE81}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{A75A7617-F42C-4EE0-B0A4-A8CC028BAE81}.Debug|x64.Build.0 = Debug|Any CPU
-		{A75A7617-F42C-4EE0-B0A4-A8CC028BAE81}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A75A7617-F42C-4EE0-B0A4-A8CC028BAE81}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A75A7617-F42C-4EE0-B0A4-A8CC028BAE81}.Release|x64.ActiveCfg = Release|Any CPU
-		{A75A7617-F42C-4EE0-B0A4-A8CC028BAE81}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
