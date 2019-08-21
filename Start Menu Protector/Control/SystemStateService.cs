@@ -46,8 +46,8 @@ namespace StartMenuProtector.Control
         
             var startMenuItems = new Dictionary<StartMenuShortcutsLocation, Directory>
             {
-                {StartMenuShortcutsLocation.System, systemStartMenuItems},
-                {StartMenuShortcutsLocation.User, userStartMenuItems}
+                { StartMenuShortcutsLocation.System, systemStartMenuItems },
+                { StartMenuShortcutsLocation.User, userStartMenuItems }
             };
 
             osEnvironmentStartMenuItems = startMenuItems;

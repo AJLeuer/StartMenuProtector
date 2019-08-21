@@ -2,24 +2,30 @@
 using System.Windows;
 using System.Windows.Media.Imaging;
 using Hardcodet.Wpf.TaskbarNotification;
+using StartMenuProtector.Control;
 using static StartMenuProtector.Configuration.Config;
 using static StartMenuProtector.Util.Util;
 
 namespace StartMenuProtector.View
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Interaction logic for StartMenuProtectorWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class StartMenuProtectorWindow : Window
     {
         private TaskbarIcon TrayIcon = new TaskbarIcon { ToolTipText = "Start Menu Protector", IconSource = new BitmapImage(GetResourceURI(TrayIconFilePath))};
-
-        public MainWindow()
+        public StartMenuSentinel StartMenuSentinel { get; set; }
+        
+        public StartMenuProtectorWindow(StartMenuSentinel sentinel)
         {
             InitializeComponent();
             DataContext = this;
 
             TrayIcon.TrayMouseDoubleClick += Restore;
+            StartMenuSentinel = sentinel;
+            
+            SentinelToggleButton.ToggleOnEvent  += StartMenuSentinel.Enable;
+            SentinelToggleButton.ToggleOffEvent += StartMenuSentinel.Disable;
         }
 
         protected override void OnStateChanged(EventArgs @event)

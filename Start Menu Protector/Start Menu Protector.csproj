@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -133,8 +133,8 @@
     <Compile Include="Util\Timer.cs" />
     <Compile Include="Util\Util.cs" />
     <Compile Include="View\ActiveStartMenuShortcutsView.cs" />
-    <Compile Include="View\MainWindow.xaml.cs">
-      <DependentUpon>MainWindow.xaml</DependentUpon>
+    <Compile Include="View\StartMenuProtectorWindow.xaml.cs">
+      <DependentUpon>StartMenuProtectorWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="View\SavedStartMenuShortcutsView.cs" />
@@ -150,7 +150,7 @@
     <Compile Include="View\Toggle.xaml.cs">
       <DependentUpon>Toggle.xaml</DependentUpon>
     </Compile>
-    <Page Include="View\MainWindow.xaml">
+    <Page Include="View\StartMenuProtectorWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

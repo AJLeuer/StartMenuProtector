@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Threading;
+using StartMenuProtector.Configuration;
 using StartMenuProtector.Control;
 using StartMenuProtector.Util;
 using StartMenuProtector.View;
@@ -22,10 +23,9 @@ namespace StartMenuProtector
         public App()
         {
             SetupExceptionHandling();
-
-            Startup += StartApplication;
-            Exit    += CloseApplication;
+            SetupEventHandling();
         }
+        
 
         private void StartApplication(object sender, StartupEventArgs @event)
         {
@@ -39,18 +39,31 @@ namespace StartMenuProtector
 
             activeStartMenuItemsViewController = new ActiveViewController(activeDataService, savedDataService, systemStateService);
             savedStartMenuItemsViewController  = new SavedViewController(activeDataService, savedDataService, systemStateService);
-                
-            MainWindow               = new MainWindow();
-            activeStartMenuItemsView = ((MainWindow) MainWindow).ActiveProgramShortcutsView;
-            savedStartMenuItemsView  = ((MainWindow) MainWindow).SavedProgramShortcutsView;
-            
-            activeStartMenuItemsView.Controller = activeStartMenuItemsViewController;
-            savedStartMenuItemsView.Controller  = savedStartMenuItemsViewController;
-            
-            sentinel = new StartMenuSentinel(systemStateService, savedDataService, quarantineDataService, ((MainWindow) MainWindow).SentinelToggleButton);
+
+            sentinel                 = new StartMenuSentinel(systemStateService, savedDataService, quarantineDataService);
+            MainWindow               = new StartMenuProtectorWindow(sentinel);
             sentinel.Start();
             
-            MainWindow.Show();
+            activeStartMenuItemsView = ((StartMenuProtectorWindow) MainWindow).ActiveProgramShortcutsView;
+            savedStartMenuItemsView  = ((StartMenuProtectorWindow) MainWindow).SavedProgramShortcutsView;
+
+            activeStartMenuItemsView.Controller = activeStartMenuItemsViewController;
+            savedStartMenuItemsView.Controller  = savedStartMenuItemsViewController;
+
+            ConfigureApplication();
+
+            MainWindow?.Show();
+        }
+
+        private void ConfigureApplication()
+        {
+            if (MainWindow != null)
+            {
+                MainWindow.Loaded += (object sender, RoutedEventArgs @event) =>
+                {
+                    MainWindow.WindowState = Config.StartupWindowState;    
+                };
+            }
         }
 
         private void CloseApplication(object sender, ExitEventArgs @event)
@@ -74,6 +87,12 @@ namespace StartMenuProtector
             {
                 ProcessException(exceptionEvent, exceptionEvent.Exception);
             };
+        }
+        
+        private void SetupEventHandling()
+        {
+            Startup += StartApplication;
+            Exit += CloseApplication;
         }
 
         private void ProcessException<ExceptionEventType>(ExceptionEventType exceptionEvent, Exception exception) where ExceptionEventType : EventArgs

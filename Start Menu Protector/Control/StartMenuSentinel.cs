@@ -42,9 +42,15 @@ namespace StartMenuProtector.Control
                 }
             }
         }
-
-        public RunningState UserSelectedState { get; private set; } = RunningState.Disabled;
+        
+        public RunningState UserSelectedState { get; private set; } = RunningState.Enabled;
+        
         private readonly AutoResetEvent ContinueRunFlag = new AutoResetEvent (false);
+
+        public bool Enabled
+        {
+            get { return (ApplicationState == RunningState.Enabled) && (UserSelectedState == RunningState.Enabled); }
+        }
 
         private Thread Thread { get; set; }
         
@@ -71,14 +77,7 @@ namespace StartMenuProtector.Control
             this.SavedDataService = savedDataService;
             this.QuarantineDataService = quarantineDataService;
         }
-        
-        public StartMenuSentinel(SystemStateService systemStateService, SavedDataService savedDataService, QuarantineDataService quarantineDataService, Toggleable toggle):
-            this(systemStateService, savedDataService, quarantineDataService)
-        {
-            toggle.ToggleOnEvent  += Enable;
-            toggle.ToggleOffEvent += Disable;
-        }
-        
+
         public void Start()
         {
             ApplicationState = RunningState.Enabled;
