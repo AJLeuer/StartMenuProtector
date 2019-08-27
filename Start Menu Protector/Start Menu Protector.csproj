@@ -120,8 +120,10 @@
     <Compile Include="Configuration\Config.cs" />
     <Compile Include="Configuration\Globals.cs" />
     <Compile Include="Control\ActiveDataService.cs" />
+    <Compile Include="Control\ActiveViewController.cs" />
     <Compile Include="Control\QuarantineDataService.cs" />
     <Compile Include="Control\SavedDataService.cs" />
+    <Compile Include="Control\SavedViewController.cs" />
     <Compile Include="Control\StartMenuDataService.cs" />
     <Compile Include="Control\StartMenuViewController.cs" />
     <Compile Include="Control\SystemStateService.cs" />

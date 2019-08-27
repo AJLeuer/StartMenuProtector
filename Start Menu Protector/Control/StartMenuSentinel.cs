@@ -7,7 +7,6 @@ using Optional;
 using Optional.Unsafe;
 using StartMenuProtector.Data;
 using StartMenuProtector.Util;
-using StartMenuProtector.View;
 using static StartMenuProtector.Util.Util;
 using static StartMenuProtector.Configuration.Globals;
 using static StartMenuProtector.Configuration.Config;
