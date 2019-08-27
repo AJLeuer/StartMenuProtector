@@ -28,8 +28,8 @@ namespace StartMenuProtector.Configuration
         public static readonly FontFamily DefaultFontFamily = new FontFamily("Roboto");
         public static readonly Dictionary<TargetEnvironment, WindowState> StartupWindowState = new Dictionary<TargetEnvironment, WindowState>
         {
-            { Config.TargetEnvironment.Development, WindowState.Maximized },
-            { Config.TargetEnvironment.Production,  WindowState.Minimized }
+            { TargetEnvironment.Development, WindowState.Maximized },
+            { TargetEnvironment.Production,  WindowState.Minimized }
         }; 
         public const string ApplicationIconFilePath = "/Assets/ApplicationIcon.ico";
         public const string TrayIconFilePath = "/Assets/TrayIcon.ico";
