@@ -7,7 +7,7 @@ using Directory = StartMenuProtector.Data.Directory;
 
 namespace StartMenuProtector.Configuration
 {
-    public static class Globals
+    public static class FilePaths
     {
                 
         public const string ApplicationName              = "Start Menu Protector";

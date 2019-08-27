@@ -20,18 +20,17 @@ namespace StartMenuProtector.Configuration
         /// How often Start Menu Protector should check (and possibly fix) the state of the start menu
         /// </summary>
         public const uint ProtectorRunIntervalSeconds = 60;
-        
-        #region FileSystem
-        public static readonly String SystemStartMenuItemsPath = $@"{Environment.GetFolderPath(Environment.SpecialFolder.CommonStartMenu)}";
-        #endregion
 
-        
         #region UI
         public const double MainWindowWidth = 1280;
         public const double MainWindowHeight = 720;
         public const double FontSize = 20;
         public static readonly FontFamily DefaultFontFamily = new FontFamily("Roboto");
-        public const WindowState StartupWindowState = WindowState.Minimized;
+        public static readonly Dictionary<TargetEnvironment, WindowState> StartupWindowState = new Dictionary<TargetEnvironment, WindowState>
+        {
+            { Config.TargetEnvironment.Development, WindowState.Maximized },
+            { Config.TargetEnvironment.Production,  WindowState.Minimized }
+        }; 
         public const string ApplicationIconFilePath = "/Assets/ApplicationIcon.ico";
         public const string TrayIconFilePath = "/Assets/TrayIcon.ico";
         

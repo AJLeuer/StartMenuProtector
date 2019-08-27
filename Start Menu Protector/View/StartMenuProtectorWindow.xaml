@@ -6,7 +6,7 @@
         xmlns:view="clr-namespace:StartMenuProtector.View"
         xmlns:config="clr-namespace:StartMenuProtector.Configuration"
         mc:Ignorable="d"
-        Title="{x:Static config:Globals.ApplicationName}" Width="{x:Static config:Config.MainWindowWidth}" Height="{x:Static config:Config.MainWindowHeight}">
+        Title="{x:Static config:FilePaths.ApplicationName}" Width="{x:Static config:Config.MainWindowWidth}" Height="{x:Static config:Config.MainWindowHeight}">
 
     <Grid>
         <Grid.RowDefinitions>

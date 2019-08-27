@@ -136,7 +136,7 @@
 			<SubType>Designer</SubType>
 		</ApplicationDefinition>
 		<Compile Include="Configuration\Config.cs" />
-		<Compile Include="Configuration\Globals.cs" />
+		<Compile Include="Configuration\FilePaths.cs" />
 		<Compile Include="Control\ActiveDataService.cs" />
 		<Compile Include="Control\ActiveViewController.cs" />
 		<Compile Include="Control\QuarantineDataService.cs" />

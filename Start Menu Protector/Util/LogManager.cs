@@ -12,7 +12,7 @@ namespace StartMenuProtector.Util
 
         public static void Start()
         {
-            LogFile   = new File(Path.Combine(Globals.LogsDirectory.Path, "Log.txt"));
+            LogFile   = new File(Path.Combine(FilePaths.LogsDirectory.Path, "Log.txt"));
             LogWriter = new StreamWriter(LogFile.Path);
             Clock     = NodaTime.SystemClock.Instance;
         }

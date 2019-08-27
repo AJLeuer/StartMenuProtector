@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using StartMenuProtector.Data;
-using static StartMenuProtector.Configuration.Globals;
+using static StartMenuProtector.Configuration.FilePaths;
 
 namespace StartMenuProtector.Control
 {

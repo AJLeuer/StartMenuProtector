@@ -8,7 +8,7 @@ using Optional.Unsafe;
 using StartMenuProtector.Data;
 using StartMenuProtector.Util;
 using static StartMenuProtector.Util.Util;
-using static StartMenuProtector.Configuration.Globals;
+using static StartMenuProtector.Configuration.FilePaths;
 using static StartMenuProtector.Configuration.Config;
 using Directory = StartMenuProtector.Data.Directory;
 using static StartMenuProtector.Util.LogManager;

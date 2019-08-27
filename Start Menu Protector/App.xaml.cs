@@ -61,7 +61,7 @@ namespace StartMenuProtector
             {
                 MainWindow.Loaded += (object sender, RoutedEventArgs @event) =>
                 {
-                    MainWindow.WindowState = Config.StartupWindowState;    
+                    MainWindow.WindowState = Config.StartupWindowState[Config.TargetBuildEnvironment];    
                 };
             }
         }

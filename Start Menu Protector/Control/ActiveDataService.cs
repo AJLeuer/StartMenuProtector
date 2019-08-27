@@ -12,8 +12,8 @@ namespace StartMenuProtector.Control
     {
         public override Dictionary<StartMenuShortcutsLocation, IDirectory> StartMenuItemsStorage { get; set; } = new Dictionary<StartMenuShortcutsLocation, IDirectory> 
         {
-            { StartMenuShortcutsLocation.System, Globals.ActiveSystemStartMenuItems }, 
-            { StartMenuShortcutsLocation.User,   Globals.ActiveUserStartMenuItems   }
+            { StartMenuShortcutsLocation.System, FilePaths.ActiveSystemStartMenuItems }, 
+            { StartMenuShortcutsLocation.User,   FilePaths.ActiveUserStartMenuItems   }
         };
         
         protected override Object StartMenuItemsStorageAccessLock { get; } = new Object();
