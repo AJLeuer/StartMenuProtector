@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Media;
 using StartMenuProtector.Data;
+using StartMenuProtector.Util;
 
 
 namespace StartMenuProtector.Configuration
@@ -14,7 +15,9 @@ namespace StartMenuProtector.Configuration
             TargetEnvironment.Development; 
         #elif PROD 
             TargetEnvironment.Production; 
-        #endif 
+        #endif
+
+        public static readonly RunningState StartupState = RunningState.Enabled;
         
         /// <summary>
         /// How often Start Menu Protector should check (and possibly fix) the state of the start menu

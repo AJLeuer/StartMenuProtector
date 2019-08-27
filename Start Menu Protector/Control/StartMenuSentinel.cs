@@ -42,7 +42,7 @@ namespace StartMenuProtector.Control
             }
         }
         
-        public RunningState UserSelectedState { get; private set; } = RunningState.Enabled;
+        public RunningState UserSelectedState { get; private set; } = StartupState;
         
         private readonly AutoResetEvent ContinueRunFlag = new AutoResetEvent (false);
 

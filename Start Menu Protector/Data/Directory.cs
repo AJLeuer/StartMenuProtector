@@ -7,7 +7,7 @@ using System.Security.Principal;
 using Optional;
 using StartMenuProtector.Util;
 
-namespace StartMenuProtector.Data
+namespace StartMenuProtector.Data 
 {
     internal static class DirectoryInfoExtensions 
     {
@@ -86,6 +86,12 @@ namespace StartMenuProtector.Data
         /// If none exists, returns an empty optional. Does not search recursively.
         /// </summary>
         Option<IDirectory> GetSubdirectory(string name);
+        
+        /// <summary>
+        /// Recursively set the attributes of this directory and all its contents
+        /// </summary>
+        /// <param name="attributes"></param>
+        void SetAttributesRecursively(FileAttributes attributes);
     }
     
     public class Directory : FileSystemItem, IDirectory 
@@ -262,6 +268,7 @@ namespace StartMenuProtector.Data
         
         public override void Delete()
         {
+            SetAttributesRecursively(FileAttributes.Normal);
             Self.Delete(true);
         }
 
@@ -358,6 +365,27 @@ namespace StartMenuProtector.Data
             }
 
             return Option.None<IDirectory>();
+        }
+
+        public void SetAttributesRecursively(FileAttributes attributes)
+        {
+            if (Self.Exists)
+            {
+                SetAttributesNormal(Self);
+            }    
+
+            void SetAttributesNormal(DirectoryInfo dir)
+            {
+                foreach (var subDir in dir.GetDirectories())
+                {
+                    SetAttributesNormal(subDir);
+                    subDir.Attributes = FileAttributes.Normal;
+                }
+                foreach (var file in dir.GetFiles())
+                {
+                    file.Attributes = FileAttributes.Normal;
+                }
+            }
         }
 
         /// <summary>
