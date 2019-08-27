@@ -9,20 +9,37 @@ namespace StartMenuProtector.Configuration
 {
     public static class Globals
     {
-        public static readonly String EnvironmentSystemStartMenuItemsPath = $@"{Environment.GetFolderPath(Environment.SpecialFolder.CommonStartMenu)}";
-        public static readonly String EnvironmentUserStartMenuItemsPath   = $@"{Environment.GetFolderPath(Environment.SpecialFolder.StartMenu)}";
-
-        public static readonly Dictionary<StartMenuShortcutsLocation, String> EnvironmentStartMenuItemsPath = new Dictionary<StartMenuShortcutsLocation, String>
-        {
-            {StartMenuShortcutsLocation.User,   EnvironmentUserStartMenuItemsPath},
-            {StartMenuShortcutsLocation.System, EnvironmentSystemStartMenuItemsPath}
-        }; 
-        
+                
         public const string ApplicationName              = "Start Menu Protector";
         public const string SystemShortcutsDirectoryName = "System Shortcuts";
         public const string UserShortcutsDirectoryName   = "User Shortcuts";
+        
+        
+        private static readonly Dictionary<Config.TargetEnvironment, String> SystemStartMenuItemsPaths = new Dictionary<Config.TargetEnvironment, String>
+        {
+            { Config.TargetEnvironment.Development, @"Development Start Menu Items\System Start Menu" },
+            { Config.TargetEnvironment.Production,  $@"{Environment.GetFolderPath(Environment.SpecialFolder.CommonStartMenu)}" }
+        }; 
+        
+        private static readonly Dictionary<Config.TargetEnvironment, String> UserStartMenuItemsPaths = new Dictionary<Config.TargetEnvironment, String>
+        {
+            { Config.TargetEnvironment.Development, @"Development Start Menu Items\User Start Menu" },
+            { Config.TargetEnvironment.Production,  $@"{Environment.GetFolderPath(Environment.SpecialFolder.StartMenu)}" }
+        };
 
-        public static readonly Directory UserAppData                     = new Directory(new KnownFolder(KnownFolderType.RoamingAppData).Path);
+        public static readonly Dictionary<StartMenuShortcutsLocation, String> ProductionStartMenuItemsPath = new Dictionary<StartMenuShortcutsLocation, String>
+        {
+            { StartMenuShortcutsLocation.User,   UserStartMenuItemsPaths[Config.TargetBuildEnvironment] },
+            { StartMenuShortcutsLocation.System, SystemStartMenuItemsPaths[Config.TargetBuildEnvironment] }
+        };
+
+        private static readonly Dictionary<Config.TargetEnvironment, String> UserAppDataPaths = new Dictionary<Config.TargetEnvironment, String>
+        {
+            { Config.TargetEnvironment.Development, @"Development App Data\" },
+            { Config.TargetEnvironment.Production,  new KnownFolder(KnownFolderType.RoamingAppData).Path }
+        };
+        
+        public static readonly Directory UserAppData                     = new Directory(UserAppDataPaths[Config.TargetBuildEnvironment]);
         public static readonly Directory StartMenuProtectorAppData       = new Directory(System.IO.Directory.CreateDirectory(Path.Combine(UserAppData.Path, ApplicationName)));
         
         public static readonly Directory LogsDirectory                   = new Directory(System.IO.Directory.CreateDirectory(Path.Combine(StartMenuProtectorAppData.Path, "Logs")));

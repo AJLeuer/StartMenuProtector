@@ -1,219 +1,438 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
-  <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{B1119568-5108-4F62-9917-DF733E05CB85}</ProjectGuid>
-    <OutputType>WinExe</OutputType>
-    <RootNamespace>StartMenuProtector</RootNamespace>
-    <AssemblyName>Start Menu Protector</AssemblyName>
-    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
-    <WarningLevel>4</WarningLevel>
-    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-    <Deterministic>true</Deterministic>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
-    <LangVersion>8.0</LangVersion>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup>
-    <TargetZone>LocalIntranet</TargetZone>
-  </PropertyGroup>
-  <PropertyGroup>
-    <GenerateManifests>false</GenerateManifests>
-  </PropertyGroup>
-  <PropertyGroup>
-    <ApplicationManifest>Properties\app.manifest</ApplicationManifest>
-  </PropertyGroup>
-  <PropertyGroup>
-    <ApplicationIcon>ApplicationIcon.ico</ApplicationIcon>
-  </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="Hardcodet.Wpf.TaskbarNotification, Version=1.0.5.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\packages\Hardcodet.NotifyIcon.Wpf.1.0.8\lib\net451\Hardcodet.Wpf.TaskbarNotification.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="NodaTime, Version=3.0.0.0, Culture=neutral, PublicKeyToken=4226afe0d9b296d1">
-      <HintPath>..\packages\NodaTime.3.0.0-alpha01\lib\netstandard2.0\NodaTime.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Optional, Version=4.1.0.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\packages\Optional.5.0.0-alpha\lib\net45\Optional.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Syroot.KnownFolders, Version=1.2.1.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\packages\Syroot.Windows.IO.KnownFolders.1.2.1\lib\net452\Syroot.KnownFolders.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.AppContext" />
-    <Reference Include="System.Configuration" />
-    <Reference Include="System.Console" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.IO" />
-    <Reference Include="System.IO.Compression" />
-    <Reference Include="System.IO.FileSystem" />
-    <Reference Include="System.IO.FileSystem.Primitives" />
-    <Reference Include="System.Linq" />
-    <Reference Include="System.Linq.Expressions" />
-    <Reference Include="System.Reflection" />
-    <Reference Include="System.Runtime" />
-    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=4.0.4.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.4.5.1\lib\netstandard2.0\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System.Runtime.Extensions" />
-    <Reference Include="System.Runtime.InteropServices" />
-    <Reference Include="System.Runtime.Serialization" />
-    <Reference Include="System.Runtime.WindowsRuntime" />
-    <Reference Include="System.Security.Cryptography.Algorithms" />
-    <Reference Include="System.Security.Cryptography.Encoding" />
-    <Reference Include="System.Security.Cryptography.Primitives" />
-    <Reference Include="System.Security.Cryptography.X509Certificates" />
-    <Reference Include="System.ServiceModel" />
-    <Reference Include="System.Transactions" />
-    <Reference Include="System.ValueTuple" />
-    <Reference Include="System.Xml" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="System.Net.Http" />
-    <Reference Include="System.Xaml">
-      <RequiredTargetFramework>4.0</RequiredTargetFramework>
-    </Reference>
-    <Reference Include="System.Xml.ReaderWriter" />
-    <Reference Include="Windows, Version=255.255.255.255, Culture=neutral, PublicKeyToken=null, ContentType=WindowsRuntime">
-      <HintPath>C:\Program Files (x86)\Windows Kits\10\UnionMetadata\10.0.18362.0\Windows.winmd</HintPath>
-    </Reference>
-    <Reference Include="WindowsBase" />
-    <Reference Include="PresentationCore" />
-    <Reference Include="PresentationFramework" />
-  </ItemGroup>
-  <ItemGroup>
-    <ApplicationDefinition Include="App.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </ApplicationDefinition>
-    <Compile Include="Configuration\Config.cs" />
-    <Compile Include="Configuration\Globals.cs" />
-    <Compile Include="Control\ActiveDataService.cs" />
-    <Compile Include="Control\ActiveViewController.cs" />
-    <Compile Include="Control\QuarantineDataService.cs" />
-    <Compile Include="Control\SavedDataService.cs" />
-    <Compile Include="Control\SavedViewController.cs" />
-    <Compile Include="Control\StartMenuDataService.cs" />
-    <Compile Include="Control\StartMenuViewController.cs" />
-    <Compile Include="Control\SystemStateService.cs" />
-    <Compile Include="Data\FileSystemItem.cs" />
-    <Compile Include="Util\AsyncObservableCollection.cs" />
-    <Compile Include="Util\ConsoleManager.cs" />
-    <Compile Include="Util\LogManager.cs" />
-    <Compile Include="Util\RunningState.cs" />
-    <Compile Include="Util\Timer.cs" />
-    <Compile Include="Util\Util.cs" />
-    <Compile Include="View\ActiveStartMenuShortcutsView.cs" />
-    <Compile Include="View\StartMenuProtectorWindow.xaml.cs">
-      <DependentUpon>StartMenuProtectorWindow.xaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="View\SavedStartMenuShortcutsView.cs" />
-    <Compile Include="View\StartMenuItem.cs" />
-    <Compile Include="View\StartMenuShortcutsView.xaml.cs">
-      <DependentUpon>StartMenuShortcutsView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="App.xaml.cs">
-      <DependentUpon>App.xaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Control\StartMenuSentinel.cs" />
-    <Compile Include="View\Toggle.xaml.cs">
-      <DependentUpon>Toggle.xaml</DependentUpon>
-    </Compile>
-    <Page Include="View\StartMenuProtectorWindow.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="View\StartMenuShortcutsView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="View\Toggle.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Properties\AssemblyInfo.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
-    <Compile Include="Properties\Settings.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Settings.settings</DependentUpon>
-      <DesignTimeSharedInput>True</DesignTimeSharedInput>
-    </Compile>
-    <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <None Include="packages.config" />
-    <None Include="Properties\app.manifest" />
-    <None Include="Properties\Settings.settings">
-      <Generator>SettingsSingleFileGenerator</Generator>
-      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <COMReference Include="Shell32">
-      <Guid>{50A7E9B0-70EF-11D1-B75A-00A0C90564FE}</Guid>
-      <VersionMajor>1</VersionMajor>
-      <VersionMinor>0</VersionMinor>
-      <Lcid>0</Lcid>
-      <WrapperTool>tlbimp</WrapperTool>
-      <Isolated>False</Isolated>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
-    </COMReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="..\ReadMe.md">
-      <Link>ReadMe.md</Link>
-    </Content>
-    <Content Include="..\To Dos.md">
-      <Link>To Dos.md</Link>
-    </Content>
-    <Resource Include="ApplicationIcon.ico" />
-    <Resource Include="Assets\ApplicationIcon.ico" />
-    <Resource Include="Assets\TrayIcon.ico" />
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+	<Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+	<PropertyGroup>
+		<Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+		<Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+		<ProjectGuid>{B1119568-5108-4F62-9917-DF733E05CB85}</ProjectGuid>
+		<OutputType>WinExe</OutputType>
+		<RootNamespace>StartMenuProtector</RootNamespace>
+		<AssemblyName>Start Menu Protector</AssemblyName>
+		<TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+		<FileAlignment>512</FileAlignment>
+		<ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+		<WarningLevel>4</WarningLevel>
+		<AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+		<Deterministic>true</Deterministic>
+	</PropertyGroup>
+	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'ReleaseProd|AnyCPU' ">
+		<DebugType>pdbonly</DebugType>
+		<Optimize>true</Optimize>
+		<DefineConstants>TRACE;PROD</DefineConstants>
+		<ErrorReport>prompt</ErrorReport>
+		<WarningLevel>4</WarningLevel>
+		<Prefer32Bit>false</Prefer32Bit>
+		<OutputPath>bin\ReleaseProd\</OutputPath>
+	</PropertyGroup>
+	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'DebugProd|AnyCPU' ">
+		<DebugSymbols>true</DebugSymbols>
+		<DebugType>full</DebugType>
+		<Optimize>false</Optimize>
+		<DefineConstants>DEBUG;TRACE;PROD</DefineConstants>
+		<ErrorReport>prompt</ErrorReport>
+		<WarningLevel>4</WarningLevel>
+		<Prefer32Bit>false</Prefer32Bit>
+		<LangVersion>8.0</LangVersion>
+		<OutputPath>bin\DebugProd\</OutputPath>
+	</PropertyGroup>
+	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'DebugDev|AnyCPU' ">
+		<DebugSymbols>true</DebugSymbols>
+		<DebugType>full</DebugType>
+		<Optimize>false</Optimize>
+		<DefineConstants>DEBUG;TRACE;DEV</DefineConstants>
+		<ErrorReport>prompt</ErrorReport>
+		<WarningLevel>4</WarningLevel>
+		<Prefer32Bit>false</Prefer32Bit>
+		<LangVersion>8.0</LangVersion>
+		<OutputPath>bin\DebugDev\</OutputPath>
+	</PropertyGroup>
+	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'ReleaseDev|AnyCPU' ">
+		<DebugType>pdbonly</DebugType>
+		<Optimize>true</Optimize>
+		<DefineConstants>TRACE;DEV</DefineConstants>
+		<ErrorReport>prompt</ErrorReport>
+		<WarningLevel>4</WarningLevel>
+		<Prefer32Bit>false</Prefer32Bit>
+		<OutputPath>bin\ReleaseDev\</OutputPath>
+	</PropertyGroup>
+	<PropertyGroup>
+		<TargetZone>LocalIntranet</TargetZone>
+	</PropertyGroup>
+	<PropertyGroup>
+		<GenerateManifests>false</GenerateManifests>
+	</PropertyGroup>
+	<PropertyGroup>
+		<ApplicationManifest>Properties\app.manifest</ApplicationManifest>
+	</PropertyGroup>
+	<PropertyGroup>
+		<ApplicationIcon>ApplicationIcon.ico</ApplicationIcon>
+	</PropertyGroup>
+	<ItemGroup>
+		<Reference Include="Hardcodet.Wpf.TaskbarNotification, Version=1.0.5.0, Culture=neutral, PublicKeyToken=null">
+			<HintPath>..\packages\Hardcodet.NotifyIcon.Wpf.1.0.8\lib\net451\Hardcodet.Wpf.TaskbarNotification.dll</HintPath>
+			<Private>True</Private>
+		</Reference>
+		<Reference Include="NodaTime, Version=3.0.0.0, Culture=neutral, PublicKeyToken=4226afe0d9b296d1">
+			<HintPath>..\packages\NodaTime.3.0.0-alpha01\lib\netstandard2.0\NodaTime.dll</HintPath>
+			<Private>True</Private>
+		</Reference>
+		<Reference Include="Optional, Version=4.1.0.0, Culture=neutral, PublicKeyToken=null">
+			<HintPath>..\packages\Optional.5.0.0-alpha\lib\net45\Optional.dll</HintPath>
+			<Private>True</Private>
+		</Reference>
+		<Reference Include="Syroot.KnownFolders, Version=1.2.1.0, Culture=neutral, PublicKeyToken=null">
+			<HintPath>..\packages\Syroot.Windows.IO.KnownFolders.1.2.1\lib\net452\Syroot.KnownFolders.dll</HintPath>
+			<Private>True</Private>
+		</Reference>
+		<Reference Include="System" />
+		<Reference Include="System.AppContext" />
+		<Reference Include="System.Configuration" />
+		<Reference Include="System.Console" />
+		<Reference Include="System.Data" />
+		<Reference Include="System.Drawing" />
+		<Reference Include="System.IO" />
+		<Reference Include="System.IO.Compression" />
+		<Reference Include="System.IO.FileSystem" />
+		<Reference Include="System.IO.FileSystem.Primitives" />
+		<Reference Include="System.Linq" />
+		<Reference Include="System.Linq.Expressions" />
+		<Reference Include="System.Reflection" />
+		<Reference Include="System.Runtime" />
+		<Reference Include="System.Runtime.CompilerServices.Unsafe, Version=4.0.4.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+			<HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.4.5.1\lib\netstandard2.0\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+			<Private>True</Private>
+		</Reference>
+		<Reference Include="System.Runtime.Extensions" />
+		<Reference Include="System.Runtime.InteropServices" />
+		<Reference Include="System.Runtime.Serialization" />
+		<Reference Include="System.Runtime.WindowsRuntime" />
+		<Reference Include="System.Security.Cryptography.Algorithms" />
+		<Reference Include="System.Security.Cryptography.Encoding" />
+		<Reference Include="System.Security.Cryptography.Primitives" />
+		<Reference Include="System.Security.Cryptography.X509Certificates" />
+		<Reference Include="System.ServiceModel" />
+		<Reference Include="System.Transactions" />
+		<Reference Include="System.ValueTuple" />
+		<Reference Include="System.Xml" />
+		<Reference Include="Microsoft.CSharp" />
+		<Reference Include="System.Core" />
+		<Reference Include="System.Xml.Linq" />
+		<Reference Include="System.Data.DataSetExtensions" />
+		<Reference Include="System.Net.Http" />
+		<Reference Include="System.Xaml">
+			<RequiredTargetFramework>4.0</RequiredTargetFramework>
+		</Reference>
+		<Reference Include="System.Xml.ReaderWriter" />
+		<Reference Include="Windows, Version=255.255.255.255, Culture=neutral, PublicKeyToken=null, ContentType=WindowsRuntime">
+			<HintPath>C:\Program Files (x86)\Windows Kits\10\UnionMetadata\10.0.18362.0\Windows.winmd</HintPath>
+		</Reference>
+		<Reference Include="WindowsBase" />
+		<Reference Include="PresentationCore" />
+		<Reference Include="PresentationFramework" />
+	</ItemGroup>
+	<ItemGroup>
+		<ApplicationDefinition Include="App.xaml">
+			<Generator>MSBuild:Compile</Generator>
+			<SubType>Designer</SubType>
+		</ApplicationDefinition>
+		<Compile Include="Configuration\Config.cs" />
+		<Compile Include="Configuration\Globals.cs" />
+		<Compile Include="Control\ActiveDataService.cs" />
+		<Compile Include="Control\ActiveViewController.cs" />
+		<Compile Include="Control\QuarantineDataService.cs" />
+		<Compile Include="Control\SavedDataService.cs" />
+		<Compile Include="Control\SavedViewController.cs" />
+		<Compile Include="Control\StartMenuDataService.cs" />
+		<Compile Include="Control\StartMenuViewController.cs" />
+		<Compile Include="Control\SystemStateService.cs" />
+		<Compile Include="Data\FileSystemItem.cs" />
+		<Compile Include="Util\AsyncObservableCollection.cs" />
+		<Compile Include="Util\ConsoleManager.cs" />
+		<Compile Include="Util\LogManager.cs" />
+		<Compile Include="Util\RunningState.cs" />
+		<Compile Include="Util\Timer.cs" />
+		<Compile Include="Util\Util.cs" />
+		<Compile Include="View\ActiveStartMenuShortcutsView.cs" />
+		<Compile Include="View\StartMenuProtectorWindow.xaml.cs">
+			<DependentUpon>StartMenuProtectorWindow.xaml</DependentUpon>
+			<SubType>Code</SubType>
+		</Compile>
+		<Compile Include="View\SavedStartMenuShortcutsView.cs" />
+		<Compile Include="View\StartMenuItem.cs" />
+		<Compile Include="View\StartMenuShortcutsView.xaml.cs">
+			<DependentUpon>StartMenuShortcutsView.xaml</DependentUpon>
+		</Compile>
+		<Compile Include="App.xaml.cs">
+			<DependentUpon>App.xaml</DependentUpon>
+			<SubType>Code</SubType>
+		</Compile>
+		<Compile Include="Control\StartMenuSentinel.cs" />
+		<Compile Include="View\Toggle.xaml.cs">
+			<DependentUpon>Toggle.xaml</DependentUpon>
+		</Compile>
+		<Page Include="View\StartMenuProtectorWindow.xaml">
+			<Generator>MSBuild:Compile</Generator>
+			<SubType>Designer</SubType>
+		</Page>
+		<Page Include="View\StartMenuShortcutsView.xaml">
+			<SubType>Designer</SubType>
+			<Generator>MSBuild:Compile</Generator>
+		</Page>
+		<Page Include="View\Toggle.xaml">
+			<SubType>Designer</SubType>
+			<Generator>MSBuild:Compile</Generator>
+		</Page>
+	</ItemGroup>
+	<ItemGroup>
+		<Compile Include="Properties\AssemblyInfo.cs">
+			<SubType>Code</SubType>
+		</Compile>
+		<Compile Include="Properties\Resources.Designer.cs">
+			<AutoGen>True</AutoGen>
+			<DesignTime>True</DesignTime>
+			<DependentUpon>Resources.resx</DependentUpon>
+		</Compile>
+		<Compile Include="Properties\Settings.Designer.cs">
+			<AutoGen>True</AutoGen>
+			<DependentUpon>Settings.settings</DependentUpon>
+			<DesignTimeSharedInput>True</DesignTimeSharedInput>
+		</Compile>
+		<EmbeddedResource Include="Properties\Resources.resx">
+			<Generator>ResXFileCodeGenerator</Generator>
+			<LastGenOutput>Resources.Designer.cs</LastGenOutput>
+		</EmbeddedResource>
+		<None Include="packages.config" />
+		<None Include="Properties\app.manifest" />
+		<None Include="Properties\Settings.settings">
+			<Generator>SettingsSingleFileGenerator</Generator>
+			<LastGenOutput>Settings.Designer.cs</LastGenOutput>
+		</None>
+	</ItemGroup>
+	<ItemGroup>
+		<None Include="App.config" />
+	</ItemGroup>
+	<ItemGroup>
+		<COMReference Include="Shell32">
+			<Guid>{50A7E9B0-70EF-11D1-B75A-00A0C90564FE}</Guid>
+			<VersionMajor>1</VersionMajor>
+			<VersionMinor>0</VersionMinor>
+			<Lcid>0</Lcid>
+			<WrapperTool>tlbimp</WrapperTool>
+			<Isolated>False</Isolated>
+			<EmbedInteropTypes>True</EmbedInteropTypes>
+		</COMReference>
+	</ItemGroup>
+	<ItemGroup>
+		<Content Include="..\ReadMe.md">
+			<Link>ReadMe.md</Link>
+		</Content>
+		<Content Include="..\To Dos.md">
+			<Link>To Dos.md</Link>
+		</Content>
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\Accessibility\Desktop.ini" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\Accessibility\Speech Recognition.lnk" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\Accessories\desktop.ini" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\Accessories\Math Input Panel.lnk" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\Accessories\Paint.lnk" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\Accessories\Quick Assist.lnk" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\Accessories\Remote Desktop Connection.lnk" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\Accessories\Snipping Tool.lnk" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\Accessories\Steps Recorder.lnk" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\Accessories\System Tools\Character Map.lnk" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\Accessories\System Tools\desktop.ini" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\Accessories\Windows Fax and Scan.lnk" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\Accessories\Windows Media Player.lnk" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\Accessories\Wordpad.lnk" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\Accessories\XPS Viewer.lnk" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\Administrative Tools\Component Services.lnk" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\Administrative Tools\Computer Management.lnk" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\Administrative Tools\desktop.ini" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\Administrative Tools\dfrgui.lnk" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\Administrative Tools\Disk Cleanup.lnk" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\Administrative Tools\Event Viewer.lnk" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\Administrative Tools\Hyper-V Manager.lnk" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\Administrative Tools\iSCSI Initiator.lnk" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\Administrative Tools\Memory Diagnostics Tool.lnk" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\Administrative Tools\ODBC Data Sources (32-bit).lnk" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\Administrative Tools\ODBC Data Sources (64-bit).lnk" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\Administrative Tools\Performance Monitor.lnk" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\Administrative Tools\Print Management.lnk" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\Administrative Tools\RecoveryDrive.lnk" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\Administrative Tools\Registry Editor.lnk" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\Administrative Tools\Resource Monitor.lnk" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\Administrative Tools\Security Configuration Management.lnk" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\Administrative Tools\services.lnk" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\Administrative Tools\System Configuration.lnk" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\Administrative Tools\System Information.lnk" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\Administrative Tools\Task Scheduler.lnk" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\Administrative Tools\VMCreate.lnk" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\Administrative Tools\Windows Defender Firewall with Advanced Security.lnk" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\Adobe Creative Cloud.lnk" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\Adobe Premiere Pro 2019.lnk" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\Battle.net.lnk" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\CAM.lnk" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\desktop.ini" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\Developer\Blend for Visual Studio 2019 Preview.lnk" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\Developer\CMake.lnk" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\Developer\Cygwin\Cygwin Setup.lnk" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\Developer\Cygwin\Cygwin Terminal.lnk" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\Developer\Git.lnk" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\Developer\MinGW Command Prompt.lnk" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\Developer\Unreal Engine.lnk" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\Developer\Visual Studio Installer.lnk" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\Developer\Visual Studio Tools\Debuggable Package Manager Preview.lnk" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\Developer\Visual Studio Tools\Developer Command Prompt for VS 2019 Preview.lnk" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\Developer\Visual Studio Tools\Developer PowerShell for VS 2019 Preview.lnk" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\Developer\Visual Studio Tools\VC\x86 Native Tools Command Prompt for VS 2019 Preview.lnk" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\Developer\Visual Studio Tools\x86 Native Tools Command Prompt for VS 2019 Preview.lnk" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\Drive File Stream.lnk" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\Epic Games Launcher.lnk" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\Firefox Nightly.lnk" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\Games\Apex Legends.lnk" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\Games\Battlefield 4.lnk" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\Games\Battlefield™ V.lnk" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\Games\BioShock Infinite.lnk" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\Games\Destiny 2.lnk" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\Games\Deus Ex Mankind Divided.lnk" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\Games\Divinity Original Sin II.lnk" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\Games\Dragon Age II.lnk" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\Games\Dragon Age Inquisition.lnk" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\Games\Dragon Age Origins.lnk" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\Games\Kingdoms of Amalur Reckoning.lnk" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\Games\Mass Effect 2.lnk" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\Games\Mass Effect 3.lnk" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\Games\Mass Effect Andromeda.lnk" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\Games\Mass Effect.lnk" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\Games\NieR Automata.lnk" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\Games\Portal 2.lnk" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\Games\Prey.lnk" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\Games\Rage 2.lnk" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\Games\Rise Of The Tomb Raider.lnk" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\Games\RSI Launcher.lnk" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\Games\Star Wars Battlefront II.lnk" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\Games\The Witcher 3 Wild Hunt.lnk" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\Games\Wolfenstein The New Order.lnk" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\Games\Wolfenstein Youngblood.lnk" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\GeForce Experience.lnk" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\GOG Galaxy.lnk" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\iCUE.lnk" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\Immersive Control Panel.lnk" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\iTunes.lnk" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\Maintenance\Desktop.ini" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\Origin.lnk" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\Paint.NET.lnk" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\Skype.lnk" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\Splash.lnk" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\StartUp\desktop.ini" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\StartUp\DTS Audio.lnk" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\Steam.lnk" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\System Tools\Desktop.ini" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\System Tools\Task Manager.lnk" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\Tools\Cheat Engine.lnk" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\Tools\Dragon Age II Save Editor.lnk" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\Tools\Dragon Age Inquisition Save Game Editor.lnk" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\Tools\Dragon Age Toolset.lnk" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\Tools\Mass Effect 2 Save Editor.lnk" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\Tools\Mass Effect 3 Save Editor.lnk" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\Tools\ME3 Explorer.lnk" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\Tools\Paint.NET.lnk" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\Tools\Vortex.lnk" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\Uplay.lnk" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\USE Engine.lnk" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\Utilities\Adobe Media Encoder 2019.lnk" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\Utilities\AI Suite 3.lnk" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\Utilities\AURA.lnk" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\Utilities\CPU-Z.lnk" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\Utilities\Device Discovery.lnk" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\Utilities\DS4Windows.lnk" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\Utilities\GeForce Experience.lnk" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\Utilities\GPU-Z.lnk" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\Utilities\HandBrake Nightly.lnk" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\Utilities\HWMonitor.lnk" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\Utilities\Intel® Extreme Tuning Utility.lnk" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\Utilities\Intel® Power Gadget.lnk" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\Utilities\Intel® SSD Toolbox.lnk" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\Utilities\Large Address Aware.lnk" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\Utilities\LiveDash.lnk" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\Utilities\Logitech G HUB.lnk" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\Utilities\Logitech Unifying Software.lnk" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\Utilities\Monitor EDID Utility.lnk" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\Utilities\MSI Afterburner.lnk" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\Utilities\NVIDIA Control Panel.lnk" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\Utilities\NVIDIA LED Visualizer.lnk" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\Utilities\PeaZip.lnk" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\Utilities\Process Explorer.lnk" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\Utilities\Rufus.lnk" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\Utilities\Universal Watermark Disabler.lnk" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\Utilities\USB Devices.lnk" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\Utilities\Wireshark.lnk" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\Visual Studio 2019 Preview.lnk" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\Web Apps\Calculator.lnk" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\Web Apps\Calendar.lnk" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\Web Apps\Contacts.lnk" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\Web Apps\Find My iPhone.lnk" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\Web Apps\Google Hangouts.lnk" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\Web Apps\Google Keep.lnk" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\Web Apps\Google Play Movies &amp; TV.lnk" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\Web Apps\Google Play Music.lnk" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\Web Apps\iCloud Drive.lnk" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\Web Apps\iCloud Photos.lnk" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\Web Apps\iCloud.lnk" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\Web Apps\Keynote.lnk" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\Web Apps\Mail.lnk" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\Web Apps\Notes.lnk" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\Web Apps\Numbers.lnk" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\Web Apps\Pages.lnk" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\Web Apps\Reminders.lnk" />
+		<Content Include="Resources\Development Start Menu Items\User Start Menu\Programs\1Password.lnk" />
+		<Content Include="Resources\Development Start Menu Items\User Start Menu\Programs\Accessibility\desktop.ini" />
+		<Content Include="Resources\Development Start Menu Items\User Start Menu\Programs\Accessibility\Magnify.lnk" />
+		<Content Include="Resources\Development Start Menu Items\User Start Menu\Programs\Accessibility\Narrator.lnk" />
+		<Content Include="Resources\Development Start Menu Items\User Start Menu\Programs\Accessibility\On-Screen Keyboard.lnk" />
+		<Content Include="Resources\Development Start Menu Items\User Start Menu\Programs\Accessories\Desktop.ini" />
+		<Content Include="Resources\Development Start Menu Items\User Start Menu\Programs\Accessories\Internet Explorer.lnk" />
+		<Content Include="Resources\Development Start Menu Items\User Start Menu\Programs\Accessories\Notepad.lnk" />
+		<Content Include="Resources\Development Start Menu Items\User Start Menu\Programs\Administrative Tools\desktop.ini" />
+		<Content Include="Resources\Development Start Menu Items\User Start Menu\Programs\Atom Beta.lnk" />
+		<Content Include="Resources\Development Start Menu Items\User Start Menu\Programs\CLion.lnk" />
+		<Content Include="Resources\Development Start Menu Items\User Start Menu\Programs\desktop.ini" />
+		<Content Include="Resources\Development Start Menu Items\User Start Menu\Programs\Developer\GitHub Desktop.lnk" />
+		<Content Include="Resources\Development Start Menu Items\User Start Menu\Programs\Developer\GitKraken.lnk" />
+		<Content Include="Resources\Development Start Menu Items\User Start Menu\Programs\Developer\JetBrains dotCover.lnk" />
+		<Content Include="Resources\Development Start Menu Items\User Start Menu\Programs\Developer\JetBrains dotMemory.lnk" />
+		<Content Include="Resources\Development Start Menu Items\User Start Menu\Programs\Developer\JetBrains dotPeek.lnk" />
+		<Content Include="Resources\Development Start Menu Items\User Start Menu\Programs\Developer\JetBrains dotTrace.lnk" />
+		<Content Include="Resources\Development Start Menu Items\User Start Menu\Programs\Developer\JetBrains Toolbox.lnk" />
+		<Content Include="Resources\Development Start Menu Items\User Start Menu\Programs\Discord.lnk" />
+		<Content Include="Resources\Development Start Menu Items\User Start Menu\Programs\Google Chrome Canary.lnk" />
+		<Content Include="Resources\Development Start Menu Items\User Start Menu\Programs\IntelliJ IDEA Ultimate EAP.lnk" />
+		<Content Include="Resources\Development Start Menu Items\User Start Menu\Programs\Maintenance\Desktop.ini" />
+		<Content Include="Resources\Development Start Menu Items\User Start Menu\Programs\OneDrive.lnk" />
+		<Content Include="Resources\Development Start Menu Items\User Start Menu\Programs\Rider.lnk" />
+		<Content Include="Resources\Development Start Menu Items\User Start Menu\Programs\Start Zoom.lnk" />
+		<Content Include="Resources\Development Start Menu Items\User Start Menu\Programs\Startup\desktop.ini" />
+		<Content Include="Resources\Development Start Menu Items\User Start Menu\Programs\System Tools\Administrative Tools.lnk" />
+		<Content Include="Resources\Development Start Menu Items\User Start Menu\Programs\System Tools\Command Prompt.lnk" />
+		<Content Include="Resources\Development Start Menu Items\User Start Menu\Programs\System Tools\computer.lnk" />
+		<Content Include="Resources\Development Start Menu Items\User Start Menu\Programs\System Tools\Control Panel.lnk" />
+		<Content Include="Resources\Development Start Menu Items\User Start Menu\Programs\System Tools\Desktop.ini" />
+		<Content Include="Resources\Development Start Menu Items\User Start Menu\Programs\System Tools\File Explorer.lnk" />
+		<Content Include="Resources\Development Start Menu Items\User Start Menu\Programs\System Tools\Run.lnk" />
+		<Content Include="Resources\Development Start Menu Items\User Start Menu\Programs\Tools\Dragon Age Character Generator Morph Compiler.lnk" />
+		<Content Include="Resources\Development Start Menu Items\User Start Menu\Programs\Tools\Dragon Age Origins Mod Manager.lnk" />
+		<Content Include="Resources\Development Start Menu Items\User Start Menu\Programs\Utilities\Start Menu Protector.lnk" />
+		<Content Include="Resources\Development Start Menu Items\User Start Menu\Programs\Utilities\Windows PowerShell.lnk" />
+		<Content Include="Resources\Development Start Menu Items\User Start Menu\Programs\WebStorm.lnk" />
+		<Content Include="Resources\Development Start Menu Items\User Start Menu\Programs\Windows PowerShell\desktop.ini" />
+		<Resource Include="ApplicationIcon.ico" />
+		<Resource Include="Assets\ApplicationIcon.ico" />
+		<Resource Include="Assets\TrayIcon.ico" />
+	</ItemGroup>
+	<Target Name="CopyDevelopmentData" AfterTargets="AfterBuild" Condition=" $(DefineConstants.Contains('DEV')) ">
+		<ItemGroup>
+			<DevStartMenuItems Include="Resources\Development Start Menu Items\**\*.*" />
+		</ItemGroup>
+		<Copy SourceFiles="@(DevStartMenuItems)" DestinationFiles="@(DevStartMenuItems->'$(OutDir)Development Start Menu Items\%(RecursiveDir)%(Filename)%(Extension)')" SkipUnchangedFiles="true" OverwriteReadOnlyFiles="true" />
+	</Target>
+	<Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

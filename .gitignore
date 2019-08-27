@@ -10,9 +10,8 @@ build/
 packages/
 
 
-
-
-
-StartMenuProtector/obj/
-
 Start Menu Protector/obj/
+Start Menu Protector/bin/
+
+Start Menu Protector Test/obj/
+Start Menu Protector Test/bin/

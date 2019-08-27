@@ -4,15 +4,29 @@ using System.Windows;
 using System.Windows.Media;
 using StartMenuProtector.Data;
 
+
 namespace StartMenuProtector.Configuration
 {
     public static class Config
     {
+        public const TargetEnvironment TargetBuildEnvironment =
+        #if DEV 
+            TargetEnvironment.Development; 
+        #elif PROD 
+            TargetEnvironment.Production; 
+        #endif 
+        
         /// <summary>
         /// How often Start Menu Protector should check (and possibly fix) the state of the start menu
         /// </summary>
         public const uint ProtectorRunIntervalSeconds = 60;
         
+        #region FileSystem
+        public static readonly String SystemStartMenuItemsPath = $@"{Environment.GetFolderPath(Environment.SpecialFolder.CommonStartMenu)}";
+        #endregion
+
+        
+        #region UI
         public const double MainWindowWidth = 1280;
         public const double MainWindowHeight = 720;
         public const double FontSize = 20;
@@ -20,7 +34,7 @@ namespace StartMenuProtector.Configuration
         public const WindowState StartupWindowState = WindowState.Minimized;
         public const string ApplicationIconFilePath = "/Assets/ApplicationIcon.ico";
         public const string TrayIconFilePath = "/Assets/TrayIcon.ico";
-
+        
         public static readonly Color TextColor = Colors.Black;
         public static readonly Color BackgroundColor = Colors.White;
         public static readonly Color OutlineColor = Colors.LightGray;
@@ -73,10 +87,18 @@ namespace StartMenuProtector.Configuration
             }
         };
         
+        #endregion
+        
         public static readonly ISet<Func<FileSystemItem, Boolean>> FileSystemItemFilters = new HashSet<Func<FileSystemItem, Boolean>>
         {
             (FileSystemItem item) => { return ((item.OwnerType == OwnerType.OS) && (item.PrettyName != "Programs") && (item.PrettyName != "Start Menu")); },
             (FileSystemItem item) => { return (String.Equals(item.Name,"desktop.ini", StringComparison.OrdinalIgnoreCase)); }
         };
+
+        public enum TargetEnvironment
+        {
+            Development,
+            Production
+        }
     }
 }
