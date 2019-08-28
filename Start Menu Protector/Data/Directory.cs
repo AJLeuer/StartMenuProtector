@@ -150,11 +150,8 @@ namespace StartMenuProtector.Data
             {
                 lock (ContentsAccessLock)
                 {
-                    if (contents == null)
-                    {
-                        InitializeContents();
-                    }
-                
+                    InitializeContents();
+                    
                     return contents;   
                 }
             }

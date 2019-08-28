@@ -55,23 +55,7 @@ namespace StartMenuProtectorTest.Test
                     (self) => self.File)
                 .Returns(DirectoryMock.Object);
         }
-        
-        [Test]
-        public static void ShouldSetCurrentShortcutsToUsersWhenUserIsSelected()
-        {
-            var activeViewController = new ActiveViewController(ActiveDataServiceMock.Object, SavedDataServiceMock.Object, MockSystemStateService) { StartMenuStartMenuShortcutsLocation = StartMenuShortcutsLocation.User };
-            var savedViewController  = new SavedViewController(ActiveDataServiceMock.Object, SavedDataServiceMock.Object, MockSystemStateService) { StartMenuStartMenuShortcutsLocation = StartMenuShortcutsLocation.User };
 
-            activeViewController.StartMenuStartMenuShortcutsLocation = StartMenuShortcutsLocation.System;
-            savedViewController.StartMenuStartMenuShortcutsLocation  = StartMenuShortcutsLocation.User;
-            
-            activeViewController.UpdateCurrentShortcuts().Wait();
-            savedViewController.UpdateCurrentShortcuts().Wait();
-
-            CollectionAssert.AreEquivalent(ActiveSystemStartMenuItems, activeViewController.StartMenuContents);
-            CollectionAssert.AreEquivalent(SavedUserStartMenuItems,    savedViewController.StartMenuContents);
-        }
-        
         [Test]
         public static void ActiveStartMenuViewControllerShouldSaveUserShortcuts()
         {
