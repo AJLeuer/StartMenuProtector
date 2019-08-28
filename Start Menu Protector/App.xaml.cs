@@ -19,6 +19,7 @@ namespace StartMenuProtector
         private StartMenuViewController     savedStartMenuItemsViewController;
         private StartMenuShortcutsView      activeStartMenuItemsView;
         private StartMenuShortcutsView      savedStartMenuItemsView;
+        private StartMenuShortcutsView      quarantinedStartMenuItemsView;
 
         public App()
         {
@@ -44,8 +45,9 @@ namespace StartMenuProtector
             MainWindow               = new StartMenuProtectorWindow(sentinel);
             sentinel.Start();
             
-            activeStartMenuItemsView = ((StartMenuProtectorWindow) MainWindow).ActiveProgramShortcutsView;
-            savedStartMenuItemsView  = ((StartMenuProtectorWindow) MainWindow).SavedProgramShortcutsView;
+            activeStartMenuItemsView       = ((StartMenuProtectorWindow) MainWindow).ActiveProgramShortcutsView;
+            savedStartMenuItemsView        = ((StartMenuProtectorWindow) MainWindow).SavedProgramShortcutsView;
+            quarantinedStartMenuItemsView  = ((StartMenuProtectorWindow) MainWindow).QuarantinedStartMenuShortcutsView;
 
             activeStartMenuItemsView.Controller = activeStartMenuItemsViewController;
             savedStartMenuItemsView.Controller  = savedStartMenuItemsViewController;

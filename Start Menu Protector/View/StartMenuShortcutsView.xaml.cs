@@ -18,7 +18,7 @@ namespace StartMenuProtector.View
 
         public ObservableCollection<IFileSystemItem> StartMenuContents
         {
-            get { return Controller.StartMenuContents; }
+            get { return Controller?.StartMenuContents; }
         }
 
         public Action<StartMenuItem> DraggedOverItemEnteredAreaEventHandler
@@ -57,33 +57,36 @@ namespace StartMenuProtector.View
             var selectedLocation = (sender as ListBox)?.SelectedItem;
             StartMenuShortcutsLocation startMenuStartMenuShortcutsLocation = selectedLocation is StartMenuShortcutsLocation ? (StartMenuShortcutsLocation) selectedLocation : StartMenuShortcutsLocation.System;
 
-            Controller.StartMenuStartMenuShortcutsLocation = startMenuStartMenuShortcutsLocation;
-            Controller.UpdateCurrentShortcuts();
+            if (Controller != null)
+            {
+                Controller.StartMenuStartMenuShortcutsLocation = startMenuStartMenuShortcutsLocation;
+            }
+            Controller?.UpdateCurrentShortcuts();
         }
 
         protected void HandlePrimaryActionButtonPressed(object sender, RoutedEventArgs _)
         {
-            Controller.ExecutePrimaryInteractionAction();
+            Controller?.ExecutePrimaryInteractionAction();
         }
 
         private void HandleDraggedItemEnteredArea(StartMenuItem target)
         {
-            Controller.HandleDraggedItemEnteredArea(target);
+            Controller?.HandleDraggedItemEnteredArea(target);
         }
 
         private void HandleDraggedItemExitedArea(StartMenuItem target)
         {
-            Controller.HandleDraggedItemExitedArea(target);
+            Controller?.HandleDraggedItemExitedArea(target);
         }
         
         private void HandleDragAndDropEvent(StartMenuItem droppedStartMenuItem, StartMenuItem recipient)
         {
-           Controller.HandleRequestToMoveStartMenuItem(itemRequestingMove: droppedStartMenuItem, destinationItem: recipient);
+           Controller?.HandleRequestToMoveStartMenuItem(itemRequestingMove: droppedStartMenuItem, destinationItem: recipient);
         }        
         
         private void HandleItemMarkedExcludedEvent(StartMenuItem itemMarkedRemoved)
         {
-           Controller.HandleRequestToExcludeStartMenuItem();
+           Controller?.HandleRequestToExcludeStartMenuItem();
         }
         
     }

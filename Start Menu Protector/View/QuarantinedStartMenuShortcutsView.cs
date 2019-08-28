@@ -7,7 +7,14 @@ namespace StartMenuProtector.View
         public QuarantinedStartMenuShortcutsView() :
             base()
         {
+            SetupRestoreButton();
+        }
 
+        private void SetupRestoreButton()
+        {
+            PrimaryActionButton.Content = "Restore";
+            PrimaryActionButton.IsEnabled = true;
+            PrimaryActionButton.Visibility = Visibility.Visible;
         }
     }
 }

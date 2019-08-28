@@ -22,11 +22,11 @@ namespace StartMenuProtector.Control
 
         public RunningState ApplicationState
         {
-            get
+            get 
             {
                 return applicationState;
             }
-            private set
+            private set 
             {
                 if (value == RunningState.Disabled)
                 {
@@ -46,7 +46,7 @@ namespace StartMenuProtector.Control
         
         private readonly AutoResetEvent ContinueRunFlag = new AutoResetEvent (false);
 
-        public bool Enabled
+        public bool Enabled 
         {
             get { return (ApplicationState == RunningState.Enabled) && (UserSelectedState == RunningState.Enabled); }
         }

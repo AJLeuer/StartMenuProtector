@@ -21,6 +21,9 @@
             <TabItem Header="Saved" >
                 <view:SavedStartMenuShortcutsView x:Name="SavedProgramShortcutsView" />
             </TabItem>
+            <TabItem Header="Quarantined" >
+                <view:QuarantinedStartMenuShortcutsView x:Name="QuarantinedStartMenuShortcutsView" />
+            </TabItem>
         </TabControl>
     </Grid>
 
