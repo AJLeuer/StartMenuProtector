@@ -22,12 +22,12 @@ namespace StartMenuProtector.Control
     {
 
         private Dictionary<StartMenuShortcutsLocation, Directory> osEnvironmentStartMenuItems = null;
-        readonly object osEnvironmentStartMenuItemsLock = new object();
+        public readonly object OSEnvironmentStartMenuItemsLock = new object();
         public virtual Dictionary<StartMenuShortcutsLocation, Directory> OSEnvironmentStartMenuItems
         {
             get
             {
-                lock (osEnvironmentStartMenuItemsLock)
+                lock (OSEnvironmentStartMenuItemsLock)
                 {
                     if (osEnvironmentStartMenuItems == null)
                     {

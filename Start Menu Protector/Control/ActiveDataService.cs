@@ -51,10 +51,13 @@ namespace StartMenuProtector.Control
         {
             Dictionary<StartMenuShortcutsLocation, Directory> startMenuContents = SystemStateService.OSEnvironmentStartMenuItems;
             
-            lock (StartMenuItemsStorageAccessLock)
+            lock (SystemStateService.OSEnvironmentStartMenuItemsLock)
             {
-                startMenuContents[StartMenuShortcutsLocation.System].Copy(StartMenuItemsStorage[StartMenuShortcutsLocation.System]);
-                startMenuContents[StartMenuShortcutsLocation.User].Copy(StartMenuItemsStorage[StartMenuShortcutsLocation.User]);
+                lock (StartMenuItemsStorageAccessLock)
+                {
+                    startMenuContents[StartMenuShortcutsLocation.System].Copy(StartMenuItemsStorage[StartMenuShortcutsLocation.System]);
+                    startMenuContents[StartMenuShortcutsLocation.User].Copy(StartMenuItemsStorage[StartMenuShortcutsLocation.User]);
+                }
             }
         }
 
