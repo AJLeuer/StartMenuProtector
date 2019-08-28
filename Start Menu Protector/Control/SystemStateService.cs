@@ -41,8 +41,8 @@ namespace StartMenuProtector.Control
         
         private void LoadSystemAndUserStartMenuItemsFromOSEnvironment()
         {
-            var systemStartMenuItems = new Directory(ProductionStartMenuItemsPath[StartMenuShortcutsLocation.System]);
-            var userStartMenuItems = new Directory(ProductionStartMenuItemsPath[StartMenuShortcutsLocation.User]);
+            var systemStartMenuItems = new Directory(StartMenuItemsPath[StartMenuShortcutsLocation.System]);
+            var userStartMenuItems = new Directory(StartMenuItemsPath[StartMenuShortcutsLocation.User]);
         
             var startMenuItems = new Dictionary<StartMenuShortcutsLocation, Directory>
             {

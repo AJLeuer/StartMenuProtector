@@ -268,7 +268,7 @@ namespace StartMenuProtector.Control
                 }
                 
                 String relativePath = itemToRestore.Path.Substring(GetSavedStartMenuItemsPath(location).Length + 1);
-                String restoredPath = Path.Combine(ProductionStartMenuItemsPath[location], relativePath);
+                String restoredPath = Path.Combine(StartMenuItemsPath[location], relativePath);
                 restoredPath        = Path.GetDirectoryName(restoredPath); //gets parent's directory
                 
                 itemToRestore.Copy(restoredPath);

@@ -15,6 +15,12 @@ namespace StartMenuProtector.Configuration
         public const string UserShortcutsDirectoryName   = "User Shortcuts";
         
         
+        private static readonly Dictionary<Config.TargetEnvironment, String> AppDataPaths = new Dictionary<Config.TargetEnvironment, String>
+        {
+            { Config.TargetEnvironment.Development, @"Development App Data\" },
+            { Config.TargetEnvironment.Production,  new KnownFolder(KnownFolderType.RoamingAppData).Path }
+        };
+        
         private static readonly Dictionary<Config.TargetEnvironment, String> SystemStartMenuItemsPaths = new Dictionary<Config.TargetEnvironment, String>
         {
             { Config.TargetEnvironment.Development, @"Development Start Menu Items\System Start Menu" },
@@ -27,20 +33,14 @@ namespace StartMenuProtector.Configuration
             { Config.TargetEnvironment.Production,  $@"{Environment.GetFolderPath(Environment.SpecialFolder.StartMenu)}" }
         };
 
-        public static readonly Dictionary<StartMenuShortcutsLocation, String> ProductionStartMenuItemsPath = new Dictionary<StartMenuShortcutsLocation, String>
+        public static readonly Dictionary<StartMenuShortcutsLocation, String> StartMenuItemsPath = new Dictionary<StartMenuShortcutsLocation, String>
         {
             { StartMenuShortcutsLocation.User,   UserStartMenuItemsPaths[Config.TargetBuildEnvironment] },
             { StartMenuShortcutsLocation.System, SystemStartMenuItemsPaths[Config.TargetBuildEnvironment] }
         };
 
-        private static readonly Dictionary<Config.TargetEnvironment, String> UserAppDataPaths = new Dictionary<Config.TargetEnvironment, String>
-        {
-            { Config.TargetEnvironment.Development, @"Development App Data\" },
-            { Config.TargetEnvironment.Production,  new KnownFolder(KnownFolderType.RoamingAppData).Path }
-        };
-        
-        public static readonly Directory UserAppData                     = new Directory(UserAppDataPaths[Config.TargetBuildEnvironment]);
-        public static readonly Directory StartMenuProtectorAppData       = new Directory(System.IO.Directory.CreateDirectory(Path.Combine(UserAppData.Path, ApplicationName)));
+        public static readonly Directory AppData                         = new Directory(AppDataPaths[Config.TargetBuildEnvironment]);
+        public static readonly Directory StartMenuProtectorAppData       = new Directory(System.IO.Directory.CreateDirectory(Path.Combine(AppData.Path, ApplicationName)));
         
         public static readonly Directory LogsDirectory                   = new Directory(System.IO.Directory.CreateDirectory(Path.Combine(StartMenuProtectorAppData.Path, "Logs")));
        
