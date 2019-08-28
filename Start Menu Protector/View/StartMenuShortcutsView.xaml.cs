@@ -61,9 +61,9 @@ namespace StartMenuProtector.View
             Controller.UpdateCurrentShortcuts();
         }
 
-        private void SaveCurrentShortcuts(object sender, RoutedEventArgs _)
+        protected void HandlePrimaryActionButtonPressed(object sender, RoutedEventArgs _)
         {
-            Controller.SaveCurrentStartMenuItems();
+            Controller.ExecutePrimaryInteractionAction();
         }
 
         private void HandleDraggedItemEnteredArea(StartMenuItem target)

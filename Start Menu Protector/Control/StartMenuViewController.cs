@@ -25,7 +25,7 @@ namespace StartMenuProtector.Control
 
         public abstract Task UpdateCurrentShortcuts();
 
-        public abstract void SaveCurrentStartMenuItems();
+        public abstract void ExecutePrimaryInteractionAction();
 
         public virtual void HandleDraggedItemEnteredArea(StartMenuItem target)
         {

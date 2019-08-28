@@ -365,19 +365,19 @@ namespace StartMenuProtector.Data
         {
             if (Self.Exists)
             {
-                SetAttributesNormal(Self);
+                SetAttributes(Self);
             }    
 
-            void SetAttributesNormal(DirectoryInfo dir)
+            void SetAttributes(DirectoryInfo dir)
             {
                 foreach (var subDir in dir.GetDirectories())
                 {
-                    SetAttributesNormal(subDir);
-                    subDir.Attributes = FileAttributes.Normal;
+                    SetAttributes(subDir);
+                    subDir.Attributes = attributes;
                 }
                 foreach (var file in dir.GetFiles())
                 {
-                    file.Attributes = FileAttributes.Normal;
+                    file.Attributes = attributes;
                 }
             }
         }

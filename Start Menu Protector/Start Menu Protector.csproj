@@ -155,6 +155,7 @@
 		<Compile Include="Util\Timer.cs" />
 		<Compile Include="Util\Util.cs" />
 		<Compile Include="View\ActiveStartMenuShortcutsView.cs" />
+		<Compile Include="View\QuarantinedStartMenuShortcutsView.cs" />
 		<Compile Include="View\StartMenuProtectorWindow.xaml.cs">
 			<DependentUpon>StartMenuProtectorWindow.xaml</DependentUpon>
 			<SubType>Code</SubType>

@@ -20,7 +20,7 @@ namespace StartMenuProtector.Control
             StartMenuContents.ReplaceAll(startMenuContent);
         }
 
-        public override void SaveCurrentStartMenuItems()
+        public override void ExecutePrimaryInteractionAction()
         {
             /* Do nothing */
         }

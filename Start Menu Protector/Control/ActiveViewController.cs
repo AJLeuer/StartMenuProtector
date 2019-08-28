@@ -42,12 +42,17 @@ namespace StartMenuProtector.Control
             StartMenuContents.ReplaceAll(startMenuContents);
         }
         
-        public override void SaveCurrentStartMenuItems()
+        public override void ExecutePrimaryInteractionAction()
+        {
+            SaveCurrentStartMenuItems();
+        }
+
+        private void SaveCurrentStartMenuItems()
         {
             SavedDataService.SaveStartMenuItems(StartMenuContents, StartMenuStartMenuShortcutsLocation);
             CurrentContentState = ContentState.MirroringOSEnvironment;
         }
-        
+
         public override async Task HandleRequestToMoveStartMenuItem(IStartMenuItem itemRequestingMove, IStartMenuItem destinationItem)
         {
             CurrentContentState = ContentState.UserChangesPresent;
