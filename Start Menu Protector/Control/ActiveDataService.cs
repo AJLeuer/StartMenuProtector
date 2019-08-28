@@ -1,9 +1,12 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 using StartMenuProtector.Configuration;
 using StartMenuProtector.Data;
+using StartMenuProtector.Util;
 using static StartMenuProtector.Util.LogManager;
+using Directory = StartMenuProtector.Data.Directory;
 
 
 namespace StartMenuProtector.Control
@@ -15,8 +18,8 @@ namespace StartMenuProtector.Control
             { StartMenuShortcutsLocation.System, FilePaths.ActiveSystemStartMenuItems }, 
             { StartMenuShortcutsLocation.User,   FilePaths.ActiveUserStartMenuItems   }
         };
-        
-        protected override Object StartMenuItemsStorageAccessLock { get; } = new Object();
+
+        public override Object StartMenuItemsStorageAccessLock { get; } = new Object();
 
         public ActiveDataService(SystemStateService systemStateService) 
             : base(systemStateService)
@@ -72,15 +75,27 @@ namespace StartMenuProtector.Control
             {
                 await Task.Run(() =>
                 {
-                    foreach (IFileSystemItem itemRequestingMove in itemsRequestingMove)
+                    lock (StartMenuItemsStorageAccessLock)
                     {
-                        String startingLocation = itemRequestingMove.ParentDirectoryPath;
+                        foreach (IFileSystemItem itemRequestingMove in itemsRequestingMove)
+                        {
+                            try
+                            {
+                                String startingLocation = itemRequestingMove.ParentDirectoryPath;
                         
-                        itemRequestingMove.Move(destinationFolder);
-                        IDirectory startMenuItemsStorage = FindRootStartMenuItemsStorageDirectoryForItem(destinationFolder);
-                        startMenuItemsStorage.RefreshContents();
+                                itemRequestingMove.Move(destinationFolder);
+                                IDirectory startMenuItemsStorage = FindRootStartMenuItemsStorageDirectoryForItem(destinationFolder);
+                                startMenuItemsStorage.RefreshContents();
                         
-                        Log($"Moved the following item: {itemRequestingMove.Name}. Moved from: {startingLocation}. Moved to: {destinationFolder.Path}.");
+                                Log($"Moved the following item: {itemRequestingMove.Name}. Moved from: {startingLocation}. Moved to: {destinationFolder.Path}.");
+
+                            }
+                            catch (IOException exception)
+                            {
+                                Log("Unable to move the requested item.");
+                                Log(exception.StackTrace);
+                            } 
+                        }
                     }
                 });
             }

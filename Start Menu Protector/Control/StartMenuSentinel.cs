@@ -256,31 +256,10 @@ namespace StartMenuProtector.Control
         {
             foreach (IFileSystemItem item in ItemsToRestore[location])
             {
-                IFileSystemItem itemToRestore;
-                
-                if (item is RelocatableItem relocatableItem)
-                {
-                    itemToRestore = relocatableItem.UnderlyingItem;
-                }
-                else
-                {
-                    itemToRestore = item;
-                }
-                
-                String relativePath = itemToRestore.Path.Substring(GetSavedStartMenuItemsPath(location).Length + 1);
-                String restoredPath = Path.Combine(StartMenuItemsPath[location], relativePath);
-                restoredPath        = Path.GetDirectoryName(restoredPath); //gets parent's directory
-                
-                itemToRestore.Copy(restoredPath);
-                Log($"Restored an item: Item restored: {itemToRestore.Name}. Restored to location: {restoredPath}.");
+                SystemStateService.RestoreStartMenuItem(item, location);
             }
             
             ItemsToRestore[location].Clear();
-
-            string GetSavedStartMenuItemsPath(StartMenuShortcutsLocation startMenuShortcutsLocation)
-            {
-                return (SavedDataService.StartMenuItemsStorage[startMenuShortcutsLocation].Path + @"\Start Menu");
-            }
         }
         
         private void QuarantineUnrecognizedStartMenuItems(StartMenuShortcutsLocation location)

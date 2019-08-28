@@ -15,8 +15,8 @@ namespace StartMenuProtector.Control
             { StartMenuShortcutsLocation.System, FilePaths.QuarantinedSystemStartMenuItems }, 
             { StartMenuShortcutsLocation.User,   FilePaths.QuarantinedUserStartMenuItems   }
         };
-        
-        protected override Object StartMenuItemsStorageAccessLock { get; } = new Object();
+
+        public override Object StartMenuItemsStorageAccessLock { get; } = new Object();
         
         public QuarantineDataService(SystemStateService systemStateService) 
             : base(systemStateService)
@@ -34,14 +34,17 @@ namespace StartMenuProtector.Control
             {
                 await Task.Run(() =>
                 {
-                    lock (StartMenuItemsStorageAccessLock)
+                    lock (SystemStateService.OSEnvironmentStartMenuItemsLock)
                     {
-                        foreach (IFileSystemItem itemRequestingMove in itemsRequestingMove)
+                        lock (StartMenuItemsStorageAccessLock)
                         {
-                            if (itemRequestingMove.Exists)
+                            foreach (IFileSystemItem itemRequestingMove in itemsRequestingMove)
                             {
-                                itemRequestingMove.Move(destinationFolder);
-                                Log($"Quarantined the following item: {itemRequestingMove.Path}.");
+                                if (itemRequestingMove.Exists)
+                                {
+                                    itemRequestingMove.Move(destinationFolder);
+                                    Log($"Quarantined the following item: {itemRequestingMove.Path}.");
+                                }
                             }
                         }
                     }

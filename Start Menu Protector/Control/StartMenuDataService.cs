@@ -16,7 +16,7 @@ namespace StartMenuProtector.Control
         public SystemStateService SystemStateService { get; set; }
 
         public abstract Dictionary<StartMenuShortcutsLocation, IDirectory> StartMenuItemsStorage { get; set; }
-        protected abstract Object StartMenuItemsStorageAccessLock { get; }
+        public abstract Object StartMenuItemsStorageAccessLock { get; }
 
         public StartMenuDataService(SystemStateService systemStateService)
         {
@@ -71,10 +71,23 @@ namespace StartMenuProtector.Control
 
         protected void ClearStartMenuItems(StartMenuShortcutsLocation location)
         {
+            bool clearSuccessful = false;
+            
             lock (StartMenuItemsStorageAccessLock)
             {
-                IDirectory startMenuItemsDirectory = StartMenuItemsStorage[location];
-                startMenuItemsDirectory.DeleteContents();
+                while (clearSuccessful != true)
+                {
+                    try
+                    {
+                        IDirectory startMenuItemsDirectory = StartMenuItemsStorage[location];
+                        startMenuItemsDirectory.DeleteContents();
+                        clearSuccessful = true;
+                    }
+                    catch (IOException)
+                    {
+                        LogManager.Log("Unable to clear start menu items, retrying");
+                    }
+                }
             }
         }
         

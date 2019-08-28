@@ -16,7 +16,7 @@ namespace StartMenuProtector.Control
             { StartMenuShortcutsLocation.User,   FilePaths.SavedUserStartMenuItems }
         };
 
-        protected override Object StartMenuItemsStorageAccessLock { get; } = new Object();
+        public override Object StartMenuItemsStorageAccessLock { get; } = new Object();
 
         public SavedDataService(SystemStateService systemStateService) 
             : base(systemStateService)

@@ -37,6 +37,7 @@ namespace StartMenuProtector
             activeDataService     = new ActiveDataService(systemStateService);
             savedDataService      = new SavedDataService(systemStateService);
             quarantineDataService = new QuarantineDataService(systemStateService);
+            systemStateService.SavedDataService = savedDataService;
 
             activeStartMenuItemsViewController = new ActiveViewController(activeDataService, savedDataService, systemStateService);
             savedStartMenuItemsViewController  = new SavedViewController(activeDataService, savedDataService, systemStateService);
