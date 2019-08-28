@@ -90,7 +90,7 @@ namespace StartMenuProtector.Data
     
     public class Directory : FileSystemItem, IDirectory 
     {
-        public virtual DirectoryInfo Self
+        public virtual DirectoryInfo Self 
         {
             get { return OriginalFileSystemItem as DirectoryInfo; }
         }
@@ -111,7 +111,7 @@ namespace StartMenuProtector.Data
         }
         
         
-        private List<IFile> files = null;
+        protected List<IFile> files = null;
         
         public virtual List<IFile> Files 
         {
@@ -126,7 +126,7 @@ namespace StartMenuProtector.Data
             }
         }
 
-        private List<IDirectory> directories = null;
+        protected List<IDirectory> directories = null;
         public virtual List<IDirectory> Directories 
         {
             get
@@ -142,7 +142,8 @@ namespace StartMenuProtector.Data
 
         public object ContentsAccessLock { get; } = new Object();
         
-        private List<IFileSystemItem> contents = null;
+        protected List<IFileSystemItem> contents = null;
+        
         public virtual List<IFileSystemItem> Contents 
         {
             get
@@ -158,7 +159,7 @@ namespace StartMenuProtector.Data
                 }
             }
         }
-        
+
         public Directory(DirectoryInfo directory) : 
             base(directory)
         {
@@ -171,7 +172,7 @@ namespace StartMenuProtector.Data
             
         }
 
-        private void InitializeContents()
+        protected virtual void InitializeContents()
         {
             lock (ContentsAccessLock)
             {

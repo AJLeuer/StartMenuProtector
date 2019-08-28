@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using StartMenuProtector.Data;
+using StartMenuProtector.Models;
 using StartMenuProtector.Util;
 using StartMenuProtector.View;
 
@@ -16,8 +17,9 @@ namespace StartMenuProtector.Control
 
         public sealed override async Task UpdateCurrentShortcuts()
         {
-            ICollection<IFileSystemItem> startMenuContent = (await SavedDataService.GetStartMenuContentDirectory(StartMenuStartMenuShortcutsLocation)).Contents;
-            StartMenuContents.ReplaceAll(startMenuContent);
+            ICollection<IFileSystemItem> startMenuDataContents = (await SavedDataService.GetStartMenuContentDirectory(StartMenuStartMenuShortcutsLocation)).Contents;
+            ICollection<IStartMenuItem> startMenuItems = CreateStartMenuItemsFromData(startMenuDataContents);
+            StartMenuContents.ReplaceAll(startMenuItems);
         }
 
         public override void ExecutePrimaryInteractionAction()

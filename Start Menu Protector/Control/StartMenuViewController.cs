@@ -1,6 +1,8 @@
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using StartMenuProtector.Data;
+using StartMenuProtector.Models;
 using StartMenuProtector.Util;
 using StartMenuProtector.View;
 
@@ -12,7 +14,7 @@ namespace StartMenuProtector.Control
         public SavedDataService SavedDataService { get; set; }
         public SystemStateService SystemStateService { get; set; }
         
-        public ObservableCollection<IFileSystemItem> StartMenuContents { get;} = new AsyncObservableCollection<IFileSystemItem>();
+        public ObservableCollection<IStartMenuItem> StartMenuContents { get;} = new AsyncObservableCollection<IStartMenuItem>();
 
         public StartMenuShortcutsLocation StartMenuStartMenuShortcutsLocation { get; set; } = StartMenuShortcutsLocation.System;
 
@@ -46,5 +48,18 @@ namespace StartMenuProtector.Control
         public abstract Task HandleRequestToMoveStartMenuItem(IStartMenuItemView itemViewRequestingMove, IStartMenuItemView destinationItemView);
 
         public abstract void HandleRequestToExcludeStartMenuItem();
+        
+        protected static ICollection<IStartMenuItem> CreateStartMenuItemsFromData(ICollection<IFileSystemItem> startMenuDataContents)
+        {
+            ICollection<IStartMenuItem> startMenuItems = new List<IStartMenuItem>();
+
+            foreach (IFileSystemItem fileSystemItem in startMenuDataContents)
+            {
+                IStartMenuItem startMenuItem = StartMenuItemFactory.CreateFromBaseFileSystemType(fileSystemItem);
+                startMenuItems.Add(startMenuItem);
+            }
+
+            return startMenuItems;
+        }
     }
 }

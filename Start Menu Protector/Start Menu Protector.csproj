@@ -148,6 +148,9 @@
 		<Compile Include="Data\Directory.cs" />
 		<Compile Include="Data\File.cs" />
 		<Compile Include="Data\FileSystemItem.cs" />
+		<Compile Include="Models\IStartMenuItem.cs" />
+		<Compile Include="Models\StartMenuDirectory.cs" />
+		<Compile Include="Models\StartMenuFile.cs" />
 		<Compile Include="Util\AsyncObservableCollection.cs" />
 		<Compile Include="Util\ConsoleManager.cs" />
 		<Compile Include="Util\LogManager.cs" />
@@ -248,9 +251,6 @@
 		<Resource Include="ApplicationIcon.ico" />
 		<Resource Include="Assets\ApplicationIcon.ico" />
 		<Resource Include="Assets\TrayIcon.ico" />
-	</ItemGroup>
-	<ItemGroup>
-	  <Folder Include="Models" />
 	</ItemGroup>
 	<Target Name="CopyDevelopmentData" AfterTargets="AfterBuild" Condition=" $(DefineConstants.Contains('DEV')) ">
 		<ItemGroup>

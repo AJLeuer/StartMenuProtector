@@ -20,7 +20,7 @@ namespace StartMenuProtector.Control
     {
         private RunningState applicationState = RunningState.Disabled;
 
-        public RunningState ApplicationState
+        public RunningState ApplicationState 
         {
             get 
             {
@@ -77,14 +77,14 @@ namespace StartMenuProtector.Control
             this.QuarantineDataService = quarantineDataService;
         }
 
-        public void Start()
+        public void Start() 
         {
             ApplicationState = RunningState.Enabled;
             Thread = new Thread(Run);
             Thread.Start();
         }
         
-        public void Stop()
+        public void Stop() 
         {
             ApplicationState = RunningState.Disabled;
             ContinueRunFlag.Set();
@@ -101,7 +101,7 @@ namespace StartMenuProtector.Control
             ContinueRunFlag.Set();
         }
         
-        public void Disable()
+        public void Disable() 
         {
             lock (UserSelectedState)
             {
@@ -109,7 +109,7 @@ namespace StartMenuProtector.Control
             }
         }
         
-        private void Run()
+        private void Run() 
         {
             while (ApplicationState == RunningState.Enabled)
             {
@@ -141,7 +141,7 @@ namespace StartMenuProtector.Control
             }
         }
 
-        private void MonitorStartMenuState()
+        private void MonitorStartMenuState() 
         {
             foreach (StartMenuShortcutsLocation location in GetEnumValues<StartMenuShortcutsLocation>())
             {

@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Threading.Tasks;
 using StartMenuProtector.Data;
+using StartMenuProtector.Models;
 using StartMenuProtector.Util;
 using StartMenuProtector.View;
 
@@ -25,23 +26,25 @@ namespace StartMenuProtector.Control
         
         public sealed override async Task UpdateCurrentShortcuts()
         {
-            ICollection<IFileSystemItem> startMenuContents;
+            ICollection<IFileSystemItem> startMenuDataContents;
             
             switch (CurrentContentState)
             {
                 case ContentState.MirroringOSEnvironment:
-                    startMenuContents = (await ActiveDataService.GetStartMenuContentDirectory(StartMenuStartMenuShortcutsLocation)).Contents;
+                    startMenuDataContents = (await ActiveDataService.GetStartMenuContentDirectory(StartMenuStartMenuShortcutsLocation)).Contents;
                     break;
                 case ContentState.UserChangesPresent:
-                    startMenuContents = (await ActiveDataService.GetStartMenuContentsFromAppDataCache(StartMenuStartMenuShortcutsLocation)).Contents;
+                    startMenuDataContents = (await ActiveDataService.GetStartMenuContentsFromAppDataCache(StartMenuStartMenuShortcutsLocation)).Contents;
                     break;
                 default:
                     throw new InvalidEnumArgumentException("Unhandled type of ContentState");
             }
+            
+            ICollection<IStartMenuItem> startMenuItems = CreateStartMenuItemsFromData(startMenuDataContents);
 
-            StartMenuContents.ReplaceAll(startMenuContents);
+            StartMenuContents.ReplaceAll(startMenuItems);
         }
-        
+
         public override void ExecutePrimaryInteractionAction()
         {
             SaveCurrentStartMenuItems();

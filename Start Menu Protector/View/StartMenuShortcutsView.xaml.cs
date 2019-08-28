@@ -3,7 +3,7 @@ using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
 using StartMenuProtector.Control;
-using StartMenuProtector.Data;
+using StartMenuProtector.Models;
 using StartMenuProtector.Util;
 
 namespace StartMenuProtector.View
@@ -16,7 +16,7 @@ namespace StartMenuProtector.View
         public ObservableCollection<StartMenuShortcutsLocation> Locations { get; set; } = new AsyncObservableCollection<StartMenuShortcutsLocation> { StartMenuShortcutsLocation.System, StartMenuShortcutsLocation.User };
         public StartMenuViewController Controller { get; set; }
 
-        public ObservableCollection<IFileSystemItem> StartMenuContents
+        public ObservableCollection<IStartMenuItem> StartMenuContents
         {
             get { return Controller?.StartMenuContents; }
         }

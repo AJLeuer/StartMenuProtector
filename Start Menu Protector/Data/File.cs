@@ -12,13 +12,14 @@ namespace StartMenuProtector.Data
 {
     public interface IFile : IFileSystemItem 
     {
+        FileInfo Self { get; }
         Option<FileSystemItem> GetShortcutTarget();
     }
     
     public class File : FileSystemItem, IFile 
     {
         private BitmapImage icon = null;
-        public BitmapImage Icon
+        public BitmapImage Icon 
         {
             get
             {
@@ -33,7 +34,7 @@ namespace StartMenuProtector.Data
             }
         }
 
-        protected FileInfo Self 
+        public FileInfo Self 
         {
             get { return OriginalFileSystemItem as FileInfo; }
         }
