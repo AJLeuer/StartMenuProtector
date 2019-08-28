@@ -25,17 +25,17 @@ namespace StartMenuProtector.Control
             /* Do nothing */
         }
         
-        public override void HandleDraggedItemEnteredArea(StartMenuItem target)
+        public override void HandleDraggedItemEnteredArea(StartMenuItemView target)
         {
             /* Do nothing */
         }
 
-        public override void HandleDraggedItemExitedArea(StartMenuItem target)
+        public override void HandleDraggedItemExitedArea(StartMenuItemView target)
         {
             /* Do nothing */
         }
         
-        public override async Task HandleRequestToMoveStartMenuItem(IStartMenuItem itemRequestingMove, IStartMenuItem destinationItem)
+        public override async Task HandleRequestToMoveStartMenuItem(IStartMenuItemView itemViewRequestingMove, IStartMenuItemView destinationItemView)
         {
             /* Do nothing */
             await Task.Run(() => {});

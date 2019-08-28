@@ -21,12 +21,12 @@ namespace StartMenuProtector.View
             get { return Controller?.StartMenuContents; }
         }
 
-        public Action<StartMenuItem> DraggedOverItemEnteredAreaEventHandler
+        public Action<StartMenuItemView> DraggedOverItemEnteredAreaEventHandler
         {
             get { return this.HandleDraggedItemEnteredArea; }
         }
 
-        public Action<StartMenuItem> DraggedOverItemExitedAreaEventHandler
+        public Action<StartMenuItemView> DraggedOverItemExitedAreaEventHandler
         {
             get { return this.HandleDraggedItemExitedArea; }
         }
@@ -36,7 +36,7 @@ namespace StartMenuProtector.View
             get { return this.HandleDragAndDropEvent; }
         }
 
-        public Action<StartMenuItem> ItemMarkedExcludedHandler
+        public Action<StartMenuItemView> ItemMarkedExcludedHandler
         {
             get { return this.HandleItemMarkedExcludedEvent; }
         }
@@ -69,22 +69,22 @@ namespace StartMenuProtector.View
             Controller?.ExecutePrimaryInteractionAction();
         }
 
-        private void HandleDraggedItemEnteredArea(StartMenuItem target)
+        private void HandleDraggedItemEnteredArea(StartMenuItemView target)
         {
             Controller?.HandleDraggedItemEnteredArea(target);
         }
 
-        private void HandleDraggedItemExitedArea(StartMenuItem target)
+        private void HandleDraggedItemExitedArea(StartMenuItemView target)
         {
             Controller?.HandleDraggedItemExitedArea(target);
         }
         
-        private void HandleDragAndDropEvent(StartMenuItem droppedStartMenuItem, StartMenuItem recipient)
+        private void HandleDragAndDropEvent(StartMenuItemView droppedStartMenuItemView, StartMenuItemView recipient)
         {
-           Controller?.HandleRequestToMoveStartMenuItem(itemRequestingMove: droppedStartMenuItem, destinationItem: recipient);
+           Controller?.HandleRequestToMoveStartMenuItem(itemViewRequestingMove: droppedStartMenuItemView, destinationItemView: recipient);
         }        
         
-        private void HandleItemMarkedExcludedEvent(StartMenuItem itemMarkedRemoved)
+        private void HandleItemMarkedExcludedEvent(StartMenuItemView itemViewMarkedRemoved)
         {
            Controller?.HandleRequestToExcludeStartMenuItem();
         }

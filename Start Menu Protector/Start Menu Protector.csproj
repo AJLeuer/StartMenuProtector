@@ -161,7 +161,7 @@
 			<SubType>Code</SubType>
 		</Compile>
 		<Compile Include="View\SavedStartMenuShortcutsView.cs" />
-		<Compile Include="View\StartMenuItem.cs" />
+		<Compile Include="View\StartMenuItemView.cs" />
 		<Compile Include="View\StartMenuShortcutsView.xaml.cs">
 			<DependentUpon>StartMenuShortcutsView.xaml</DependentUpon>
 		</Compile>
@@ -248,6 +248,9 @@
 		<Resource Include="ApplicationIcon.ico" />
 		<Resource Include="Assets\ApplicationIcon.ico" />
 		<Resource Include="Assets\TrayIcon.ico" />
+	</ItemGroup>
+	<ItemGroup>
+	  <Folder Include="Models" />
 	</ItemGroup>
 	<Target Name="CopyDevelopmentData" AfterTargets="AfterBuild" Condition=" $(DefineConstants.Contains('DEV')) ">
 		<ItemGroup>

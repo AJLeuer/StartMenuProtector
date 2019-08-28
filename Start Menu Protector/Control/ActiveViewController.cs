@@ -53,13 +53,13 @@ namespace StartMenuProtector.Control
             CurrentContentState = ContentState.MirroringOSEnvironment;
         }
 
-        public override async Task HandleRequestToMoveStartMenuItem(IStartMenuItem itemRequestingMove, IStartMenuItem destinationItem)
+        public override async Task HandleRequestToMoveStartMenuItem(IStartMenuItemView itemViewRequestingMove, IStartMenuItemView destinationItemView)
         {
             CurrentContentState = ContentState.UserChangesPresent;
             
             await Task.Run(() =>
             {
-                ActiveDataService.MoveFileSystemItems(destinationItem: destinationItem.File, itemsRequestingMove: itemRequestingMove.File).Wait();
+                ActiveDataService.MoveFileSystemItems(destinationItem: destinationItemView.File, itemsRequestingMove: itemViewRequestingMove.File).Wait();
                 UpdateCurrentShortcuts().Wait();
             });
         }

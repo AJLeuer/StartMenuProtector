@@ -27,7 +27,7 @@ namespace StartMenuProtector.Control
 
         public abstract void ExecutePrimaryInteractionAction();
 
-        public virtual void HandleDraggedItemEnteredArea(StartMenuItem target)
+        public virtual void HandleDraggedItemEnteredArea(StartMenuItemView target)
         {
             if (target.File.IsOfType<IDirectory>())
             {
@@ -35,7 +35,7 @@ namespace StartMenuProtector.Control
             }
         }
 
-        public virtual void HandleDraggedItemExitedArea(StartMenuItem target)
+        public virtual void HandleDraggedItemExitedArea(StartMenuItemView target)
         {
             if (target.File.IsOfType<IDirectory>())
             {
@@ -43,7 +43,7 @@ namespace StartMenuProtector.Control
             }
         }
 
-        public abstract Task HandleRequestToMoveStartMenuItem(IStartMenuItem itemRequestingMove, IStartMenuItem destinationItem);
+        public abstract Task HandleRequestToMoveStartMenuItem(IStartMenuItemView itemViewRequestingMove, IStartMenuItemView destinationItemView);
 
         public abstract void HandleRequestToExcludeStartMenuItem();
     }

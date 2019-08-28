@@ -10,31 +10,31 @@ namespace StartMenuProtectorTest.Test
 {
     [TestFixture]
     [Apartment(ApartmentState.STA)]
-    public static class StartMenuItemTest
+    public static class StartMenuItemViewTest
     {
         [Test]
-        public static void StartMenuItemShouldHaveExpectedAttributesWhenSelected()
+        public static void StartMenuItemViewShouldHaveExpectedAttributesWhenSelected()
         {
-            var startMenuItem = new StartMenuItem();
+            var startMenuItemView = new StartMenuItemView();
             
-            startMenuItem.Select(null, null);
+            startMenuItemView.Select(null, null);
             
-            Assert.AreEqual(StartMenuItem.DefaultSelectionTextColor, startMenuItem.TextBlock.Foreground);
+            Assert.AreEqual(StartMenuItemView.DefaultSelectionTextColor, startMenuItemView.TextBlock.Foreground);
         }
         
         [Test]
         [TestCase(Key.Back, true)]
         [TestCase(Key.A, false)]
         [TestCase(Key.Delete, true)]
-        public static void StartMenuItemShouldMarkFileSystemItemForExclusionWhenDeleteOrBackspaceArePressed(Key pressedKey, bool shouldResultInMarkingForExclusion)
+        public static void StartMenuItemViewShouldMarkFileSystemItemForExclusionWhenDeleteOrBackspaceArePressed(Key pressedKey, bool shouldResultInMarkingForExclusion)
         {
             Key backspace = pressedKey;
             var fileMock = new Mock<MockableFile>();
             fileMock.Setup((MockableFile self) => self.PrettyName).Returns("Firefox");
             FileSystemItem mockFile = fileMock.Object;
-            var startMenuItem = new StartMenuItem { File = mockFile, MarkedExcludedHandler = (StartMenuItem item) => {} };
+            var startMenuItemView = new StartMenuItemView { File = mockFile, MarkedExcludedHandler = (StartMenuItemView item) => {} };
             
-            startMenuItem.MarkAsRemoved(backspace);
+            startMenuItemView.MarkAsRemoved(backspace);
 
             Assert.AreEqual(shouldResultInMarkingForExclusion, mockFile.MarkedForExclusion);
         }

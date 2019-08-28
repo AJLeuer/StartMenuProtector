@@ -15,7 +15,7 @@ namespace StartMenuProtectorTest.Test
         public static SystemStateService MockSystemStateService;
         public static Mock<ActiveDataService> ActiveDataServiceMock;
         public static Mock<SavedDataService>  SavedDataServiceMock;
-        public static Mock<IStartMenuItem> StartMenuItemMock;
+        public static Mock<IStartMenuItemView> StartMenuItemMock;
         public static Mock<MockableDirectory> DirectoryMock;
         
         
@@ -26,7 +26,7 @@ namespace StartMenuProtectorTest.Test
             MockSystemStateService = new Mock<SystemStateService>().Object;
             ActiveDataServiceMock = new Mock<ActiveDataService>(MockSystemStateService);
             SavedDataServiceMock = new Mock<SavedDataService>(MockSystemStateService);
-            StartMenuItemMock = new Mock<IStartMenuItem>();
+            StartMenuItemMock = new Mock<IStartMenuItemView>();
             DirectoryMock = new Mock<MockableDirectory>();
 
             ActiveDataServiceMock.Setup(
