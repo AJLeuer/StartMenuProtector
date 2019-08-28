@@ -232,19 +232,19 @@
 		<Content Include="..\To Dos.md">
 			<Link>To Dos.md</Link>
 		</Content>
-		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\Accessories\Math Input Panel.lnk" />
-		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\Accessories\Paint.lnk" />
-		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\Accessories\System Tools\Character Map.lnk" />
-		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\Adobe Premiere Pro 2019.lnk" />
-		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\iTunes.lnk" />
-		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\USE Engine.lnk" />
-		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\Visual Studio 2019 Preview.lnk" />
-		<Content Include="Resources\Development Start Menu Items\System Start Menu\Programs\Web Apps\Calculator.lnk" />
-		<Content Include="Resources\Development Start Menu Items\User Start Menu\Programs\Developer\GitHub Desktop.lnk" />
-		<Content Include="Resources\Development Start Menu Items\User Start Menu\Programs\Discord.lnk" />
-		<Content Include="Resources\Development Start Menu Items\User Start Menu\Programs\Google Chrome Canary.lnk" />
-		<Content Include="Resources\Development Start Menu Items\User Start Menu\Programs\Utilities\Start Menu Protector.lnk" />
-		<Content Include="Resources\Development Start Menu Items\User Start Menu\Programs\Utilities\Windows PowerShell.lnk" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Start Menu\Programs\Accessories\Math Input Panel.lnk" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Start Menu\Programs\Accessories\Paint.lnk" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Start Menu\Programs\Accessories\System Tools\Character Map.lnk" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Start Menu\Programs\Adobe Premiere Pro 2019.lnk" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Start Menu\Programs\iTunes.lnk" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Start Menu\Programs\USE Engine.lnk" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Start Menu\Programs\Visual Studio 2019 Preview.lnk" />
+		<Content Include="Resources\Development Start Menu Items\System Start Menu\Start Menu\Programs\Web Apps\Calculator.lnk" />
+		<Content Include="Resources\Development Start Menu Items\User Start Menu\Start Menu\Programs\Developer\GitHub Desktop.lnk" />
+		<Content Include="Resources\Development Start Menu Items\User Start Menu\Start Menu\Programs\Discord.lnk" />
+		<Content Include="Resources\Development Start Menu Items\User Start Menu\Start Menu\Programs\Google Chrome Canary.lnk" />
+		<Content Include="Resources\Development Start Menu Items\User Start Menu\Start Menu\Programs\Utilities\Start Menu Protector.lnk" />
+		<Content Include="Resources\Development Start Menu Items\User Start Menu\Start Menu\Programs\Utilities\Windows PowerShell.lnk" />
 		<Resource Include="ApplicationIcon.ico" />
 		<Resource Include="Assets\ApplicationIcon.ico" />
 		<Resource Include="Assets\TrayIcon.ico" />

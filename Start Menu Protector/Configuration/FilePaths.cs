@@ -13,6 +13,7 @@ namespace StartMenuProtector.Configuration
         public const string ApplicationName              = "Start Menu Protector";
         public const string SystemShortcutsDirectoryName = "System Shortcuts";
         public const string UserShortcutsDirectoryName   = "User Shortcuts";
+        public const string StartMenuDirectoryName       = "Start Menu";
         
         
         private static readonly Dictionary<Config.TargetEnvironment, String> AppDataPaths = new Dictionary<Config.TargetEnvironment, String>
@@ -23,13 +24,13 @@ namespace StartMenuProtector.Configuration
         
         private static readonly Dictionary<Config.TargetEnvironment, String> SystemStartMenuItemsPaths = new Dictionary<Config.TargetEnvironment, String>
         {
-            { Config.TargetEnvironment.Development, @"Development Start Menu Items\System Start Menu" },
+            { Config.TargetEnvironment.Development, $@"Development Start Menu Items\System Start Menu\{StartMenuDirectoryName}" },
             { Config.TargetEnvironment.Production,  $@"{Environment.GetFolderPath(Environment.SpecialFolder.CommonStartMenu)}" }
         }; 
         
         private static readonly Dictionary<Config.TargetEnvironment, String> UserStartMenuItemsPaths = new Dictionary<Config.TargetEnvironment, String>
         {
-            { Config.TargetEnvironment.Development, @"Development Start Menu Items\User Start Menu" },
+            { Config.TargetEnvironment.Development, $@"Development Start Menu Items\User Start Menu\{StartMenuDirectoryName}" },
             { Config.TargetEnvironment.Production,  $@"{Environment.GetFolderPath(Environment.SpecialFolder.StartMenu)}" }
         };
 

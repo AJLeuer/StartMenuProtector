@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 using Optional;
+using StartMenuProtector.Configuration;
 using StartMenuProtector.Data;
 using StartMenuProtector.Util;
 using static StartMenuProtector.Util.Util;
@@ -39,7 +41,7 @@ namespace StartMenuProtector.Control
         public async Task<Option<IDirectory>> GetStartMenuContentDirectoryMainSubdirectory(StartMenuShortcutsLocation location)
         {
             IDirectory directory = await GetStartMenuContentDirectory(location);
-            return directory.GetSubdirectory("Start Menu");
+            return directory.GetSubdirectory(FilePaths.StartMenuDirectoryName);
         }
 
         public abstract void SaveStartMenuItems(IEnumerable<IFileSystemItem> startMenuItems, StartMenuShortcutsLocation location);
