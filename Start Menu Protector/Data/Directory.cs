@@ -86,12 +86,6 @@ namespace StartMenuProtector.Data
         /// If none exists, returns an empty optional. Does not search recursively.
         /// </summary>
         Option<IDirectory> GetSubdirectory(string name);
-        
-        /// <summary>
-        /// Recursively set the attributes of this directory and all its contents
-        /// </summary>
-        /// <param name="attributes"></param>
-        void SetAttributesRecursively(FileAttributes attributes);
     }
     
     public class Directory : FileSystemItem, IDirectory 
@@ -367,7 +361,7 @@ namespace StartMenuProtector.Data
             return Option.None<IDirectory>();
         }
 
-        public void SetAttributesRecursively(FileAttributes attributes)
+        private void SetAttributesRecursively(FileAttributes attributes)
         {
             if (Self.Exists)
             {
