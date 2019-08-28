@@ -1,5 +1,6 @@
 
 ###### To Do's
+*   Todo: RestoreExpectedStartMenuItems() in StartMenuSentinel doesn't delegate to a data service, and doesn't lock StartMenuItemsStorageAccessLock
 *   Todo: Refactor StartMenuItem into two separate subclasses. One for directories, one for files.
 *   Todo: Only directory items should change color when dragged over.
 *   Todo: In Saved view, *no* items (including directories) should ever change color when dragged over.

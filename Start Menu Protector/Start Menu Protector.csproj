@@ -256,7 +256,10 @@
 		<ItemGroup>
 			<DevStartMenuItems Include="Resources\Development Start Menu Items\**\*.*" />
 		</ItemGroup>
-		<Copy SourceFiles="@(DevStartMenuItems)" DestinationFiles="@(DevStartMenuItems->'$(OutDir)Development Start Menu Items\%(RecursiveDir)%(Filename)%(Extension)')" SkipUnchangedFiles="true" OverwriteReadOnlyFiles="true" />
+		<Copy SourceFiles="@(DevStartMenuItems)" DestinationFiles="@(DevStartMenuItems->'$(OutDir)Development Start Menu Items\%(RecursiveDir)%(Filename)%(Extension)')" SkipUnchangedFiles="false" OverwriteReadOnlyFiles="true" />
+	</Target>
+	<Target Name="CleanDevelopmentAppData" AfterTargets="AfterClean" Condition=" $(DefineConstants.Contains('DEV')) ">
+		<RemoveDir Directories="$(OutDir)\Development App Data\Start Menu Protector" />
 	</Target>
 	<Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

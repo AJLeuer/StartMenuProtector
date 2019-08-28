@@ -22,7 +22,7 @@ namespace StartMenuProtector.Configuration
         /// <summary>
         /// How often Start Menu Protector should check (and possibly fix) the state of the start menu
         /// </summary>
-        public const uint ProtectorRunIntervalSeconds = 60;
+        public const uint ProtectorRunIntervalSeconds = (TargetBuildEnvironment == TargetEnvironment.Production) ? 60 : 4;
 
         #region UI
         public const double MainWindowWidth = 1280;
