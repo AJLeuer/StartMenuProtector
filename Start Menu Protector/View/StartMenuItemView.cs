@@ -60,12 +60,10 @@ namespace StartMenuProtector.View
         public static Brush DefaultTextColor { get; set; } = Config.TextStrokeColor;
         public static Brush DefaultBackgroundColor { get; set; } = Config.BackgroundFillColor;
         public static Brush DefaultSelectionTextColor { get; set; } = Config.SelectionTextStrokeColor;
-
         public static Brush DefaultSelectionBackgroundColor { get; } = Config.SelectionBackgroundFillColor;
-
-        public static Brush DefaultMarkedDeletedBackgroundColor { get; } = Config.NegativeChangeSymbolicFillColor;
-
         public static Brush DefaultDropTargetBackgroundColor { get; } = Config.PositiveChangeSymbolicFillColor;
+
+        public static double HiddenOpacity { get; } = Config.HiddenItemOpacity;
 
         private bool selected = false;
 
@@ -247,7 +245,9 @@ namespace StartMenuProtector.View
         {
             if (MarkedExcluded)
             {
-                UpdateColor(backgroundColor: DefaultMarkedDeletedBackgroundColor, textColor: DefaultSelectionTextColor, borderColor: DefaultMarkedDeletedBackgroundColor);
+                UpdateColor(backgroundColor: DefaultBackgroundColor, textColor: DefaultTextColor, DefaultOutlineColor);
+                //setting the opacity of the border of this sets the opacity of this as well
+                if (Border.HasValue) { Border.ValueOrFailure().Opacity = HiddenOpacity; }
             }
             else if (CandidateForDrop)
             {

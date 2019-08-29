@@ -4,7 +4,6 @@ using System.IO;
 using System.Threading.Tasks;
 using StartMenuProtector.Configuration;
 using StartMenuProtector.Data;
-using StartMenuProtector.Util;
 using static StartMenuProtector.Util.LogManager;
 using Directory = StartMenuProtector.Data.Directory;
 

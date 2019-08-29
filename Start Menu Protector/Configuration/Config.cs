@@ -5,7 +5,6 @@ using System.Windows.Media;
 using StartMenuProtector.Data;
 using StartMenuProtector.Util;
 
-
 namespace StartMenuProtector.Configuration
 {
     public static class Config
@@ -57,7 +56,7 @@ namespace StartMenuProtector.Configuration
             StartPoint = new Point(0.5, 0),
             GradientStops =
             {
-                new GradientStop { Color = Config.SelectionBackgroundColor },
+                new GradientStop { Color = SelectionBackgroundColor },
                 new GradientStop { Color = Color.FromArgb(0xFF, 0x48, 0x77, 0xAA)},
                 new GradientStop { Color = Color.FromArgb(0xFF, 0x4C, 0x8D, 0xD3)}
             }
@@ -70,9 +69,9 @@ namespace StartMenuProtector.Configuration
             StartPoint = new Point(0.5, 0),
             GradientStops =
             {
-                new GradientStop { Color = Config.NegativeChangeSymbolicColor },
-                new GradientStop { Color = Color.FromArgb(Config.NegativeChangeSymbolicColor.A, Config.NegativeChangeSymbolicColor.R, Config.NegativeChangeSymbolicColor.G, (byte)(Config.NegativeChangeSymbolicColor.B + 0x08))},
-                new GradientStop { Color = Color.FromArgb(Config.NegativeChangeSymbolicColor.A, Config.NegativeChangeSymbolicColor.R, Config.NegativeChangeSymbolicColor.G, (byte)(Config.NegativeChangeSymbolicColor.B + 0x0F))}
+                new GradientStop { Color = NegativeChangeSymbolicColor },
+                new GradientStop { Color = Color.FromArgb(NegativeChangeSymbolicColor.A, NegativeChangeSymbolicColor.R, NegativeChangeSymbolicColor.G, (byte)(NegativeChangeSymbolicColor.B + 0x08))},
+                new GradientStop { Color = Color.FromArgb(NegativeChangeSymbolicColor.A, NegativeChangeSymbolicColor.R, NegativeChangeSymbolicColor.G, (byte)(NegativeChangeSymbolicColor.B + 0x0F))}
             }
         };        
         
@@ -83,12 +82,14 @@ namespace StartMenuProtector.Configuration
             StartPoint = new Point(0.5, 0),
             GradientStops =
             {
-                new GradientStop { Color = Config.PositiveChangeSymbolicColor },
-                new GradientStop { Color = Color.FromArgb(Config.PositiveChangeSymbolicColor.A, (byte)(Config.PositiveChangeSymbolicColor.R + 0x08), Config.PositiveChangeSymbolicColor.G, Config.PositiveChangeSymbolicColor.B)},
-                new GradientStop { Color = Color.FromArgb(Config.PositiveChangeSymbolicColor.A, (byte)(Config.PositiveChangeSymbolicColor.R + 0x0F), Config.PositiveChangeSymbolicColor.G, Config.PositiveChangeSymbolicColor.B)}
+                new GradientStop { Color = PositiveChangeSymbolicColor },
+                new GradientStop { Color = Color.FromArgb(PositiveChangeSymbolicColor.A, (byte)(PositiveChangeSymbolicColor.R + 0x08), PositiveChangeSymbolicColor.G, PositiveChangeSymbolicColor.B)},
+                new GradientStop { Color = Color.FromArgb(PositiveChangeSymbolicColor.A, (byte)(PositiveChangeSymbolicColor.R + 0x0F), PositiveChangeSymbolicColor.G, PositiveChangeSymbolicColor.B)}
             }
         };
-        
+
+        public static double HiddenItemOpacity { get; } = 0.5;
+
         #endregion
         
         public static readonly ISet<Func<FileSystemItem, Boolean>> FileSystemItemFilters = new HashSet<Func<FileSystemItem, Boolean>>
