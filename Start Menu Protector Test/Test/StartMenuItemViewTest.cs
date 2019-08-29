@@ -1,5 +1,7 @@
+using System;
 using System.Threading;
 using System.Windows.Input;
+using System.Windows.Interop;
 using Moq;
 using NUnit.Framework;
 using StartMenuProtector.Data;
@@ -29,12 +31,13 @@ namespace StartMenuProtectorTest.Test
         public static void StartMenuItemViewShouldMarkFileSystemItemForExclusionWhenDeleteOrBackspaceArePressed(Key pressedKey, bool shouldResultInMarkingForExclusion)
         {
             Key backspace = pressedKey;
+            var keyEvent = new KeyEventArgs(Keyboard.PrimaryDevice, new HwndSource(0, 0, 0, 0, 0, "", IntPtr.Zero), 0, pressedKey);
             var fileMock = new Mock<MockableFile>();
             fileMock.Setup((MockableFile self) => self.PrettyName).Returns("Firefox");
             FileSystemItem mockFile = fileMock.Object;
-            var startMenuItemView = new StartMenuItemView { File = mockFile, MarkedExcludedHandler = (StartMenuItemView item) => {} };
+            var startMenuItemView = new StartMenuItemView { File = mockFile, MarkExcludedCompletedHandler = (StartMenuItemView item) => {} };
             
-            startMenuItemView.MarkAsRemoved(backspace);
+            startMenuItemView.ProcessKeyboardInput(null, keyEvent);
 
             Assert.AreEqual(shouldResultInMarkingForExclusion, mockFile.MarkedForExclusion);
         }

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -17,7 +18,7 @@ namespace StartMenuProtector.View
 
         Action<StartMenuItemView> DraggedOverItemExitedAreaEventHandler { get; set; }
         StartMenuItemDraggedAndDroppedEventHandler ReceivedDropHandler  { get; set; }
-        Action<StartMenuItemView> MarkedExcludedHandler { get; set; }
+        Action<StartMenuItemView> MarkExcludedCompletedHandler { get; set; }
         bool Selected { get; }
         bool MarkedExcluded { get; }
         bool CandidateForDrop { get; set; }
@@ -29,7 +30,6 @@ namespace StartMenuProtector.View
         void TakeFocus(object sender, MouseButtonEventArgs @event);
         void Select(object sender, RoutedEventArgs @event);
         void Deselect(object sender, RoutedEventArgs @event);
-        void MarkAsRemoved(Key key);
     }
 
     public class StartMenuItemView : DockPanel, IStartMenuItemView
@@ -40,7 +40,7 @@ namespace StartMenuProtector.View
         public static readonly DependencyProperty DraggedOverItemEnteredAreaEventHandlerProperty   = DependencyProperty.Register(nameof (DraggedOverItemEnteredAreaEventHandler), typeof (Action<StartMenuItemView>), typeof (StartMenuItemView), new FrameworkPropertyMetadata { BindsTwoWayByDefault = false });
         public static readonly DependencyProperty DraggedOverItemExitedAreaEventHandlerProperty    = DependencyProperty.Register(nameof (DraggedOverItemExitedAreaEventHandler), typeof (Action<StartMenuItemView>), typeof (StartMenuItemView), new FrameworkPropertyMetadata { BindsTwoWayByDefault = false });
         public static readonly DependencyProperty ReceivedDropHandlerProperty                      = DependencyProperty.Register(nameof (ReceivedDropHandler), typeof (StartMenuItemDraggedAndDroppedEventHandler), typeof (StartMenuItemView), new FrameworkPropertyMetadata(propertyChangedCallback: UpdateReceivedDropHandler) { BindsTwoWayByDefault = false });
-        public static readonly DependencyProperty MarkedExcludedHandlerProperty                    = DependencyProperty.Register(nameof (MarkedExcludedHandler), typeof (Action<StartMenuItemView>), typeof (StartMenuItemView), new FrameworkPropertyMetadata(propertyChangedCallback: UpdateMarkedExcludedHandler) { BindsTwoWayByDefault = false });
+        public static readonly DependencyProperty MarkExcludedCompletedHandlerProperty                    = DependencyProperty.Register(nameof (MarkExcludedCompletedHandler), typeof (Action<StartMenuItemView>), typeof (StartMenuItemView), new FrameworkPropertyMetadata(propertyChangedCallback: UpdateMarkedExcludedHandler) { BindsTwoWayByDefault = false });
 
         public Action<StartMenuItemView> DraggedOverItemEnteredAreaEventHandler
         {
@@ -54,13 +54,19 @@ namespace StartMenuProtector.View
             set { this.SetValue(DraggedOverItemExitedAreaEventHandlerProperty, value);}
         }
         public StartMenuItemDraggedAndDroppedEventHandler ReceivedDropHandler     { get; set; }
-        public Action<StartMenuItemView>                      MarkedExcludedHandler   { get; set; }
+        public Action<StartMenuItemView>                  MarkExcludedCompletedHandler   { get; set; }
 
-        public static Brush DefaultOutlineColor { get; set; } = Config.OutlineStrokeColor;
-        public static Brush DefaultTextColor { get; set; } = Config.TextStrokeColor;
-        public static Brush DefaultBackgroundColor { get; set; } = Config.BackgroundFillColor;
-        public static Brush DefaultSelectionTextColor { get; set; } = Config.SelectionTextStrokeColor;
-        public static Brush DefaultSelectionBackgroundColor { get; } = Config.SelectionBackgroundFillColor;
+        private Dictionary<Key, Action<StartMenuItemView, Key>> KeyBindings = new Dictionary<Key, Action<StartMenuItemView, Key>>
+        {
+            { Key.Delete, (StartMenuItemView startMenuItemView, Key pressedKey) => { startMenuItemView.MarkedExcluded = true; }},
+            { Key.Back,   (StartMenuItemView startMenuItemView, Key pressedKey) => { startMenuItemView.MarkedExcluded = true; }}
+        };
+
+        public static Brush DefaultOutlineColor              { get; } = Config.OutlineStrokeColor;
+        public static Brush DefaultTextColor                 { get; } = Config.TextStrokeColor;
+        public static Brush DefaultBackgroundColor           { get; } = Config.BackgroundFillColor;
+        public static Brush DefaultSelectionTextColor        { get; } = Config.SelectionTextStrokeColor;
+        public static Brush DefaultSelectionBackgroundColor  { get; } = Config.SelectionBackgroundFillColor;
         public static Brush DefaultDropTargetBackgroundColor { get; } = Config.PositiveChangeSymbolicFillColor;
 
         public static double HiddenOpacity { get; } = Config.HiddenItemOpacity;
@@ -89,7 +95,7 @@ namespace StartMenuProtector.View
                 markedExcluded = value;
                 File.MarkedForExclusion = value;
                 UpdateColor();
-                MarkedExcludedHandler.Invoke(this);
+                MarkExcludedCompletedHandler.Invoke(this);
             }
         }
 
@@ -149,7 +155,7 @@ namespace StartMenuProtector.View
             this.MouseDown += TakeFocus;
             this.GotFocus += Select;
             this.LostFocus += Deselect;
-            this.KeyDown += MarkAsRemoved;
+            this.KeyDown += ProcessKeyboardInput;
             this.DragOver += RespondToItemDraggedOver;
             this.DragLeave += RespondToDraggedItemLeaving;
             
@@ -172,17 +178,14 @@ namespace StartMenuProtector.View
             Selected = false;
         }
 
-        private void MarkAsRemoved(object sender, KeyEventArgs keyEvent) 
+        public void ProcessKeyboardInput(object sender, KeyEventArgs keyEvent) 
         {
-            MarkAsRemoved(keyEvent.Key);
-        }
-
-        public void MarkAsRemoved(Key key) 
-        {
-            if ((key == Key.Delete) || (key == Key.Back))
+            try
             {
-                MarkedExcluded = true;
+                Action<StartMenuItemView, Key> boundAction = KeyBindings[keyEvent.Key];
+                boundAction(this, keyEvent.Key);
             }
+            catch (KeyNotFoundException) {}
         }
 
         protected override void OnMouseMove(MouseEventArgs mouseAction)
@@ -297,7 +300,7 @@ namespace StartMenuProtector.View
         {
             if (startMenuDataItem is StartMenuItemView self)
             {
-                self.MarkedExcludedHandler = (Action<StartMenuItemView>) updatedValue.NewValue;
+                self.MarkExcludedCompletedHandler = (Action<StartMenuItemView>) updatedValue.NewValue;
             }
         }
 
