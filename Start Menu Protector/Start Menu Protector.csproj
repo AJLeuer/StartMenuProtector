@@ -261,5 +261,8 @@
 	<Target Name="CleanDevelopmentAppData" AfterTargets="AfterClean" Condition=" $(DefineConstants.Contains('DEV')) ">
 		<RemoveDir Directories="$(OutDir)\Development App Data\Start Menu Protector" />
 	</Target>
+	<Target Name="CleanDevelopmentStartMenu" AfterTargets="AfterClean" Condition=" $(DefineConstants.Contains('DEV')) ">
+		<RemoveDir Directories="$(OutDir)Development Start Menu Items" />
+	</Target>
 	<Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
