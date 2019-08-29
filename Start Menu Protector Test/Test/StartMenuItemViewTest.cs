@@ -5,6 +5,7 @@ using System.Windows.Interop;
 using Moq;
 using NUnit.Framework;
 using StartMenuProtector.Data;
+using StartMenuProtector.Models;
 using StartMenuProtector.View;
 using StartMenuProtectorTest.Utility;
 
@@ -32,9 +33,13 @@ namespace StartMenuProtectorTest.Test
         {
             Key backspace = pressedKey;
             var keyEvent = new KeyEventArgs(Keyboard.PrimaryDevice, new HwndSource(0, 0, 0, 0, 0, "", IntPtr.Zero), 0, pressedKey);
-            var fileMock = new Mock<MockableFile>();
-            fileMock.Setup((MockableFile self) => self.PrettyName).Returns("Firefox");
-            FileSystemItem mockFile = fileMock.Object;
+            
+            var fileMock = new Mock<IStartMenuItem>();
+            fileMock.Setup((IStartMenuItem self) => self.PrettyName).Returns("Firefox");
+            fileMock.SetupProperty((IStartMenuItem self) => self.MarkedForExclusion);
+            IStartMenuItem mockFile = fileMock.Object;
+            
+            
             var startMenuItemView = new StartMenuItemView { File = mockFile, MarkExcludedCompletedHandler = (StartMenuItemView item) => {} };
             
             startMenuItemView.ProcessKeyboardInput(null, keyEvent);

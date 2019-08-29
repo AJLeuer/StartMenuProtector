@@ -1,4 +1,5 @@
 using StartMenuProtector.Data;
+using StartMenuProtector.Models;
 
 namespace StartMenuProtectorTest.Utility
 {
@@ -6,6 +7,14 @@ namespace StartMenuProtectorTest.Utility
     {
         public MockableDirectory() : base(directory: null)
         {
+        }
+    }
+    
+    public class MockableStartMenuDirectory : StartMenuDirectory
+    {
+        public MockableStartMenuDirectory() : base(directoryInfo: null)
+        {
+            
         }
     }
     

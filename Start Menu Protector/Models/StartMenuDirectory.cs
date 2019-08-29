@@ -8,8 +8,23 @@ namespace StartMenuProtector.Models
 {
     public class StartMenuDirectory : Directory, IStartMenuItem
     {
-        public StartMenuDirectory(DirectoryInfo directory) : 
-            base(directory)
+        public override bool Valid 
+        {
+            get 
+            {
+                if (MarkedForExclusion)
+                {
+                    return false;
+                }
+
+                return base.Valid;
+            }
+        }
+        
+        public bool MarkedForExclusion { get; set; } = false;
+
+        public StartMenuDirectory(DirectoryInfo directoryInfo) : 
+            base(directoryInfo)
         {
             
         }

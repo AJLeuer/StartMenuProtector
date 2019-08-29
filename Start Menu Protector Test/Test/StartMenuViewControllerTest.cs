@@ -16,7 +16,7 @@ namespace StartMenuProtectorTest.Test
         public static Mock<ActiveDataService> ActiveDataServiceMock;
         public static Mock<SavedDataService>  SavedDataServiceMock;
         public static Mock<IStartMenuItemView> StartMenuItemMock;
-        public static Mock<MockableDirectory> DirectoryMock;
+        public static Mock<MockableStartMenuDirectory> DirectoryMock;
         
         
 
@@ -27,7 +27,7 @@ namespace StartMenuProtectorTest.Test
             ActiveDataServiceMock = new Mock<ActiveDataService>(MockSystemStateService);
             SavedDataServiceMock = new Mock<SavedDataService>(MockSystemStateService);
             StartMenuItemMock = new Mock<IStartMenuItemView>();
-            DirectoryMock = new Mock<MockableDirectory>();
+            DirectoryMock = new Mock<MockableStartMenuDirectory>();
 
             ActiveDataServiceMock.Setup(
                 (self) => self.GetStartMenuContentDirectory(It.IsAny<StartMenuShortcutsLocation>()))

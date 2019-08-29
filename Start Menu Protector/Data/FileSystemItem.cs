@@ -20,7 +20,6 @@ namespace StartMenuProtector.Data
         string FullName { get; }
         bool Exists { get; }
         OwnerType OwnerType { get; }
-        bool MarkedForExclusion { get; set; }
         bool Valid { get; }
         bool Filtered { get; }
         String ParentDirectoryPath { get; }
@@ -154,17 +153,11 @@ namespace StartMenuProtector.Data
 
         public abstract OwnerType OwnerType { get; }
 
-        public bool MarkedForExclusion { get; set; } = false;
-
-        public bool Valid
+        public virtual bool Valid 
         {
             get
             {
-                if (MarkedForExclusion)
-                {
-                    return false;
-                }
-                else if (Filtered)
+                if (Filtered)
                 {
                     return false;
                 }
@@ -334,11 +327,6 @@ namespace StartMenuProtector.Data
         public OwnerType OwnerType
         {
             get { return UnderlyingItem.OwnerType; }
-        }
-        public bool MarkedForExclusion
-        {
-            get { return UnderlyingItem.MarkedForExclusion;}
-            set { UnderlyingItem.MarkedForExclusion = value; } 
         }
         public bool Valid
         {

@@ -5,7 +5,7 @@ namespace StartMenuProtector.Models
 {
     public interface IStartMenuItem : IFileSystemItem
     {
-
+        bool MarkedForExclusion { get; set; }
     }
 
     public static class StartMenuItemFactory
