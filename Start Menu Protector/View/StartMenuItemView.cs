@@ -153,15 +153,20 @@ namespace StartMenuProtector.View
             
             UpdateColor();
 
+            SetupInputHandling();
+
+            this.Focusable = true;
+            this.AllowDrop = true;
+        }
+
+        private void SetupInputHandling()
+        {
             this.MouseDown += TakeFocus;
             this.GotFocus += Select;
             this.LostFocus += Deselect;
             this.KeyDown += ProcessKeyboardInput;
             this.DragOver += RespondToItemDraggedOver;
             this.DragLeave += RespondToDraggedItemLeaving;
-            
-            this.Focusable = true;
-            this.AllowDrop = true;
         }
 
         public void TakeFocus(object sender, MouseButtonEventArgs @event)
