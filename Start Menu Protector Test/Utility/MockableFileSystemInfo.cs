@@ -1,5 +1,5 @@
 using StartMenuProtector.Data;
-using StartMenuProtector.Models;
+using StartMenuProtector.ViewModel;
 
 namespace StartMenuProtectorTest.Utility
 {

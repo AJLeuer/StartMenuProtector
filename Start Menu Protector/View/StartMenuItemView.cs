@@ -9,7 +9,7 @@ using Optional;
 using Optional.Unsafe;
 using StartMenuProtector.Configuration;
 using StartMenuProtector.Data;
-using StartMenuProtector.Models;
+using StartMenuProtector.ViewModel;
 
 namespace StartMenuProtector.View 
 {
@@ -77,14 +77,14 @@ namespace StartMenuProtector.View
         public bool Selected 
         {
             get { return selected; }
-            
+
             private set
             {
                 selected = value;
                 UpdateColor();
             }
         }
-        
+
         private bool excluded = false;
 
         public bool Excluded 

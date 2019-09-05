@@ -2,9 +2,9 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Threading.Tasks;
 using StartMenuProtector.Data;
-using StartMenuProtector.Models;
 using StartMenuProtector.Util;
 using StartMenuProtector.View;
+using StartMenuProtector.ViewModel;
 
 namespace StartMenuProtector.Control
 {

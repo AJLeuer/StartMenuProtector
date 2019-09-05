@@ -1,10 +1,11 @@
 using System.Collections.Generic;
 using System.IO;
+using System.Windows;
 using StartMenuProtector.Data;
 using StartMenuProtector.Util;
 using Directory = StartMenuProtector.Data.Directory;
 
-namespace StartMenuProtector.Models
+namespace StartMenuProtector.ViewModel
 {
     public class StartMenuDirectory : Directory, IStartMenuItem
     {
@@ -20,7 +21,8 @@ namespace StartMenuProtector.Models
                 return base.Valid;
             }
         }
-        
+
+        public bool IsSelected { get; set; }
         public bool MarkedForExclusion { get; set; } = false;
 
         public StartMenuDirectory(DirectoryInfo directoryInfo) : 
@@ -73,5 +75,11 @@ namespace StartMenuProtector.Models
                 contents.AddAll(directories);
             }
         }
+
+
+        public void HandleFocusChange(object sender, RoutedEventArgs eventInfo)
+        {
+        }
+
     }
 }

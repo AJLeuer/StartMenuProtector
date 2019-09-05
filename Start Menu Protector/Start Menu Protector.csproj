@@ -148,9 +148,9 @@
 		<Compile Include="Data\Directory.cs" />
 		<Compile Include="Data\File.cs" />
 		<Compile Include="Data\FileSystemItem.cs" />
-		<Compile Include="Models\IStartMenuItem.cs" />
-		<Compile Include="Models\StartMenuDirectory.cs" />
-		<Compile Include="Models\StartMenuFile.cs" />
+		<Compile Include="ViewModel\IStartMenuItem.cs" />
+		<Compile Include="ViewModel\StartMenuDirectory.cs" />
+		<Compile Include="ViewModel\StartMenuFile.cs" />
 		<Compile Include="Util\AsyncObservableCollection.cs" />
 		<Compile Include="Util\ConsoleManager.cs" />
 		<Compile Include="Util\LogManager.cs" />

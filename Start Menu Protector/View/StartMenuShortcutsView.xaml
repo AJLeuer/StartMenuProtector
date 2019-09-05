@@ -4,23 +4,23 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:view="clr-namespace:StartMenuProtector.View"
-             xmlns:IO="clr-namespace:StartMenuProtector.Data"
+             xmlns:viewModel="clr-namespace:StartMenuProtector.ViewModel"
              xmlns:config="clr-namespace:StartMenuProtector.Configuration"
              mc:Ignorable="d">
     
     <Grid>
         <Button Name="PrimaryActionButton" IsEnabled="False" Visibility="Hidden" FontSize="{x:Static config:Config.FontSize}" FontFamily="{x:Static config:Config.DefaultFontFamily}" Margin="24,12,24,24" Padding="16,0,16,0" VerticalAlignment="Top" HorizontalAlignment="Left"  Click="HandlePrimaryActionButtonPressed"/>
         <Grid Margin="24,48,24,24">
-            <ListBox Name="StartMenuShortcutsLocationSelection" Background="WhiteSmoke" Width="172" ItemsSource="{Binding Locations, RelativeSource={RelativeSource AncestorType=view:StartMenuShortcutsView}, Mode=TwoWay}" FontSize="{x:Static config:Config.FontSize}" FontFamily="{x:Static config:Config.DefaultFontFamily}" VerticalAlignment="Stretch" HorizontalAlignment="Left" SelectionChanged="CurrentShortcutsLocationChanged"/>
-            <TreeView Name="StartMenuDirectoryTreeView" ItemsSource="{Binding StartMenuContents, RelativeSource={RelativeSource AncestorType=view:StartMenuShortcutsView}}" Margin="172,0,0,0">
+            <ListBox Name="StartMenuShortcutsLocationSelection" Background="WhiteSmoke" Width="172" ItemsSource="{Binding Locations, RelativeSource={RelativeSource AncestorType=view:StartMenuShortcutsView}, Mode=TwoWay}" FontSize="{x:Static config:Config.FontSize}" FontFamily="{x:Static config:Config.DefaultFontFamily}" VerticalAlignment="Stretch" HorizontalAlignment="Left" SelectionChanged="HandleCurrentShortcutsLocationChanged"/>
+            <TreeView Name="StartMenuDirectoryTreeView" Margin="172,0,0,0" ItemsSource="{Binding StartMenuContents, RelativeSource={RelativeSource AncestorType=view:StartMenuShortcutsView}}" SelectedItemChanged="HandleSelectedItemChanged">
                 
                 <TreeView.Resources>
                     
-                    <HierarchicalDataTemplate x:Name="Folder" DataType="{x:Type IO:Directory}" ItemsSource="{Binding Path=Contents}">
+                    <HierarchicalDataTemplate x:Name="Folder" DataType="{x:Type viewModel:StartMenuDirectory}" ItemsSource="{Binding Path=Contents}">
                         <view:StartMenuItemView File="{Binding}" ClipToBounds="True" DraggedOverItemEnteredAreaEventHandler="{Binding DraggedOverItemEnteredAreaEventHandler, RelativeSource={RelativeSource AncestorType=view:StartMenuShortcutsView}}" DraggedOverItemExitedAreaEventHandler="{Binding DraggedOverItemExitedAreaEventHandler, RelativeSource={RelativeSource AncestorType=view:StartMenuShortcutsView}}" ReceivedDropHandler="{Binding DragAndDropEventHandler, RelativeSource={RelativeSource AncestorType=view:StartMenuShortcutsView}}" MarkExcludedCompletedHandler="{Binding ItemMarkExcludedCompletedHandler, RelativeSource={RelativeSource AncestorType=view:StartMenuShortcutsView}}"/>
                     </HierarchicalDataTemplate>
 
-                    <DataTemplate x:Name="File" DataType="{x:Type IO:File}">
+                    <DataTemplate x:Name="File" DataType="{x:Type viewModel:StartMenuFile}">
                         <view:StartMenuItemView File="{Binding}" ClipToBounds="True" DraggedOverItemEnteredAreaEventHandler="{Binding DraggedOverItemEnteredAreaEventHandler, RelativeSource={RelativeSource AncestorType=view:StartMenuShortcutsView}}" DraggedOverItemExitedAreaEventHandler="{Binding DraggedOverItemExitedAreaEventHandler, RelativeSource={RelativeSource AncestorType=view:StartMenuShortcutsView}}" ReceivedDropHandler="{Binding DragAndDropEventHandler, RelativeSource={RelativeSource AncestorType=view:StartMenuShortcutsView}}" MarkExcludedCompletedHandler="{Binding ItemMarkExcludedCompletedHandler, RelativeSource={RelativeSource AncestorType=view:StartMenuShortcutsView}}"/>
                     </DataTemplate>
                     
@@ -30,6 +30,12 @@
                     <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="Transparent" />
                     <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightTextBrushKey}" Color="Black" />
                 </TreeView.Resources>
+                
+                <TreeView.ItemContainerStyle>
+                    <Style TargetType="TreeViewItem">
+                        <Setter Property="IsSelected" Value="{Binding (viewModel:IStartMenuItem.IsSelected), Mode=TwoWay}"/>
+                    </Style>
+                </TreeView.ItemContainerStyle>
             </TreeView>
         </Grid>
     </Grid>

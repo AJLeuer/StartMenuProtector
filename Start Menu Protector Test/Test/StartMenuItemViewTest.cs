@@ -4,10 +4,8 @@ using System.Windows.Input;
 using System.Windows.Interop;
 using Moq;
 using NUnit.Framework;
-using StartMenuProtector.Data;
-using StartMenuProtector.Models;
 using StartMenuProtector.View;
-using StartMenuProtectorTest.Utility;
+using StartMenuProtector.ViewModel;
 
 namespace StartMenuProtectorTest.Test
 {
@@ -31,7 +29,6 @@ namespace StartMenuProtectorTest.Test
         [TestCase(Key.Delete, true)]
         public static void StartMenuItemViewShouldMarkFileSystemItemForExclusionWhenDeleteOrBackspaceArePressed(Key pressedKey, bool shouldResultInMarkingForExclusion)
         {
-            Key backspace = pressedKey;
             var keyEvent = new KeyEventArgs(Keyboard.PrimaryDevice, new HwndSource(0, 0, 0, 0, 0, "", IntPtr.Zero), 0, pressedKey);
             
             var fileMock = new Mock<IStartMenuItem>();

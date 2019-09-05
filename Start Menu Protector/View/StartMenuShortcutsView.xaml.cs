@@ -3,8 +3,8 @@ using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
 using StartMenuProtector.Control;
-using StartMenuProtector.Models;
 using StartMenuProtector.Util;
+using StartMenuProtector.ViewModel;
 
 namespace StartMenuProtector.View
 {
@@ -52,7 +52,7 @@ namespace StartMenuProtector.View
             };
         }
         
-        private void CurrentShortcutsLocationChanged(object sender, SelectionChangedEventArgs _)
+        private void HandleCurrentShortcutsLocationChanged(object sender, SelectionChangedEventArgs _)
         {
             var selectedLocation = (sender as ListBox)?.SelectedItem;
             StartMenuShortcutsLocation startMenuStartMenuShortcutsLocation = selectedLocation is StartMenuShortcutsLocation ? (StartMenuShortcutsLocation) selectedLocation : StartMenuShortcutsLocation.System;
@@ -62,6 +62,11 @@ namespace StartMenuProtector.View
                 Controller.StartMenuStartMenuShortcutsLocation = startMenuStartMenuShortcutsLocation;
             }
             Controller?.UpdateCurrentShortcuts();
+        }
+        
+        private void HandleSelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> eventInfo)
+        {
+            Controller?.HandleSelectedItemChanged(sender, eventInfo);
         }
 
         protected void HandlePrimaryActionButtonPressed(object sender, RoutedEventArgs _)
@@ -88,6 +93,15 @@ namespace StartMenuProtector.View
         {
            Controller?.HandleRequestToExcludeStartMenuItem();
         }
-        
+
+        private void HandleItemGainedFocusEvent(object sender, RoutedEventArgs eventInfo)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void HandleItemLostFocusEvent(object sender, RoutedEventArgs eventInfo)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

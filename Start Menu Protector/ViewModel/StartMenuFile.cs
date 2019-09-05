@@ -1,9 +1,9 @@
-using System;
 using System.IO;
+using System.Windows;
 using StartMenuProtector.Data;
 using File = StartMenuProtector.Data.File;
 
-namespace StartMenuProtector.Models
+namespace StartMenuProtector.ViewModel
 {
     public class StartMenuFile : File, IStartMenuItem
     {
@@ -20,6 +20,7 @@ namespace StartMenuProtector.Models
             }
         }
 
+        public bool IsSelected { get; set; }
         public bool MarkedForExclusion { get; set; } = false;
 
         public StartMenuFile(FileInfo file) : 
@@ -39,5 +40,10 @@ namespace StartMenuProtector.Models
         {
             
         }
+
+        public void HandleFocusChange(object sender, RoutedEventArgs eventInfo)
+        {
+        }
+
     }
 }

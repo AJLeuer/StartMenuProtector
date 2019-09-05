@@ -1,11 +1,14 @@
 using System;
+using System.Windows;
 using StartMenuProtector.Data;
 
-namespace StartMenuProtector.Models
+namespace StartMenuProtector.ViewModel
 {
     public interface IStartMenuItem : IFileSystemItem
     {
+        bool IsSelected { get; set; }
         bool MarkedForExclusion { get; set; }
+        void HandleFocusChange(object sender, RoutedEventArgs eventInfo);
     }
 
     public static class StartMenuItemFactory

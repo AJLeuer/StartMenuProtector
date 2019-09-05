@@ -1,10 +1,11 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
+using System.Windows;
 using StartMenuProtector.Data;
-using StartMenuProtector.Models;
 using StartMenuProtector.Util;
 using StartMenuProtector.View;
+using StartMenuProtector.ViewModel;
 
 namespace StartMenuProtector.Control 
 {
@@ -28,6 +29,11 @@ namespace StartMenuProtector.Control
         public abstract Task UpdateCurrentShortcuts();
 
         public abstract void ExecutePrimaryInteractionAction();
+        
+        
+        public void HandleSelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> eventInfo)
+        {
+        }
 
         public virtual void HandleDraggedItemEnteredArea(StartMenuItemView target)
         {
