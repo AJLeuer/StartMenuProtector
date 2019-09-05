@@ -33,7 +33,7 @@ namespace StartMenuProtector.View
         void Deselect(object sender, RoutedEventArgs @event);
     }
 
-    public class StartMenuItemView : DockPanel, IStartMenuItemView
+    public class StartMenuItemView : TreeViewItem, IStartMenuItemView
     {
         private static UInt64 IDs = 0;
         
@@ -148,8 +148,11 @@ namespace StartMenuProtector.View
             this.Image = new Image { Margin = new Thickness(left: 5, top: 5, right: 2.5, bottom: 5)};
             this.TextBlock = new TextBlock { FontFamily = Config.DefaultFontFamily, FontSize = Config.FontSize, Foreground = DefaultTextColor, Margin = new Thickness(left: 2.5, top: 5, right: 5, bottom: 5), VerticalAlignment = VerticalAlignment.Center};
             
-            this.Children.Add(Image);
-            this.Children.Add(TextBlock);
+            UIElement content = new DockPanel { Children = { Image, TextBlock }, LastChildFill = true };
+            
+            content = new Border { Child = content, BorderThickness = new Thickness(2), BorderBrush = DefaultOutlineColor, CornerRadius = new CornerRadius(4), Margin = new Thickness(0, 2.5, 0, 2.5) };
+            
+            this.Header = content;
             
             UpdateColor();
 
