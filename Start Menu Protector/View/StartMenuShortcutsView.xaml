@@ -12,7 +12,7 @@
         <Button Name="PrimaryActionButton" IsEnabled="False" Visibility="Hidden" FontSize="{x:Static config:Config.FontSize}" FontFamily="{x:Static config:Config.DefaultFontFamily}" Margin="24,12,24,24" Padding="16,0,16,0" VerticalAlignment="Top" HorizontalAlignment="Left"  Click="HandlePrimaryActionButtonPressed"/>
         <Grid Margin="24,48,24,24">
             <ListBox Name="StartMenuShortcutsLocationSelection" Background="WhiteSmoke" Width="172" ItemsSource="{Binding Locations, RelativeSource={RelativeSource AncestorType=view:StartMenuShortcutsView}, Mode=TwoWay}" FontSize="{x:Static config:Config.FontSize}" FontFamily="{x:Static config:Config.DefaultFontFamily}" VerticalAlignment="Stretch" HorizontalAlignment="Left" SelectionChanged="HandleCurrentShortcutsLocationChanged"/>
-            <TreeView Name="StartMenuDirectoryTreeView" Margin="172,0,0,0" ItemsSource="{Binding StartMenuContents, RelativeSource={RelativeSource AncestorType=view:StartMenuShortcutsView}}" SelectedItemChanged="HandleSelectedItemChanged">
+            <TreeView Name="StartMenuDirectoryTreeView" Margin="172,0,0,0" ItemsSource="{Binding StartMenuContents, RelativeSource={RelativeSource AncestorType=view:StartMenuShortcutsView}}">
                 
                 <TreeView.Resources>
                     
@@ -34,6 +34,8 @@
                 <TreeView.ItemContainerStyle>
                     <Style TargetType="TreeViewItem">
                         <Setter Property="IsSelected" Value="{Binding (viewModel:IStartMenuItem.IsSelected), Mode=TwoWay}"/>
+                        <EventSetter Event="GotFocus" Handler="HandleItemGainedFocusEvent"></EventSetter>
+                        <EventSetter Event="LostFocus" Handler="HandleItemLostFocusEvent"></EventSetter>
                     </Style>
                 </TreeView.ItemContainerStyle>
             </TreeView>

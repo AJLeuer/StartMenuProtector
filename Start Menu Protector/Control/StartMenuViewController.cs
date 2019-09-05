@@ -29,11 +29,6 @@ namespace StartMenuProtector.Control
         public abstract Task UpdateCurrentShortcuts();
 
         public abstract void ExecutePrimaryInteractionAction();
-        
-        
-        public void HandleSelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> eventInfo)
-        {
-        }
 
         public virtual void HandleDraggedItemEnteredArea(StartMenuItemView target)
         {
@@ -54,6 +49,15 @@ namespace StartMenuProtector.Control
         public abstract Task HandleRequestToMoveStartMenuItem(IStartMenuItemView itemViewRequestingMove, IStartMenuItemView destinationItemView);
 
         public abstract void HandleRequestToExcludeStartMenuItem();
+        
+        
+        public void HandleItemGainedFocusEvent(object sender, RoutedEventArgs eventInfo)
+        {
+        }
+
+        public void HandleItemLostFocusEvent(object sender, RoutedEventArgs eventInfo)
+        {
+        }
         
         protected static ICollection<IStartMenuItem> CreateStartMenuItemsFromData(ICollection<IFileSystemItem> startMenuDataContents)
         {

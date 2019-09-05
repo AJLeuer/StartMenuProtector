@@ -28,7 +28,6 @@ namespace StartMenuProtector.View
         Image Image { get; set; }
         IStartMenuItem File { get; set; }
         UInt64 ID { get; }
-        void TakeFocus(object sender, MouseButtonEventArgs @event);
         void Select(object sender, RoutedEventArgs @event);
         void Deselect(object sender, RoutedEventArgs @event);
     }
@@ -128,6 +127,7 @@ namespace StartMenuProtector.View
             {
                 file = value;
                 UpdateState();
+                UpdateEventHandling();
             }
         }
 
@@ -149,6 +149,7 @@ namespace StartMenuProtector.View
             UpdateColor();
 
             SetupInputHandling();
+            UpdateEventHandling();
 
             this.Focusable = true;
             this.AllowDrop = true;
@@ -156,21 +157,28 @@ namespace StartMenuProtector.View
 
         private void SetupInputHandling()
         {
-            this.MouseDown += TakeFocus;
-            this.GotFocus += Select;
-            this.LostFocus += Deselect;
             this.KeyDown += ProcessKeyboardInput;
             this.DragOver += RespondToItemDraggedOver;
             this.DragLeave += RespondToDraggedItemLeaving;
         }
+        
+        private void UpdateEventHandling()
+        {
+            if (this.File != null)
+            {
+                this.File.Selected += Select;
+                this.File.Deselected += Deselect;
+            }
+        }
 
-        public void TakeFocus(object sender, MouseButtonEventArgs @event)
+        private void TakeFocus()
         {
             Dispatcher.CurrentDispatcher.BeginInvoke(DispatcherPriority.Input, new Action(() => { this.Focus(); }));
         }
 
         public void Select(object sender, RoutedEventArgs @event)
         {
+            TakeFocus();
             Selected = true;
         }
         

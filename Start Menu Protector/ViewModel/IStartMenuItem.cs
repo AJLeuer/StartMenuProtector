@@ -8,7 +8,9 @@ namespace StartMenuProtector.ViewModel
     {
         bool IsSelected { get; set; }
         bool MarkedForExclusion { get; set; }
-        void HandleFocusChange(object sender, RoutedEventArgs eventInfo);
+
+        event RoutedEventHandler Selected;
+        event RoutedEventHandler Deselected;
     }
 
     public static class StartMenuItemFactory

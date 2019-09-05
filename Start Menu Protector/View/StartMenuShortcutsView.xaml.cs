@@ -63,11 +63,6 @@ namespace StartMenuProtector.View
             }
             Controller?.UpdateCurrentShortcuts();
         }
-        
-        private void HandleSelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> eventInfo)
-        {
-            Controller?.HandleSelectedItemChanged(sender, eventInfo);
-        }
 
         protected void HandlePrimaryActionButtonPressed(object sender, RoutedEventArgs _)
         {
@@ -96,12 +91,12 @@ namespace StartMenuProtector.View
 
         private void HandleItemGainedFocusEvent(object sender, RoutedEventArgs eventInfo)
         {
-            throw new NotImplementedException();
+            Controller?.HandleItemGainedFocusEvent(sender, eventInfo);
         }
 
         private void HandleItemLostFocusEvent(object sender, RoutedEventArgs eventInfo)
         {
-            throw new NotImplementedException();
+            Controller?.HandleItemLostFocusEvent(sender, eventInfo);
         }
     }
 }
