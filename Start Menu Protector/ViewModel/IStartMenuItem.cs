@@ -6,9 +6,11 @@ namespace StartMenuProtector.ViewModel
 {
     public interface IStartMenuItem : IFileSystemItem
     {
+        bool IsFocused { get; set; }
         bool IsSelected { get; set; }
         bool MarkedForExclusion { get; set; }
 
+        event RoutedEventHandler Focused;
         event RoutedEventHandler Selected;
         event RoutedEventHandler Deselected;
     }

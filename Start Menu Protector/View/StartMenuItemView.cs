@@ -166,19 +166,20 @@ namespace StartMenuProtector.View
         {
             if (this.File != null)
             {
+                this.File.Focused += TakeFocus;
                 this.File.Selected += Select;
                 this.File.Deselected += Deselect;
             }
         }
 
-        private void TakeFocus()
+        private void TakeFocus(object sender, RoutedEventArgs @event)
         {
             Dispatcher.CurrentDispatcher.BeginInvoke(DispatcherPriority.Input, new Action(() => { this.Focus(); }));
+            Select(sender, @event);
         }
 
         public void Select(object sender, RoutedEventArgs @event)
         {
-            TakeFocus();
             Selected = true;
         }
         
@@ -251,6 +252,7 @@ namespace StartMenuProtector.View
             }
             TextBlock.Text = File.PrettyName;
             TextBlock.ToolTip = File.Path;
+            this.Selected = File.IsSelected;
         }
 
         private void UpdateColor()
