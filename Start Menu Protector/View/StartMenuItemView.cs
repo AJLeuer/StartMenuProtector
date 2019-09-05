@@ -20,10 +20,10 @@ namespace StartMenuProtector.View
         Action<StartMenuItemView> DraggedOverItemExitedAreaEventHandler { get; set; }
         StartMenuItemDraggedAndDroppedEventHandler ReceivedDropHandler  { get; set; }
         Action<StartMenuItemView> MarkExcludedCompletedHandler { get; set; }
-        bool Selected { get; }
+        bool CurrentlySelected { get; }
         bool Excluded { get; }
         bool CandidateForDrop { get; set; }
-        Option<Border> Border { get; }
+        Border Border { get; }
         TextBlock TextBlock { get; set; }
         Image Image { get; set; }
         IStartMenuItem File { get; set; }
@@ -74,7 +74,7 @@ namespace StartMenuProtector.View
 
         private bool selected = false;
 
-        public bool Selected 
+        public bool CurrentlySelected 
         {
             get { return selected; }
             
@@ -112,15 +112,8 @@ namespace StartMenuProtector.View
             }
         }
 
-        public Option<Border> Border 
-        {
-            get 
-            {
-                Option<Border> border = (this.Parent is Border) ? Option.Some((Border)Parent) : Option.None<Border>();
-                return border;
-            }
-        }
-        
+        public Border Border { get; }
+        public DockPanel Content { get; }
         public TextBlock TextBlock { get; set; }
         public Image Image { get; set; }
 
@@ -145,14 +138,12 @@ namespace StartMenuProtector.View
                 FocusManager.SetIsFocusScope(this.Parent, true);
             }
             
-            this.Image = new Image { Margin = new Thickness(left: 5, top: 5, right: 2.5, bottom: 5)};
-            this.TextBlock = new TextBlock { FontFamily = Config.DefaultFontFamily, FontSize = Config.FontSize, Foreground = DefaultTextColor, Margin = new Thickness(left: 2.5, top: 5, right: 5, bottom: 5), VerticalAlignment = VerticalAlignment.Center};
+            Image = new Image { Margin = new Thickness(left: 5, top: 5, right: 2.5, bottom: 5) };
+            TextBlock = new TextBlock { FontFamily = Config.DefaultFontFamily, FontSize = Config.FontSize, Foreground = DefaultTextColor, Margin = new Thickness(left: 2.5, top: 5, right: 5, bottom: 5), VerticalAlignment = VerticalAlignment.Center };
+            Content = new DockPanel { Children = { Image, TextBlock }, LastChildFill = true };
+            Border = new Border { Child = Content, BorderThickness = new Thickness(2), BorderBrush = DefaultOutlineColor, CornerRadius = new CornerRadius(4), Margin = new Thickness(0, 2.5, 0, 2.5) };
             
-            UIElement content = new DockPanel { Children = { Image, TextBlock }, LastChildFill = true };
-            
-            content = new Border { Child = content, BorderThickness = new Thickness(2), BorderBrush = DefaultOutlineColor, CornerRadius = new CornerRadius(4), Margin = new Thickness(0, 2.5, 0, 2.5) };
-            
-            this.Header = content;
+            this.Header = Border;
             
             UpdateColor();
 
@@ -179,12 +170,12 @@ namespace StartMenuProtector.View
 
         public void Select(object sender, RoutedEventArgs @event)
         {
-            Selected = true;
+            CurrentlySelected = true;
         }
         
         public void Deselect(object sender, RoutedEventArgs @event) 
         {
-            Selected = false;
+            CurrentlySelected = false;
         }
 
         public void ProcessKeyboardInput(object sender, KeyEventArgs keyEvent) 
@@ -259,7 +250,7 @@ namespace StartMenuProtector.View
             {
                 UpdateColor(backgroundColor: DefaultBackgroundColor, textColor: DefaultTextColor, DefaultOutlineColor);
                 //setting the opacity of the border of this sets the opacity of this as well
-                if (Border.HasValue) { Border.ValueOrFailure().Opacity = HiddenOpacity; }
+                Border.Opacity = HiddenOpacity; 
             }
             else if (CandidateForDrop)
             {
@@ -267,7 +258,7 @@ namespace StartMenuProtector.View
             }
             else 
             {
-                if (Selected)
+                if (CurrentlySelected)
                 {
                     UpdateColor(backgroundColor: DefaultSelectionBackgroundColor, textColor: DefaultSelectionTextColor, borderColor: DefaultSelectionBackgroundColor);
                 }
@@ -280,13 +271,9 @@ namespace StartMenuProtector.View
 
         private void UpdateColor(Brush backgroundColor, Brush textColor, Brush borderColor)
         {
-            Background = backgroundColor;
+            Content.Background = backgroundColor;
             TextBlock.Foreground = textColor;
-
-            if (Border.HasValue)
-            {
-                Border.ValueOrFailure().BorderBrush = borderColor;
-            }
+            Border.BorderBrush = borderColor;
         }
 
         private static void UpdateFile(DependencyObject startMenuDataItem, DependencyPropertyChangedEventArgs updatedValue)
