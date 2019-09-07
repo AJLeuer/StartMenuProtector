@@ -77,7 +77,7 @@ namespace StartMenuProtector.View
         {
             get { return selected; }
 
-            private set
+            set
             {
                 selected = value;
                 UpdateColor();

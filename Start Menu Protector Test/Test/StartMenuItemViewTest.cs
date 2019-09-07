@@ -1,5 +1,6 @@
 using System;
 using System.Threading;
+using System.Windows;
 using System.Windows.Input;
 using System.Windows.Interop;
 using Moq;
@@ -14,7 +15,7 @@ namespace StartMenuProtectorTest.Test
     public static class StartMenuItemViewTest
     {
         [Test]
-        public static void StartMenuItemViewShouldHaveExpectedAttributesWhenSelected()
+        public static void ShouldHaveExpectedAttributesWhenSelected()
         {
             var startMenuItemView = new StartMenuItemView();
             
@@ -27,7 +28,7 @@ namespace StartMenuProtectorTest.Test
         [TestCase(Key.Back, true)]
         [TestCase(Key.A, false)]
         [TestCase(Key.Delete, true)]
-        public static void StartMenuItemViewShouldMarkFileSystemItemForExclusionWhenDeleteOrBackspaceArePressed(Key pressedKey, bool shouldResultInMarkingForExclusion)
+        public static void ShouldMarkFileSystemItemForExclusionWhenDeleteOrBackspaceArePressed(Key pressedKey, bool shouldResultInMarkingForExclusion)
         {
             var keyEvent = new KeyEventArgs(Keyboard.PrimaryDevice, new HwndSource(0, 0, 0, 0, 0, "", IntPtr.Zero), 0, pressedKey);
             
@@ -42,6 +43,30 @@ namespace StartMenuProtectorTest.Test
             startMenuItemView.ProcessKeyboardInput(null, keyEvent);
 
             Assert.AreEqual(shouldResultInMarkingForExclusion, mockFile.MarkedForExclusion);
+        }
+
+        [Test]
+        public static void ShouldDisplayAsSelectedWhenOwnFileIsSelected()
+        {
+            var startMenuFileMock = new Mock<IStartMenuItem>();
+            var startMenuItemView = new StartMenuItemView { File = startMenuFileMock.Object };
+            startMenuItemView.Selected = false;
+                
+            startMenuFileMock.Raise((IStartMenuItem self) => self.Selected += null, new RoutedEventArgs());
+            
+            Assert.IsTrue(startMenuItemView.Selected);
+        }
+        
+        [Test]
+        public static void ShouldNotDisplayAsSelectedWhenOwnFileIsDeselected()
+        {
+            var startMenuFileMock = new Mock<IStartMenuItem>();
+            var startMenuItemView = new StartMenuItemView { File = startMenuFileMock.Object };
+            startMenuItemView.Selected = true;
+            
+            startMenuFileMock.Raise((IStartMenuItem self) => self.Deselected += null, new RoutedEventArgs());
+            
+            Assert.IsFalse(startMenuItemView.Selected);
         }
     }
 }
