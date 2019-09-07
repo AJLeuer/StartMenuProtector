@@ -49,9 +49,8 @@ namespace StartMenuProtectorTest.Test
         public static void ShouldDisplayAsSelectedWhenOwnFileIsSelected()
         {
             var startMenuFileMock = new Mock<IStartMenuItem>();
-            var startMenuItemView = new StartMenuItemView { File = startMenuFileMock.Object };
-            startMenuItemView.Selected = false;
-                
+            var startMenuItemView = new StartMenuItemView {File = startMenuFileMock.Object, Selected = false};
+
             startMenuFileMock.Raise((IStartMenuItem self) => self.Selected += null, new RoutedEventArgs());
             
             Assert.IsTrue(startMenuItemView.Selected);
@@ -61,9 +60,8 @@ namespace StartMenuProtectorTest.Test
         public static void ShouldNotDisplayAsSelectedWhenOwnFileIsDeselected()
         {
             var startMenuFileMock = new Mock<IStartMenuItem>();
-            var startMenuItemView = new StartMenuItemView { File = startMenuFileMock.Object };
-            startMenuItemView.Selected = true;
-            
+            var startMenuItemView = new StartMenuItemView {File = startMenuFileMock.Object, Selected = true};
+
             startMenuFileMock.Raise((IStartMenuItem self) => self.Deselected += null, new RoutedEventArgs());
             
             Assert.IsFalse(startMenuItemView.Selected);
