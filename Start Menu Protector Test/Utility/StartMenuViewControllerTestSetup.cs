@@ -7,7 +7,7 @@ using StartMenuProtector.Data;
 
 namespace StartMenuProtectorTest.Utility
 {
-    public static class StartMenuViewControllerTestSetupUtility
+    public static class StartMenuViewControllerTestSetup
     {
         public static readonly Mock<MockableFile> SystemStartMenuItemMock = new Mock<MockableFile>(); 
         public static readonly Mock<MockableFile> UserStartMenuItemMock   = new Mock<MockableFile>();

@@ -101,7 +101,7 @@ namespace StartMenuProtector.View
 
         private bool candidateForDrop;
 
-        public bool CandidateForDrop
+        public bool CandidateForDrop 
         {
             get { return candidateForDrop; }
             set

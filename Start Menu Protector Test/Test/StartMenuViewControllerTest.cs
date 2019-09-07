@@ -6,7 +6,7 @@ using StartMenuProtector.Control;
 using StartMenuProtector.Data;
 using StartMenuProtector.View;
 using StartMenuProtectorTest.Utility;
-using static StartMenuProtectorTest.Utility.StartMenuViewControllerTestSetupUtility;
+using static StartMenuProtectorTest.Utility.StartMenuViewControllerTestSetup;
 
 namespace StartMenuProtectorTest.Test 
 {
