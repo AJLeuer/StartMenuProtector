@@ -1,5 +1,7 @@
-using StartMenuProtector.Data;
+using System.IO;
 using StartMenuProtector.ViewModel;
+using Directory = StartMenuProtector.Data.Directory;
+using File = StartMenuProtector.Data.File;
 
 namespace StartMenuProtectorTest.Utility
 {
@@ -22,6 +24,14 @@ namespace StartMenuProtectorTest.Utility
     {
         public MockableFile() : base(file: null)
         {
+        }
+    }
+    
+    public class MockableStartMenuFile : StartMenuFile
+    {
+        public MockableStartMenuFile() : base(file: (FileInfo) null)
+        {
+            
         }
     }
 }

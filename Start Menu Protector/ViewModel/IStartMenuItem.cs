@@ -15,6 +15,16 @@ namespace StartMenuProtector.ViewModel
         event RoutedEventHandler Deselected;
     }
 
+    public interface IStartMenuDirectory : IStartMenuItem, IDirectory
+    {
+        
+    }
+    
+    public interface IStartMenuFile : IStartMenuItem, IFile
+    {
+        
+    }
+
     public static class StartMenuItemFactory
     {
         public static IStartMenuItem CreateFromBaseFileSystemType(IFileSystemItem item)

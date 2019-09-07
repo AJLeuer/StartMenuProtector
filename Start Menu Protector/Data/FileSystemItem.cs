@@ -264,14 +264,14 @@ namespace StartMenuProtector.Data
         /// <param name="destination">The directory to copy into</param>
         public virtual Option<IFileSystemItem> Copy(IDirectory destination)
         {
-            return Copy(destination.FullName);
+            return Copy(destination.Path);
         }
 
         public abstract Option<IFileSystemItem> Copy(string path);
 
         public virtual Option<IFileSystemItem> Move(IDirectory destination)
         {
-            return Move(destination.FullName);
+            return Move(destination.Path);
         }
 
         public Option<IFileSystemItem> Move(string path)
@@ -316,7 +316,7 @@ namespace StartMenuProtector.Data
             get { return UnderlyingItem.ParentDirectoryPath; }
         }
         
-        public string FullName
+        public virtual string FullName
         {
             get { return UnderlyingItem.FullName; }
         }

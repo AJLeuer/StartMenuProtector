@@ -7,7 +7,7 @@ using Directory = StartMenuProtector.Data.Directory;
 
 namespace StartMenuProtector.ViewModel
 {
-    public class StartMenuDirectory : Directory, IStartMenuItem
+    public class StartMenuDirectory : Directory, IStartMenuDirectory
     {
         public override bool Valid 
         {

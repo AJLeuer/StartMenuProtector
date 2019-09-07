@@ -5,9 +5,11 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
+using Windows.Data.Text;
 
 namespace StartMenuProtector.Util 
 {
@@ -72,9 +74,23 @@ namespace StartMenuProtector.Util
             
             return task.Task;
         }
+
+        public static String GenerateRandomString(uint length)
+        {
+            var randomGenerator = new Random();
+            var builder = new StringBuilder();
+
+            for (uint i = 0; i < length; i++)
+            {
+                char randomChar = (char) randomGenerator.Next(0, 2 ^ 31);
+                builder.Append(randomChar);
+            }
+
+            return builder.ToString();
+        }
     }
 
-    public static class Extensions
+    public static class Extensions 
     {
         /// Code credit: https://stackoverflow.com/questions/37890121/fast-conversion-of-bitmap-to-imagesource
         public static BitmapImage ConvertToImageSource(this Bitmap bitmap)

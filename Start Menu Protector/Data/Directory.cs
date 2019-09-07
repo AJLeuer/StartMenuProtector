@@ -212,8 +212,6 @@ namespace StartMenuProtector.Data
                 flatContents.Add(item);
             }
 
-            flatContents.Add(this);
-
             return flatContents;
         }
         

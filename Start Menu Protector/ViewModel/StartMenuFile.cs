@@ -5,7 +5,7 @@ using File = StartMenuProtector.Data.File;
 
 namespace StartMenuProtector.ViewModel
 {
-    public class StartMenuFile : File, IStartMenuItem
+    public class StartMenuFile : File, IStartMenuFile
     {
         public override bool Valid 
         {

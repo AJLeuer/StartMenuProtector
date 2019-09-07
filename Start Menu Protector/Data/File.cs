@@ -83,7 +83,7 @@ namespace StartMenuProtector.Data
         {
             lock (destination.ContentsAccessLock)
             {
-                return Copy(destination.FullName);
+                return Copy(destination.Path);
             }
         }
 
