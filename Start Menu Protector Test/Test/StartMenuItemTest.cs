@@ -43,7 +43,7 @@ namespace StartMenuProtectorTest.Test
 		}
 		
 		[Test]
-		public static void DirectorySelectedEventShouldPropogateToAllStartMenuViewsRecursively()
+		public static void DirectorySelectionShouldPropogateToAllStartMenuViewsRecursively()
 		{
 			StartMenuDirectory directory = DirectoryPartialMock.Object;
 
@@ -54,6 +54,22 @@ namespace StartMenuProtectorTest.Test
 				if (item is IStartMenuItem startMenuItem)
 				{
 					Assert.True(startMenuItem.IsSelected);
+				}
+			}
+		}
+		
+		[Test]
+		public static void DirectoryDeselectionShouldPropogateToAllStartMenuViewsRecursively()
+		{
+			StartMenuDirectory directory = DirectoryPartialMock.Object;
+
+			directory.IsSelected = false;
+			
+			foreach (IFileSystemItem item in directory.GetFlatContents())
+			{
+				if (item is IStartMenuItem startMenuItem)
+				{
+					Assert.False(startMenuItem.IsSelected);
 				}
 			}
 		}
