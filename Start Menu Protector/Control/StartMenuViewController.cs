@@ -7,69 +7,69 @@ using StartMenuProtector.Util;
 using StartMenuProtector.View;
 using StartMenuProtector.ViewModel;
 
-namespace StartMenuProtector.Control 
+namespace StartMenuProtector.Control
 {
-    public abstract class StartMenuViewController 
-    {
-        public ActiveDataService ActiveDataService { get; set; }
-        public SavedDataService SavedDataService { get; set; }
-        public SystemStateService SystemStateService { get; set; }
-        
-        public ObservableCollection<IStartMenuItem> StartMenuContents { get;} = new AsyncObservableCollection<IStartMenuItem>();
+	public abstract class StartMenuViewController
+	{
+		public ActiveDataService ActiveDataService { get; set; }
+		public SavedDataService SavedDataService { get; set; }
+		public SystemStateService SystemStateService { get; set; }
 
-        public StartMenuShortcutsLocation StartMenuStartMenuShortcutsLocation { get; set; } = StartMenuShortcutsLocation.System;
+		public ObservableCollection<IStartMenuItem> StartMenuContents { get; } = new AsyncObservableCollection<IStartMenuItem>();
 
-        protected StartMenuViewController(ActiveDataService activeDataService, SavedDataService savedDataService, SystemStateService systemStateService)
-        {
-            this.ActiveDataService  = activeDataService;
-            this.SavedDataService   = savedDataService;
-            this.SystemStateService = systemStateService;
-        }
+		public StartMenuShortcutsLocation StartMenuStartMenuShortcutsLocation { get; set; } = StartMenuShortcutsLocation.System;
 
-        public abstract Task UpdateCurrentShortcuts();
+		protected StartMenuViewController(ActiveDataService activeDataService, SavedDataService savedDataService, SystemStateService systemStateService)
+		{
+			this.ActiveDataService  = activeDataService;
+			this.SavedDataService   = savedDataService;
+			this.SystemStateService = systemStateService;
+		}
 
-        public abstract void ExecutePrimaryInteractionAction();
+		public abstract Task UpdateCurrentShortcuts();
 
-        public virtual void HandleDraggedItemEnteredArea(StartMenuItemView target)
-        {
-            if (target.File.IsOfType<IDirectory>())
-            {
-                target.CandidateForDrop = true;
-            }
-        }
+		public abstract void ExecutePrimaryInteractionAction();
 
-        public virtual void HandleDraggedItemExitedArea(StartMenuItemView target)
-        {
-            if (target.File.IsOfType<IDirectory>())
-            {
-                target.CandidateForDrop = false;
-            }
-        }
+		public virtual void HandleDraggedItemEnteredArea(StartMenuItemView target)
+		{
+			if (target.File.IsOfType<IDirectory>())
+			{
+				target.CandidateForDrop = true;
+			}
+		}
 
-        public abstract Task HandleRequestToMoveStartMenuItem(IStartMenuItemView itemViewRequestingMove, IStartMenuItemView destinationItemView);
+		public virtual void HandleDraggedItemExitedArea(StartMenuItemView target)
+		{
+			if (target.File.IsOfType<IDirectory>())
+			{
+				target.CandidateForDrop = false;
+			}
+		}
 
-        public abstract void HandleRequestToExcludeStartMenuItem();
-        
-        
-        public void HandleItemGainedFocusEvent(object sender, RoutedEventArgs eventInfo)
-        {
-        }
+		public abstract Task HandleRequestToMoveStartMenuItem(IStartMenuItemView itemViewRequestingMove, IStartMenuItemView destinationItemView);
 
-        public void HandleItemLostFocusEvent(object sender, RoutedEventArgs eventInfo)
-        {
-        }
-        
-        protected static ICollection<IStartMenuItem> CreateStartMenuItemsFromData(ICollection<IFileSystemItem> startMenuDataContents)
-        {
-            ICollection<IStartMenuItem> startMenuItems = new List<IStartMenuItem>();
+		public abstract void HandleRequestToExcludeStartMenuItem();
 
-            foreach (IFileSystemItem fileSystemItem in startMenuDataContents)
-            {
-                IStartMenuItem startMenuItem = StartMenuItemFactory.CreateFromBaseFileSystemType(fileSystemItem);
-                startMenuItems.Add(startMenuItem);
-            }
 
-            return startMenuItems;
-        }
-    }
+		public void HandleItemGainedFocusEvent(object sender, RoutedEventArgs eventInfo)
+		{
+		}
+
+		public void HandleItemLostFocusEvent(object sender, RoutedEventArgs eventInfo)
+		{
+		}
+
+		protected static ICollection<IStartMenuItem> CreateStartMenuItemsFromData(ICollection<IFileSystemItem> startMenuDataContents)
+		{
+			ICollection<IStartMenuItem> startMenuItems = new List<IStartMenuItem>();
+
+			foreach (IFileSystemItem fileSystemItem in startMenuDataContents)
+			{
+				IStartMenuItem startMenuItem = StartMenuItemFactory.CreateFromBaseFileSystemType(fileSystemItem);
+				startMenuItems.Add(startMenuItem);
+			}
+
+			return startMenuItems;
+		}
+	}
 }

@@ -49,7 +49,7 @@ namespace StartMenuProtectorTest.Test
         public static void ShouldDisplayAsSelectedWhenOwnFileIsSelected()
         {
             var startMenuFileMock = new Mock<IStartMenuItem>();
-            var startMenuItemView = new StartMenuItemView {File = startMenuFileMock.Object, Selected = false};
+            var startMenuItemView = new StartMenuItemView { File = startMenuFileMock.Object, Selected = false };
 
             startMenuFileMock.Raise((IStartMenuItem self) => self.Selected += null, new RoutedEventArgs());
             
