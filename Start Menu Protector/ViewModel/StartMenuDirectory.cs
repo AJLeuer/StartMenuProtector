@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Windows;
@@ -13,7 +14,7 @@ namespace StartMenuProtector.ViewModel
         {
             get 
             {
-                if (MarkedForExclusion)
+                if (IsExcluded)
                 {
                     return false;
                 }
@@ -24,8 +25,9 @@ namespace StartMenuProtector.ViewModel
 
         private bool focused = default;
         private bool selected = default;
+        private bool isExcluded = false;
 
-        public bool IsFocused
+        public bool IsFocused 
         {
             get
             {
@@ -60,25 +62,39 @@ namespace StartMenuProtector.ViewModel
                     Deselected?.Invoke(this, null);
                 }
                 
-                PropogateSelectionStateChange(IsSelected);
+                Action<IStartMenuItem> changeSelectionState = (IStartMenuItem startMenuItem) => { startMenuItem.IsSelected = this.IsSelected; };
+                
+                PropogateStateChange(changeSelectionState);
             }
         }
 
-        private void PropogateSelectionStateChange(bool isSelected)
+        public bool IsExcluded
         {
-            foreach (IFileSystemItem item in Contents)
+            get { return isExcluded; }
+            set
             {
-                if (item is IStartMenuItem startMenuItem)
+                isExcluded = value;
+
+                if (IsExcluded)
                 {
-                    startMenuItem.IsSelected = isSelected;
+                    Excluded?.Invoke(this, null);
                 }
+                else
+                {
+                    Reincluded?.Invoke(this, null);
+                }
+
+                Action<IStartMenuItem> changeExclusionState = (IStartMenuItem startMenuItem) => { startMenuItem.IsExcluded = this.IsExcluded; };
+                
+                this.PropogateStateChange(changeExclusionState);
             }
         }
-        
-        public bool MarkedForExclusion { get; set; } = false;
+
         public event RoutedEventHandler Focused;
         public event RoutedEventHandler Selected;
         public event RoutedEventHandler Deselected;
+        public event RoutedEventHandler Excluded;
+        public event RoutedEventHandler Reincluded;
 
         public StartMenuDirectory(DirectoryInfo directoryInfo) : 
             base(directoryInfo)
@@ -128,6 +144,18 @@ namespace StartMenuProtector.ViewModel
                 contents.Clear();
                 contents.AddAll(files);
                 contents.AddAll(directories);
+            }
+        }
+        
+        
+        private void PropogateStateChange(Action<IStartMenuItem> stateChanger)
+        {
+            foreach (IFileSystemItem item in Contents)
+            {
+                if (item is IStartMenuItem startMenuItem)
+                {
+                    stateChanger(startMenuItem);
+                }
             }
         }
     }

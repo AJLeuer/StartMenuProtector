@@ -34,7 +34,7 @@ namespace StartMenuProtectorTest.Test
             
             var fileMock = new Mock<IStartMenuItem>();
             fileMock.Setup((IStartMenuItem self) => self.PrettyName).Returns("Firefox");
-            fileMock.SetupProperty((IStartMenuItem self) => self.MarkedForExclusion);
+            fileMock.SetupProperty((IStartMenuItem self) => self.IsExcluded);
             IStartMenuItem mockFile = fileMock.Object;
             
             
@@ -42,7 +42,7 @@ namespace StartMenuProtectorTest.Test
             
             startMenuItemView.ProcessKeyboardInput(null, keyEvent);
 
-            Assert.AreEqual(shouldResultInMarkingForExclusion, mockFile.MarkedForExclusion);
+            Assert.AreEqual(shouldResultInMarkingForExclusion, mockFile.IsExcluded);
         }
 
         [Test]

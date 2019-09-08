@@ -3,7 +3,7 @@ using System.Windows;
 using StartMenuProtector.Data;
 using File = StartMenuProtector.Data.File;
 
-namespace StartMenuProtector.ViewModel
+namespace StartMenuProtector.ViewModel 
 {
     public class StartMenuFile : File, IStartMenuFile
     {
@@ -11,7 +11,7 @@ namespace StartMenuProtector.ViewModel
         {
             get 
             {
-                if (MarkedForExclusion)
+                if (IsExcluded)
                 {
                     return false;
                 }
@@ -22,7 +22,6 @@ namespace StartMenuProtector.ViewModel
 
         private bool focused = default;
         private bool selected = default;
-
 
         public bool IsFocused
         {
@@ -59,10 +58,12 @@ namespace StartMenuProtector.ViewModel
                 }
             }
         }
-        public bool MarkedForExclusion { get; set; } = false;
+        public bool IsExcluded { get; set; } = false;
         public event RoutedEventHandler Focused;
         public event RoutedEventHandler Selected;
         public event RoutedEventHandler Deselected;
+        public event RoutedEventHandler Excluded;
+        public event RoutedEventHandler Reincluded;
 
         public StartMenuFile(FileInfo file) : 
             base(file)

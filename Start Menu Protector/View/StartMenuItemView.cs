@@ -93,7 +93,7 @@ namespace StartMenuProtector.View
             private set
             {
                 excluded = value;
-                File.MarkedForExclusion = value;
+                File.IsExcluded = value;
                 UpdateColor();
                 MarkExcludedCompletedHandler.Invoke(this);
             }

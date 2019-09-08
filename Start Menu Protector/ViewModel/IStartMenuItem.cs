@@ -8,11 +8,13 @@ namespace StartMenuProtector.ViewModel
     {
         bool IsFocused { get; set; }
         bool IsSelected { get; set; }
-        bool MarkedForExclusion { get; set; }
+        bool IsExcluded { get; set; }
 
         event RoutedEventHandler Focused;
         event RoutedEventHandler Selected;
         event RoutedEventHandler Deselected;
+        event RoutedEventHandler Excluded;
+        event RoutedEventHandler Reincluded;
     }
 
     public interface IStartMenuDirectory : IStartMenuItem, IDirectory

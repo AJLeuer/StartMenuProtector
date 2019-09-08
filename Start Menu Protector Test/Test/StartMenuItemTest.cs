@@ -1,3 +1,5 @@
+using System;
+using System.Windows;
 using Moq;
 using NUnit.Framework;
 using StartMenuProtector.Data;
@@ -46,6 +48,38 @@ namespace StartMenuProtectorTest.Test
 				if (item is IStartMenuItem startMenuItem)
 				{
 					Assert.False(startMenuItem.IsSelected);
+				}
+			}
+		}
+		
+		[Test]
+		public static void DirectoryExclusionShouldPropogateToAllContainedItemsRecursively()
+		{
+			StartMenuDirectory directory = DirectoryPartialMock.Object;
+
+			directory.IsExcluded = true;
+			
+			foreach (IFileSystemItem item in directory.GetFlatContents())
+			{
+				if (item is IStartMenuItem startMenuItem)
+				{
+					Assert.True(startMenuItem.IsExcluded);
+				}
+			}
+		}
+		
+		[Test]
+		public static void DirectoryReinclusionShouldPropogateToAllContainedItemsRecursively()
+		{
+			StartMenuDirectory directory = DirectoryPartialMock.Object;
+
+			directory.IsExcluded = false;
+			
+			foreach (IFileSystemItem item in directory.GetFlatContents())
+			{
+				if (item is IStartMenuItem startMenuItem)
+				{
+					Assert.False(startMenuItem.IsExcluded);
 				}
 			}
 		}
