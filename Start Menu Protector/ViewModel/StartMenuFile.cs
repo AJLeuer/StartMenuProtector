@@ -32,7 +32,8 @@ namespace StartMenuProtector.ViewModel
             set
             {
                 focused = value;
-                if (focused)
+                
+                if (IsFocused)
                 {
                     Focused?.Invoke(this, null);
                 }

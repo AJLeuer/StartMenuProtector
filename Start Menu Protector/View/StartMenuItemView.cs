@@ -58,8 +58,9 @@ namespace StartMenuProtector.View
 
         private Dictionary<Key, Action<StartMenuItemView, Key>> KeyBindings = new Dictionary<Key, Action<StartMenuItemView, Key>>
         {
-            { Key.Delete, (StartMenuItemView startMenuItemView, Key pressedKey) => { startMenuItemView.Exclude(startMenuItemView, null); }},
-            { Key.Back,   (StartMenuItemView startMenuItemView, Key pressedKey) => { startMenuItemView.Exclude(startMenuItemView, null); }}
+            { Key.Delete,   (StartMenuItemView startMenuItemView, Key pressedKey) => { startMenuItemView.Exclude(startMenuItemView, null); }},
+            { Key.Back,     (StartMenuItemView startMenuItemView, Key pressedKey) => { startMenuItemView.Exclude(startMenuItemView, null); }},
+            { Key.Insert,   (StartMenuItemView startMenuItemView, Key pressedKey) => { startMenuItemView.Reinclude(startMenuItemView, null); }}
         };
 
         public static Brush DefaultOutlineColor              { get; } = Config.OutlineStrokeColor;
@@ -165,12 +166,18 @@ namespace StartMenuProtector.View
         {
             if (this.File != null)
             {
+                this.LostFocus += HandleLossOfFocus;
                 this.File.Focused += TakeFocus;
                 this.File.Selected += Select;
                 this.File.Deselected += Deselect;
                 this.File.Excluded += Exclude;
                 this.File.Reincluded += Reinclude;
             }
+        }
+
+        private void HandleLossOfFocus(object sender, RoutedEventArgs e)
+        {
+            /* Even though it does nothing, for some reason without this handler the StartMenuItemView can't gracefully deal with focus changes */
         }
 
         private void TakeFocus(object sender, RoutedEventArgs @event)
@@ -286,9 +293,7 @@ namespace StartMenuProtector.View
         {
             if (Excluded)
             {
-                UpdateColor(backgroundColor: DefaultBackgroundColor, textColor: DefaultTextColor, DefaultOutlineColor);
-                //setting the opacity of the border of this sets the opacity of this as well
-                Border.Opacity = HiddenOpacity; 
+                UpdateColor(backgroundColor: DefaultBackgroundColor, textColor: DefaultTextColor, borderColor: DefaultOutlineColor, opacity: HiddenOpacity);
             }
             else if (CandidateForDrop)
             {
@@ -300,18 +305,20 @@ namespace StartMenuProtector.View
                 {
                     UpdateColor(backgroundColor: DefaultSelectionBackgroundColor, textColor: DefaultSelectionTextColor, borderColor: DefaultSelectionBackgroundColor);
                 }
-                else /* if (Selected == false) */
+                else /* if (Selected == false) */ //default appearance
                 {
-                    UpdateColor(backgroundColor: DefaultBackgroundColor, textColor: DefaultTextColor, DefaultOutlineColor);
+                    UpdateColor(backgroundColor: DefaultBackgroundColor, textColor: DefaultTextColor, borderColor: DefaultOutlineColor);
                 }    
             }
         }
 
-        private void UpdateColor(Brush backgroundColor, Brush textColor, Brush borderColor)
+        private void UpdateColor(  Brush backgroundColor, Brush textColor, Brush borderColor, double opacity = 1.0)
         {
             Contents.Background = backgroundColor;
             TextBlock.Foreground = textColor;
             Border.BorderBrush = borderColor;
+            //setting the opacity of the border of this sets the opacity of this as well
+            Border.Opacity = opacity;
         }
 
         private static void UpdateFile(DependencyObject startMenuDataItem, DependencyPropertyChangedEventArgs updatedValue)
