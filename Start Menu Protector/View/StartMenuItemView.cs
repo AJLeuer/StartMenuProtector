@@ -58,9 +58,9 @@ namespace StartMenuProtector.View
 
         private Dictionary<Key, Action<StartMenuItemView, Key>> KeyBindings = new Dictionary<Key, Action<StartMenuItemView, Key>>
         {
-            { Key.Delete,   (StartMenuItemView startMenuItemView, Key pressedKey) => { startMenuItemView.Exclude(startMenuItemView, null); }},
-            { Key.Back,     (StartMenuItemView startMenuItemView, Key pressedKey) => { startMenuItemView.Exclude(startMenuItemView, null); }},
-            { Key.Insert,   (StartMenuItemView startMenuItemView, Key pressedKey) => { startMenuItemView.Reinclude(startMenuItemView, null); }}
+            { Config.ExcludeItemMainKey,      (StartMenuItemView startMenuItemView, Key pressedKey) => { startMenuItemView.Exclude(startMenuItemView, null); }},
+            { Config.ExcludeItemSecondaryKey, (StartMenuItemView startMenuItemView, Key pressedKey) => { startMenuItemView.Exclude(startMenuItemView, null); }},
+            { Config.ReincludeItemKey,        (StartMenuItemView startMenuItemView, Key pressedKey) => { startMenuItemView.Reinclude(startMenuItemView, null); }}
         };
 
         public static Brush DefaultOutlineColor              { get; } = Config.OutlineStrokeColor;

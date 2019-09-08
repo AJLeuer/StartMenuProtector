@@ -1,11 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Windows;
+using System.Windows.Input;
 using System.Windows.Media;
 using StartMenuProtector.Data;
 using StartMenuProtector.Util;
 
-namespace StartMenuProtector.Configuration
+namespace StartMenuProtector.Configuration 
 {
 	public static class Config
 	{
@@ -23,7 +24,13 @@ namespace StartMenuProtector.Configuration
 		/// </summary>
 		// ReSharper disable once UnreachableCode
 		public const uint ProtectorRunIntervalSeconds = (TargetBuildEnvironment == TargetEnvironment.Production) ? 60 : 4;
-
+		
+		#region IO
+		public static Key ExcludeItemMainKey 	  = Key.Delete;
+		public static Key ExcludeItemSecondaryKey = Key.Back;
+		public static Key ReincludeItemKey 		  = Key.Insert;
+		#endregion
+		
 		#region UI
 
 		public const double MainWindowWidth = 1280;
