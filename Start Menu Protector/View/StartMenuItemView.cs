@@ -53,13 +53,13 @@ namespace StartMenuProtector.View
             get { return (Action<StartMenuItemView>) this.GetValue(DraggedOverItemExitedAreaEventHandlerProperty); }
             set { this.SetValue(DraggedOverItemExitedAreaEventHandlerProperty, value);}
         }
-        public StartMenuItemDraggedAndDroppedEventHandler ReceivedDropHandler     { get; set; }
+        public StartMenuItemDraggedAndDroppedEventHandler ReceivedDropHandler            { get; set; }
         public Action<StartMenuItemView>                  MarkExcludedCompletedHandler   { get; set; }
 
         private Dictionary<Key, Action<StartMenuItemView, Key>> KeyBindings = new Dictionary<Key, Action<StartMenuItemView, Key>>
         {
-            { Key.Delete, (StartMenuItemView startMenuItemView, Key pressedKey) => { startMenuItemView.Excluded = true; }},
-            { Key.Back,   (StartMenuItemView startMenuItemView, Key pressedKey) => { startMenuItemView.Excluded = true; }}
+            { Key.Delete, (StartMenuItemView startMenuItemView, Key pressedKey) => { startMenuItemView.Exclude(startMenuItemView, null); }},
+            { Key.Back,   (StartMenuItemView startMenuItemView, Key pressedKey) => { startMenuItemView.Exclude(startMenuItemView, null); }}
         };
 
         public static Brush DefaultOutlineColor              { get; } = Config.OutlineStrokeColor;
@@ -90,12 +90,11 @@ namespace StartMenuProtector.View
         {
             get { return excluded; }
             
-            private set
+            set
             {
                 excluded = value;
-                File.IsExcluded = value;
                 UpdateColor();
-                MarkExcludedCompletedHandler.Invoke(this);
+                MarkExcludedCompletedHandler?.Invoke(this);
             }
         }
 
@@ -169,6 +168,7 @@ namespace StartMenuProtector.View
                 this.File.Focused += TakeFocus;
                 this.File.Selected += Select;
                 this.File.Deselected += Deselect;
+                this.File.Excluded += Exclude;
             }
         }
 
@@ -186,6 +186,21 @@ namespace StartMenuProtector.View
         public void Deselect(object sender, RoutedEventArgs @event) 
         {
             Selected = false;
+        }
+        
+        public void Exclude(object sender, RoutedEventArgs @event)
+        {
+            Excluded = true;
+            
+            /* some of these events will come from our StartMenuItem via recursive event propagation from their containing directory,
+               and in that case they're telling us, we're not telling them. On the other hand, in some cases the event will come from
+               this StartMenuItemView itself (usually because the user hit DEL), and in that case the event does need to go the opposite
+               direction, to our StartMenuItem */
+
+            if (sender is StartMenuItemView)
+            {
+                File.IsExcluded = true;
+            }
         }
 
         public void ProcessKeyboardInput(object sender, KeyEventArgs keyEvent) 
