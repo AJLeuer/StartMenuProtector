@@ -23,7 +23,7 @@ namespace StartMenuProtector.ViewModel
         private bool focused = default;
         private bool selected = default;
 
-        public bool IsFocused
+        public bool IsFocused 
         {
             get
             {
@@ -41,7 +41,7 @@ namespace StartMenuProtector.ViewModel
             }
         }
         
-        public bool IsSelected
+        public bool IsSelected 
         {
             get { return IsFocused || selected; }
             set
@@ -58,7 +58,27 @@ namespace StartMenuProtector.ViewModel
                 }
             }
         }
-        public bool IsExcluded { get; set; } = false;
+
+        private bool isExcluded = false;
+
+        public bool IsExcluded
+        {
+            get { return isExcluded; }
+            set
+            {
+                isExcluded = value;
+
+                if (IsExcluded)
+                {
+                    Excluded?.Invoke(this, null);
+                }
+                else
+                {
+                    Reincluded?.Invoke(this, null);
+                }
+            }
+        }
+        
         public event RoutedEventHandler Focused;
         public event RoutedEventHandler Selected;
         public event RoutedEventHandler Deselected;

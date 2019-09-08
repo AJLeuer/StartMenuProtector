@@ -279,6 +279,7 @@ namespace StartMenuProtector.View
             TextBlock.Text = File.PrettyName;
             TextBlock.ToolTip = File.Path;
             this.Selected = File.IsSelected;
+            this.Excluded = File.IsExcluded;
         }
 
         private void UpdateColor()
