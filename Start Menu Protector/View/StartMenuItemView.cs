@@ -169,6 +169,7 @@ namespace StartMenuProtector.View
                 this.File.Selected += Select;
                 this.File.Deselected += Deselect;
                 this.File.Excluded += Exclude;
+                this.File.Reincluded += Reinclude;
             }
         }
 
@@ -200,6 +201,16 @@ namespace StartMenuProtector.View
             if (sender is StartMenuItemView)
             {
                 File.IsExcluded = true;
+            }
+        }
+
+        private void Reinclude(object sender, RoutedEventArgs @event)
+        {
+            Excluded = false;
+
+            if (sender is StartMenuItemView)
+            {
+                File.IsExcluded = false;
             }
         }
 

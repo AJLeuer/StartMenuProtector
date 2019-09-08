@@ -77,5 +77,16 @@ namespace StartMenuProtectorTest.Test
             
             Assert.IsTrue(startMenuItemView.Excluded);
         }
+        
+        [Test]
+        public static void ShouldNotDisplayAsExcludedWhenOwnFileIsNotExcluded()
+        {
+            var startMenuFileMock = new Mock<IStartMenuItem>();
+            var startMenuItemView = new StartMenuItemView { File = startMenuFileMock.Object, Excluded = true };
+
+            startMenuFileMock.Raise((IStartMenuItem self) => self.Reincluded += null, new RoutedEventArgs());
+            
+            Assert.IsFalse(startMenuItemView.Excluded);
+        }
     }
 }
