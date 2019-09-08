@@ -10,17 +10,18 @@ namespace StartMenuProtector.Configuration
 	public static class Config
 	{
 		public const TargetEnvironment TargetBuildEnvironment =
-#if DEV
+		#if DEV
 			TargetEnvironment.Development;
-#elif PROD
+		#elif PROD
             TargetEnvironment.Production;
-#endif
+		#endif
 
 		public static readonly RunningState StartupState = RunningState.Enabled;
 
 		/// <summary>
 		/// How often Start Menu Protector should check (and possibly fix) the state of the start menu
 		/// </summary>
+		// ReSharper disable once UnreachableCode
 		public const uint ProtectorRunIntervalSeconds = (TargetBuildEnvironment == TargetEnvironment.Production) ? 60 : 4;
 
 		#region UI

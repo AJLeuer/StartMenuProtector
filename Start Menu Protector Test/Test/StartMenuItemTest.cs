@@ -1,5 +1,3 @@
-using System;
-using System.Windows;
 using Moq;
 using NUnit.Framework;
 using StartMenuProtector.Data;

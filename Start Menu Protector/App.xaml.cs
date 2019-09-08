@@ -19,6 +19,7 @@ namespace StartMenuProtector
         private StartMenuViewController     savedStartMenuItemsViewController;
         private StartMenuShortcutsView      activeStartMenuItemsView;
         private StartMenuShortcutsView      savedStartMenuItemsView;
+        // ReSharper disable once NotAccessedField.Local
         private StartMenuShortcutsView      quarantinedStartMenuItemsView;
 
         public App()

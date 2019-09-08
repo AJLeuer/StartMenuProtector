@@ -13,7 +13,7 @@ namespace StartMenuProtectorTest.Utility
 			var testDirectoryFileMock = new Mock<MockableStartMenuFile> {CallBase = true};
 			var testDirectorySubdirectoryPartialMock = new Mock<MockableStartMenuDirectory> {CallBase = true};
 			var subDirectoryFiles = new List<IFile>();
-			var subDirectoryContents = new List<IFileSystemItem> { };
+			var subDirectoryContents = new List<IFileSystemItem>();
 
 
 			for (ushort i = 0; i < 3; i++)

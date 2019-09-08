@@ -263,8 +263,8 @@ namespace StartMenuProtector.Control
 
 			ItemsToQuarantine[location].Clear();
 		}
-
-
+		
+		// ReSharper disable once UnusedMember.Local
 		private static ICollection<IFileSystemItem> ExtractFlatListOfItems(ICollection<RelocatableItem> items)
 		{
 			ICollection<IFileSystemItem> flatContents = new HashSet<IFileSystemItem>();
