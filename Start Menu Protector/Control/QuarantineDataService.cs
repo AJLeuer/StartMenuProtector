@@ -17,14 +17,15 @@ namespace StartMenuProtector.Control
 
 		public override Object StartMenuItemsStorageAccessLock { get; } = new Object();
 
-		public QuarantineDataService(SystemStateService systemStateService)
-			: base(systemStateService)
+		public QuarantineDataService(SystemStateService systemStateService, IApplicationStateManager applicationStateManager)
+			: base(systemStateService, applicationStateManager)
 		{
 		}
 
-		public override void SaveStartMenuItems(IEnumerable<IFileSystemItem> startMenuItems, StartMenuShortcutsLocation location)
+		public override async Task SaveStartMenuItems(IEnumerable<IFileSystemItem> startMenuItems, StartMenuShortcutsLocation location)
 		{
 			/* Do nothing */
+			await Task.Run(() => { });
 		}
 
 		public override async Task MoveFileSystemItems(IFileSystemItem destinationItem, params IFileSystemItem[] itemsRequestingMove)

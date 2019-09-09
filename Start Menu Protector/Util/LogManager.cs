@@ -1,5 +1,5 @@
 using System.IO;
-using StartMenuProtector.Configuration;
+using static StartMenuProtector.Configuration.FilePaths;
 using File = StartMenuProtector.Data.File;
 
 namespace StartMenuProtector.Util
@@ -12,7 +12,7 @@ namespace StartMenuProtector.Util
 
         public static void Start()
         {
-            LogFile   = new File(Path.Combine(FilePaths.LogsDirectory.Path, "Log.txt"));
+            LogFile   = new File(LogFilePath);
             LogWriter = new StreamWriter(LogFile.Path);
             Clock     = NodaTime.SystemClock.Instance;
         }

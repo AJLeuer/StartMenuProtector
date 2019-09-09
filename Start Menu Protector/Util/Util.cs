@@ -138,5 +138,37 @@ namespace StartMenuProtector.Util
         {
             return Util.BelongsToClassOrSubclass(potentialBase: typeof(T), potentialDescendant: @object.GetType());
         }
+
+        public static string ConvertToString(this Stream stream)
+        {
+            string text;
+
+            var streamReader = new StreamReader(stream, Encoding.UTF8);
+            text = streamReader.ReadToEnd();
+
+            stream.Reset();
+
+            return text;
+        }
+
+        public static void Overwrite(this Stream stream, string newContent)
+        {
+            var writer = new StreamWriter(stream, Encoding.UTF8);
+
+            string transformedContents = newContent.Substring(0, Math.Max(0, newContent.Length));
+            
+            stream.Position = 0;
+            writer.Write(transformedContents);
+            writer.Flush();
+            
+            stream.SetLength(stream.Position);
+            
+            stream.Reset();
+        }
+
+        public static void Reset(this Stream stream)
+        {
+            stream.Position = 0;
+        }
     }
 }

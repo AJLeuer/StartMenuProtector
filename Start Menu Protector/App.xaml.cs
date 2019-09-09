@@ -5,12 +5,14 @@ using StartMenuProtector.Configuration;
 using StartMenuProtector.Control;
 using StartMenuProtector.Util;
 using StartMenuProtector.View;
+using static StartMenuProtector.Control.ApplicationStateManager;
 
 namespace StartMenuProtector
 {
     public partial class App : Application
     {
         private readonly SystemStateService systemStateService = new SystemStateService();
+        private ApplicationStateManager     applicationStateManager;
         private StartMenuSentinel           sentinel;
         private ActiveDataService           activeDataService;
         private SavedDataService            savedDataService;
@@ -35,9 +37,11 @@ namespace StartMenuProtector
             
             LogManager.Log("Starting application.");
             
-            activeDataService     = new ActiveDataService(systemStateService);
-            savedDataService      = new SavedDataService(systemStateService);
-            quarantineDataService = new QuarantineDataService(systemStateService);
+            applicationStateManager = new ApplicationStateManager();
+            
+            activeDataService     = new ActiveDataService(systemStateService, applicationStateManager);
+            savedDataService      = new SavedDataService(systemStateService, applicationStateManager);
+            quarantineDataService = new QuarantineDataService(systemStateService, applicationStateManager);
             systemStateService.SavedDataService = savedDataService;
 
             activeStartMenuItemsViewController = new ActiveViewController(activeDataService, savedDataService, systemStateService);

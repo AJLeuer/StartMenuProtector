@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using StartMenuProtector.Configuration;
 using StartMenuProtector.Data;
+using static StartMenuProtector.Control.ApplicationStateManager;
+using static StartMenuProtector.Control.ApplicationStateManager.ApplicationState;
 using static StartMenuProtector.Util.LogManager;
 
 
@@ -18,12 +20,12 @@ namespace StartMenuProtector.Control
 
 		public override Object StartMenuItemsStorageAccessLock { get; } = new Object();
 
-		public SavedDataService(SystemStateService systemStateService)
-			: base(systemStateService)
+		public SavedDataService( SystemStateService systemStateService, IApplicationStateManager applicationStateManager)
+			: base(systemStateService, applicationStateManager)
 		{
 		}
 
-		public override void SaveStartMenuItems(IEnumerable<IFileSystemItem> startMenuItems, StartMenuShortcutsLocation location)
+		public override async Task SaveStartMenuItems(IEnumerable<IFileSystemItem> startMenuItems, StartMenuShortcutsLocation location)
 		{
 			ClearStartMenuItems(location);
 
@@ -40,6 +42,10 @@ namespace StartMenuProtector.Control
 			}
 
 			RefreshStartMenuItems(location);
+
+			ApplicationState currentState = await ApplicationStateManager.RetrieveApplicationState();
+			currentState.CurrentSavedStartMenuStates.UserStateCreated[location] = true;
+			await ApplicationStateManager.UpdateApplicationState(currentState);
 		}
 
 		public override async Task MoveFileSystemItems(IFileSystemItem destinationItem, params IFileSystemItem[] itemsRequestingMove)

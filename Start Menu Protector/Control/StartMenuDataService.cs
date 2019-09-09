@@ -14,13 +14,15 @@ namespace StartMenuProtector.Control
 	public abstract class StartMenuDataService
 	{
 		public SystemStateService SystemStateService { get; set; }
+		public IApplicationStateManager ApplicationStateManager { get; set; }
 
 		public abstract Dictionary<StartMenuShortcutsLocation, IDirectory> StartMenuItemsStorage { get; set; }
 		public abstract Object StartMenuItemsStorageAccessLock { get; }
 
-		public StartMenuDataService(SystemStateService systemStateService)
+		public StartMenuDataService(SystemStateService systemStateService, IApplicationStateManager applicationStateManager)
 		{
 			this.SystemStateService = systemStateService;
+			this.ApplicationStateManager = applicationStateManager;
 		}
 
 		public virtual async Task<IDirectory> GetStartMenuContentDirectory(StartMenuShortcutsLocation location)
@@ -44,7 +46,7 @@ namespace StartMenuProtector.Control
 			return directory.GetSubdirectory(FilePaths.StartMenuDirectoryName);
 		}
 
-		public abstract void SaveStartMenuItems(IEnumerable<IFileSystemItem> startMenuItems, StartMenuShortcutsLocation location);
+		public abstract Task SaveStartMenuItems(IEnumerable<IFileSystemItem> startMenuItems, StartMenuShortcutsLocation location);
 
 		protected async Task<Dictionary<StartMenuShortcutsLocation, IDirectory>> LoadStartMenuContentsFromAppDataDiskStorageToMemory()
 		{

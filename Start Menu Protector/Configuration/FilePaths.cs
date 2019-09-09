@@ -58,5 +58,9 @@ namespace StartMenuProtector.Configuration
 		public static readonly Directory QuarantinedStartMenuItems       = new Directory(System.IO.Directory.CreateDirectory(Path.Combine(StartMenuStates.Path, "Quarantined")));
 		public static readonly Directory QuarantinedSystemStartMenuItems = new Directory(System.IO.Directory.CreateDirectory(Path.Combine(QuarantinedStartMenuItems.Path, SystemShortcutsDirectoryName)));
 		public static readonly Directory QuarantinedUserStartMenuItems   = new Directory(System.IO.Directory.CreateDirectory(Path.Combine(QuarantinedStartMenuItems.Path, UserShortcutsDirectoryName)));
+		
+		public static readonly string LogFilePath 	   		   = Path.Combine(LogsDirectory.Path, "Log.txt");
+		public static readonly string ApplicationStateFilePath = Path.Combine(ApplicationState.Path, "Application State.json");
+
 	}
 }
