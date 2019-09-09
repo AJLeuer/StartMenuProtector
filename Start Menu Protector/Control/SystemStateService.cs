@@ -22,7 +22,7 @@ namespace StartMenuProtector.Control
 		User
 	}
 
-	public class SystemStateService
+	public class SystemStateService 
 	{
 		private Dictionary<StartMenuShortcutsLocation, Directory> osEnvironmentStartMenuItems = null;
 		public readonly object OSEnvironmentStartMenuItemsLock = new object();

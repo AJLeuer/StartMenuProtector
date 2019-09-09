@@ -9,10 +9,11 @@ namespace StartMenuProtector.Configuration
 {
 	public static class FilePaths
 	{
-		public const string ApplicationName              = "Start Menu Protector";
-		public const string SystemShortcutsDirectoryName = "System Shortcuts";
-		public const string UserShortcutsDirectoryName   = "User Shortcuts";
-		public const string StartMenuDirectoryName       = "Start Menu";
+		public const string ApplicationName                = "Start Menu Protector";
+		public const string SystemShortcutsDirectoryName   = "System Shortcuts";
+		public const string UserShortcutsDirectoryName     = "User Shortcuts";
+		public const string StartMenuDirectoryName         = "Start Menu";
+		public const string StartMenuProgramsDirectoryName = "Programs";
 
 
 		private static readonly Dictionary<Config.TargetEnvironment, String> AppDataPaths = new Dictionary<Config.TargetEnvironment, String>
@@ -21,19 +22,19 @@ namespace StartMenuProtector.Configuration
 			{ Config.TargetEnvironment.Production,  new KnownFolder(KnownFolderType.RoamingAppData).Path }
 		};
 
-		private static readonly Dictionary<Config.TargetEnvironment, String> SystemStartMenuItemsPaths = new Dictionary<Config.TargetEnvironment, String>
+		private static Dictionary<Config.TargetEnvironment, String> SystemStartMenuItemsPaths { get; } = new Dictionary<Config.TargetEnvironment, String>
 		{
-			{ Config.TargetEnvironment.Development, $@"Development Start Menu Items\System Start Menu\{StartMenuDirectoryName}" },
-			{ Config.TargetEnvironment.Production,  $@"{Environment.GetFolderPath(Environment.SpecialFolder.CommonStartMenu)}" }
+			{ Config.TargetEnvironment.Development, $@"Development Start Menu Items\System Start Menu\{StartMenuDirectoryName}\{StartMenuProgramsDirectoryName}" },
+			{ Config.TargetEnvironment.Production,  $@"{Environment.GetFolderPath(Environment.SpecialFolder.CommonStartMenu)}\{StartMenuProgramsDirectoryName}" }
 		};
 
-		private static readonly Dictionary<Config.TargetEnvironment, String> UserStartMenuItemsPaths = new Dictionary<Config.TargetEnvironment, String>
+		private static Dictionary<Config.TargetEnvironment, String> UserStartMenuItemsPaths { get; } = new Dictionary<Config.TargetEnvironment, String>
 		{
-			{ Config.TargetEnvironment.Development, $@"Development Start Menu Items\User Start Menu\{StartMenuDirectoryName}" },
-			{ Config.TargetEnvironment.Production,  $@"{Environment.GetFolderPath(Environment.SpecialFolder.StartMenu)}" }
+			{ Config.TargetEnvironment.Development, $@"Development Start Menu Items\User Start Menu\{StartMenuDirectoryName}\{StartMenuProgramsDirectoryName}" },
+			{ Config.TargetEnvironment.Production,  $@"{Environment.GetFolderPath(Environment.SpecialFolder.StartMenu)}\{StartMenuProgramsDirectoryName}" }
 		};
 
-		public static readonly Dictionary<StartMenuShortcutsLocation, String> StartMenuItemsPath = new Dictionary<StartMenuShortcutsLocation, String>
+		public static Dictionary<StartMenuShortcutsLocation, String> StartMenuItemsPath { get; } = new Dictionary<StartMenuShortcutsLocation, String>
 		{
 			{ StartMenuShortcutsLocation.User,   UserStartMenuItemsPaths[Config.TargetBuildEnvironment] },
 			{ StartMenuShortcutsLocation.System, SystemStartMenuItemsPaths[Config.TargetBuildEnvironment] }

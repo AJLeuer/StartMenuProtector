@@ -76,6 +76,13 @@ namespace StartMenuProtector.Data
 
         ICollection<IFileSystemItem> GetFlatContents();
         List<IFileSystemItem> RefreshContents();
+        
+        /// <summary>
+        /// Copies the contents of this directory into of the directory given by destination 
+        /// </summary>
+        /// <param name="destination">The directory to copy into</param>
+        void CopyContents(IDirectory destination);
+        
         void DeleteContents();
         
         bool Contains(IFileSystemItem item);
@@ -288,15 +295,21 @@ namespace StartMenuProtector.Data
                 security.SetAccessRuleProtection(true, true);
                 directoryCopy.Self.SetAccessControl(security);
 
-                foreach (IFileSystemItem itemToCopy in Contents)
-                {
-                    itemToCopy.Copy(directoryCopy);
-                }
+                CopyContents(directoryCopy);
                 
                 return Option.Some<IFileSystemItem>(new Directory(pathOfCopy));
             }
 
             return Option.None<IFileSystemItem>();
+        }
+        
+        
+        public void CopyContents(IDirectory destination)
+        {
+            foreach (IFileSystemItem itemToCopy in Contents)
+            {
+                itemToCopy.Copy(destination);
+            }
         }
 
         public virtual bool Contains(IFileSystemItem item)

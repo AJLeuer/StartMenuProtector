@@ -57,8 +57,8 @@ namespace StartMenuProtector.Control
 			{
 				lock (StartMenuItemsStorageAccessLock)
 				{
-					startMenuContents[StartMenuShortcutsLocation.System].Copy(StartMenuItemsStorage[StartMenuShortcutsLocation.System]);
-					startMenuContents[StartMenuShortcutsLocation.User].Copy(StartMenuItemsStorage[StartMenuShortcutsLocation.User]);
+					startMenuContents[StartMenuShortcutsLocation.System].CopyContents(StartMenuItemsStorage[StartMenuShortcutsLocation.System]);
+					startMenuContents[StartMenuShortcutsLocation.User].CopyContents(StartMenuItemsStorage[StartMenuShortcutsLocation.User]);
 				}
 			}
 		}
