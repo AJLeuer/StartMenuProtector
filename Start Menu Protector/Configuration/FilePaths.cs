@@ -42,18 +42,20 @@ namespace StartMenuProtector.Configuration
 
 		public static readonly Directory AppData                         = new Directory(AppDataPaths[Config.TargetBuildEnvironment]);
 		public static readonly Directory StartMenuProtectorAppData       = new Directory(System.IO.Directory.CreateDirectory(Path.Combine(AppData.Path, ApplicationName)));
-
+		
+		public static readonly Directory StartMenuStates     			 = new Directory(System.IO.Directory.CreateDirectory(Path.Combine(StartMenuProtectorAppData.Path, "Start Menu States")));
+		public static readonly Directory ApplicationState     			 = new Directory(System.IO.Directory.CreateDirectory(Path.Combine(StartMenuProtectorAppData.Path, "Application State")));
 		public static readonly Directory LogsDirectory                   = new Directory(System.IO.Directory.CreateDirectory(Path.Combine(StartMenuProtectorAppData.Path, "Logs")));
 
-		public static readonly Directory ActiveStartMenuItems            = new Directory(System.IO.Directory.CreateDirectory(Path.Combine(StartMenuProtectorAppData.Path, "Active")));
+		public static readonly Directory ActiveStartMenuItems            = new Directory(System.IO.Directory.CreateDirectory(Path.Combine(StartMenuStates.Path, "Active")));
 		public static readonly Directory ActiveSystemStartMenuItems      = new Directory(System.IO.Directory.CreateDirectory(Path.Combine(ActiveStartMenuItems.Path, SystemShortcutsDirectoryName)));
 		public static readonly Directory ActiveUserStartMenuItems        = new Directory(System.IO.Directory.CreateDirectory(Path.Combine(ActiveStartMenuItems.Path, UserShortcutsDirectoryName)));
 
-		public static readonly Directory SavedStartMenuItems             = new Directory(System.IO.Directory.CreateDirectory(Path.Combine(StartMenuProtectorAppData.Path, "Saved")));
+		public static readonly Directory SavedStartMenuItems             = new Directory(System.IO.Directory.CreateDirectory(Path.Combine(StartMenuStates.Path, "Saved")));
 		public static readonly Directory SavedSystemStartMenuItems       = new Directory(System.IO.Directory.CreateDirectory(Path.Combine(SavedStartMenuItems.Path, SystemShortcutsDirectoryName)));
 		public static readonly Directory SavedUserStartMenuItems         = new Directory(System.IO.Directory.CreateDirectory(Path.Combine(SavedStartMenuItems.Path, UserShortcutsDirectoryName)));
 
-		public static readonly Directory QuarantinedStartMenuItems       = new Directory(System.IO.Directory.CreateDirectory(Path.Combine(StartMenuProtectorAppData.Path, "Quarantined")));
+		public static readonly Directory QuarantinedStartMenuItems       = new Directory(System.IO.Directory.CreateDirectory(Path.Combine(StartMenuStates.Path, "Quarantined")));
 		public static readonly Directory QuarantinedSystemStartMenuItems = new Directory(System.IO.Directory.CreateDirectory(Path.Combine(QuarantinedStartMenuItems.Path, SystemShortcutsDirectoryName)));
 		public static readonly Directory QuarantinedUserStartMenuItems   = new Directory(System.IO.Directory.CreateDirectory(Path.Combine(QuarantinedStartMenuItems.Path, UserShortcutsDirectoryName)));
 	}
