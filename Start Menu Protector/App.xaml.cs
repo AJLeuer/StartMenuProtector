@@ -5,7 +5,6 @@ using StartMenuProtector.Configuration;
 using StartMenuProtector.Control;
 using StartMenuProtector.Util;
 using StartMenuProtector.View;
-using static StartMenuProtector.Control.ApplicationStateManager;
 
 namespace StartMenuProtector
 {
