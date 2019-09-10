@@ -74,7 +74,7 @@ namespace StartMenuProtector.Control
 
 			string GetSavedStartMenuItemsPath(StartMenuShortcutsLocation startMenuShortcutsLocation)
 			{
-				return (SavedDataService.StartMenuItemsStorage[startMenuShortcutsLocation].Path + @"\Start Menu");
+				return (SavedDataService.StartMenuItemsStorage[startMenuShortcutsLocation].Path);
 			}
 		}
 

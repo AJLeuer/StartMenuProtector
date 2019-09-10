@@ -2,25 +2,27 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using Optional;
 using Optional.Unsafe;
 using StartMenuProtector.Data;
 using StartMenuProtector.Util;
 using static StartMenuProtector.Util.Util;
 using static StartMenuProtector.Configuration.Config;
+using static StartMenuProtector.Control.ApplicationStateManager;
 using Directory = StartMenuProtector.Data.Directory;
 using static StartMenuProtector.Util.LogManager;
 
 
-namespace StartMenuProtector.Control
+namespace StartMenuProtector.Control 
 {
 	public class StartMenuSentinel
 	{
-		private RunningState applicationState = RunningState.Disabled;
+		private RunningState applicationRunningState = RunningState.Disabled;
 
-		public RunningState ApplicationState
+		public RunningState ApplicationRunningState
 		{
-			get { return applicationState; }
+			get { return applicationRunningState; }
 			private set
 			{
 				if (value == RunningState.Disabled)
@@ -28,7 +30,7 @@ namespace StartMenuProtector.Control
 					Disable();
 				}
 
-				applicationState = value;
+				applicationRunningState = value;
 
 				if (value == RunningState.Disabled)
 				{
@@ -43,7 +45,7 @@ namespace StartMenuProtector.Control
 
 		public bool Enabled
 		{
-			get { return (ApplicationState == RunningState.Enabled) && (UserSelectedState == RunningState.Enabled); }
+			get { return (ApplicationRunningState == RunningState.Enabled) && (UserSelectedState == RunningState.Enabled); }
 		}
 
 		private Thread Thread { get; set; }
@@ -51,6 +53,8 @@ namespace StartMenuProtector.Control
 		public SystemStateService SystemStateService { private get; set; }
 		public SavedDataService SavedDataService { private get; set; }
 		public QuarantineDataService QuarantineDataService { private get; set; }
+		
+		public IApplicationStateManager ApplicationStateManager { private get; set; }
 
 
 		public readonly Dictionary<StartMenuShortcutsLocation, ICollection<IFileSystemItem>> ItemsToRestore = new Dictionary<StartMenuShortcutsLocation, ICollection<IFileSystemItem>>
@@ -65,23 +69,24 @@ namespace StartMenuProtector.Control
 			{ StartMenuShortcutsLocation.System, new HashSet<IFileSystemItem>() }
 		};
 
-		public StartMenuSentinel(SystemStateService systemStateService, SavedDataService savedDataService, QuarantineDataService quarantineDataService)
+		public StartMenuSentinel(SystemStateService systemStateService, SavedDataService savedDataService, QuarantineDataService quarantineDataService, IApplicationStateManager applicationStateManager)
 		{
 			this.SystemStateService = systemStateService;
 			this.SavedDataService = savedDataService;
 			this.QuarantineDataService = quarantineDataService;
+			this.ApplicationStateManager = applicationStateManager;
 		}
 
 		public void Start()
 		{
-			ApplicationState = RunningState.Enabled;
+			ApplicationRunningState = RunningState.Enabled;
 			Thread = new Thread(Run);
 			Thread.Start();
 		}
 
 		public void Stop()
 		{
-			ApplicationState = RunningState.Disabled;
+			ApplicationRunningState = RunningState.Disabled;
 			ContinueRunFlag.Set();
 			Thread.Join();
 		}
@@ -106,7 +111,7 @@ namespace StartMenuProtector.Control
 
 		private void Run()
 		{
-			while (ApplicationState == RunningState.Enabled)
+			while (ApplicationRunningState == RunningState.Enabled)
 			{
 				while (UserSelectedState == RunningState.Enabled)
 				{
@@ -129,7 +134,7 @@ namespace StartMenuProtector.Control
 					ContinueRunFlag.WaitOne(TimeSpan.FromSeconds(ProtectorRunIntervalSeconds));
 				}
 
-				if ((ApplicationState == RunningState.Enabled) && (UserSelectedState == RunningState.Disabled))
+				if ((ApplicationRunningState == RunningState.Enabled) && (UserSelectedState == RunningState.Disabled))
 				{
 					ContinueRunFlag.WaitOne();
 				}
@@ -159,13 +164,15 @@ namespace StartMenuProtector.Control
 
 			ICollection<RelocatableItem> absent     = new HashSet<RelocatableItem>();
 
-			Option<IDirectory> appDataSavedStartMenuContents = SavedDataService.GetStartMenuContentDirectoryMainSubdirectory(location).Result;
+			Task<ApplicationState> applicationState = ApplicationStateManager.RetrieveApplicationState();
 
-			if (appDataSavedStartMenuContents.HasValue)
+			Task<IDirectory> savedStartMenuState = SavedDataService.GetStartMenuContentDirectory(location);
+			
+			if (applicationState.Result.CurrentSavedStartMenuStates.UserStateCreated[location])
 			{
 				SystemStateService.OSEnvironmentStartMenuItems[location].RefreshContents();
 				Directory currentStartMenuItemsDirectoryState = SystemStateService.OSEnvironmentStartMenuItems[location];
-				IDirectory expectedStartMenuStateDirectoryState = appDataSavedStartMenuContents.ValueOrFailure();
+				IDirectory expectedStartMenuStateDirectoryState = savedStartMenuState.Result;
 
 				(unexpected, absent) = Directory.FindDivergences(sourceOfTruth: expectedStartMenuStateDirectoryState, test: currentStartMenuItemsDirectoryState);
 			}
@@ -174,7 +181,7 @@ namespace StartMenuProtector.Control
 		}
 
 
-		public void FilterOutItemsWithTheSameName(StartMenuShortcutsLocation location, ICollection<RelocatableItem> unexpectedItems, ICollection<RelocatableItem> missingItems)
+		private void FilterOutItemsWithTheSameName(StartMenuShortcutsLocation location, ICollection<RelocatableItem> unexpectedItems, ICollection<RelocatableItem> missingItems)
 		{
 			var allUnexpectedItems = unexpectedItems.ToArray();
 			var allMissingItems = missingItems.ToArray();
@@ -212,7 +219,7 @@ namespace StartMenuProtector.Control
 		/// <param name="unexpectedItems"></param>
 		/// <param name="missingItems"></param>
 		/// <exception cref="NotImplementedException"></exception>
-		public void FilterOutShortcutsMovedOutOfPosition(ICollection<RelocatableItem> unexpectedItems, ICollection<RelocatableItem> missingItems)
+		private	void FilterOutShortcutsMovedOutOfPosition(ICollection<RelocatableItem> unexpectedItems, ICollection<RelocatableItem> missingItems)
 		{
 			Action filterOutShortcutItemsMovedOutOfPosition = () =>
 			{

@@ -453,12 +453,6 @@ namespace StartMenuProtector.Data
         {
             ICollection<RelocatableItem> unexpectedItems = new HashSet<RelocatableItem>();
 
-            if (expected.Name != test.Name)
-            {
-                unexpectedItems.Add(new RelocatableItem(test));
-                return unexpectedItems;
-            }
-            
             unexpectedItems.AddAll(FindUnexpectedFiles(expected: expected.Files, test: test.Files));
 
             foreach (var directory in test.Directories)

@@ -40,12 +40,6 @@ namespace StartMenuProtector.Control
 			return startMenuContents;
 		}
 
-		public async Task<Option<IDirectory>> GetStartMenuContentDirectoryMainSubdirectory(StartMenuShortcutsLocation location)
-		{
-			IDirectory directory = await GetStartMenuContentDirectory(location);
-			return directory.GetSubdirectory(FilePaths.StartMenuDirectoryName);
-		}
-
 		public abstract Task SaveStartMenuItems(IEnumerable<IFileSystemItem> startMenuItems, StartMenuShortcutsLocation location);
 
 		protected async Task<Dictionary<StartMenuShortcutsLocation, IDirectory>> LoadStartMenuContentsFromAppDataDiskStorageToMemory()

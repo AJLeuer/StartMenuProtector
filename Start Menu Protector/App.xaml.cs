@@ -47,7 +47,7 @@ namespace StartMenuProtector
             activeStartMenuItemsViewController = new ActiveViewController(activeDataService, savedDataService, systemStateService);
             savedStartMenuItemsViewController  = new SavedViewController(activeDataService, savedDataService, systemStateService);
 
-            sentinel                 = new StartMenuSentinel(systemStateService, savedDataService, quarantineDataService);
+            sentinel                 = new StartMenuSentinel(systemStateService, savedDataService, quarantineDataService, applicationStateManager);
             MainWindow               = new StartMenuProtectorWindow(sentinel);
             sentinel.Start();
             
