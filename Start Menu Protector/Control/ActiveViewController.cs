@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Threading.Tasks;
@@ -51,7 +52,7 @@ namespace StartMenuProtector.Control
 
 		private void SaveCurrentStartMenuItems()
 		{
-			SavedDataService.SaveStartMenuItems(StartMenuContents, StartMenuStartMenuShortcutsLocation);
+			Task.Run((async () => { await SavedDataService.SaveStartMenuItems(StartMenuContents, StartMenuStartMenuShortcutsLocation); }));
 			CurrentContentState = ContentState.MirroringOSEnvironment;
 		}
 

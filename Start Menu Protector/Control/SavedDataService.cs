@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using StartMenuProtector.Configuration;
 using StartMenuProtector.Data;
 using static StartMenuProtector.Control.ApplicationStateManager;
-using static StartMenuProtector.Control.ApplicationStateManager.ApplicationState;
 using static StartMenuProtector.Util.LogManager;
 
 
@@ -18,7 +17,7 @@ namespace StartMenuProtector.Control
 			{ StartMenuShortcutsLocation.User,   FilePaths.SavedUserStartMenuItems }
 		};
 
-		public override Object StartMenuItemsStorageAccessLock { get; } = new Object();
+		public override object StartMenuItemsStorageAccessLock { get; } = new object();
 
 		public SavedDataService( SystemStateService systemStateService, IApplicationStateManager applicationStateManager)
 			: base(systemStateService, applicationStateManager)

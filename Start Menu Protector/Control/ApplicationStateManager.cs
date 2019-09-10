@@ -38,6 +38,36 @@ namespace StartMenuProtector.Control
 			get { return GetSavedApplicationState(); }
 			set { WriteApplicationState(value); }
 		}
+
+		public ApplicationStateManager()
+		{
+			CreateSavedStateFile();
+		}
+
+		private void CreateSavedStateFile()
+		{
+			lock (ApplicationStateStreamLock)
+			{
+				if (File.Exists(ApplicationStateFilePath) == false)
+				{
+					using var applicationStateStream = new FileStream(ApplicationStateFilePath, FileMode.Create);
+					//then set default state
+					string newApplicationStateSerialized = JsonConvert.SerializeObject(new ApplicationState());
+					applicationStateStream.Overwrite(newApplicationStateSerialized);
+				}
+			}
+		}
+
+		public async Task UpdateApplicationState(ApplicationState applicationState)
+		{
+			await Task.Run(() =>
+			{
+				lock (ApplicationStateStreamLock)
+				{
+					CurrentApplicationState = applicationState;
+				}
+			});
+		}
 		
 		public async Task<ApplicationState> RetrieveApplicationState()
 		{
@@ -53,47 +83,7 @@ namespace StartMenuProtector.Control
 				return applicationState;
 			});
 		}
-
-		public async Task UpdateApplicationState(ApplicationState applicationState)
-		{
-			await Task.Run(() =>
-			{
-				lock (ApplicationStateStreamLock)
-				{
-					CurrentApplicationState = applicationState;
-				}
-			});
-		}
-
-		private ApplicationState GetSavedApplicationState()
-		{
-			ApplicationState state;
-
-			bool savedStateFileExists = File.Exists(ApplicationStateFilePath);
-			FileMode fileMode = savedStateFileExists ? FileMode.Open : FileMode.Create;
-
-			using (var applicationStateStream = new FileStream(ApplicationStateFilePath, fileMode))
-			{
-				if (savedStateFileExists == false)
-				{
-					//then set default state
-					string newApplicationStateSerialized = JsonConvert.SerializeObject(new ApplicationState());
-					applicationStateStream.Overwrite(newApplicationStateSerialized);
-				}
-				
-				state = GetSavedApplicationState(applicationStateStream);
-			}
-
-			return state;
-		}
-
-		private ApplicationState GetSavedApplicationState(FileStream applicationStateStream)
-		{
-			ApplicationState state = JsonConvert.DeserializeObject<ApplicationState>(applicationStateStream.ConvertToString());
-
-			return state;
-		}
-
+		
 		private void WriteApplicationState(ApplicationState applicationState)
 		{
 			using (var applicationStateStream = new FileStream(ApplicationStateFilePath, FileMode.Open))
@@ -102,6 +92,25 @@ namespace StartMenuProtector.Control
 				string newApplicationStateSerialized = JsonConvert.SerializeObject(newApplicationState);
 				applicationStateStream.Overwrite(newApplicationStateSerialized);
 			}
+		}
+
+		private ApplicationState GetSavedApplicationState()
+		{
+			ApplicationState state;
+
+			using (var applicationStateStream = new FileStream(ApplicationStateFilePath, FileMode.Open))
+			{
+				state = GetSavedApplicationState(applicationStateStream);
+			}
+
+			return state;
+		}
+
+		private ApplicationState GetSavedApplicationState(Stream applicationStateStream)
+		{
+			ApplicationState state = JsonConvert.DeserializeObject<ApplicationState>(applicationStateStream.ConvertToString());
+
+			return state;
 		}
 
 		public static ApplicationState Merge(ApplicationState currentState, ApplicationState newState)
