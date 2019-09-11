@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:view="clr-namespace:StartMenuProtector.View"
         xmlns:config="clr-namespace:StartMenuProtector.Configuration"
+        xmlns:controls="clr-namespace:StartMenuProtector.View.Controls"
         mc:Ignorable="d"
         Title="{x:Static config:FilePaths.ApplicationName}" Width="{x:Static config:Config.MainWindowWidth}" Height="{x:Static config:Config.MainWindowHeight}">
 
@@ -13,7 +14,7 @@
             <RowDefinition Height="1*"></RowDefinition>
             <RowDefinition Height="9*"></RowDefinition>
         </Grid.RowDefinitions>
-        <view:Toggle x:Name="SentinelToggleButton" Width="250" Height="60" IsChecked="{Binding StartMenuSentinel.Enabled, RelativeSource={RelativeSource AncestorType=view:StartMenuProtectorWindow}, Mode=OneWay}" EnabledText="Protector Active" DisabledText="Protector Disabled" Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Center"></view:Toggle>
+        <controls:Toggle x:Name="SentinelToggleButton" Width="250" Height="60" IsChecked="{Binding StartMenuSentinel.Enabled, RelativeSource={RelativeSource AncestorType=view:StartMenuProtectorWindow}, Mode=OneWay}" EnabledText="Protector Active" DisabledText="Protector Disabled" Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Center"></controls:Toggle>
         <TabControl  Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" FontFamily="{x:Static config:Config.DefaultFontFamily}" FontSize="{x:Static config:Config.FontSize}">
             <TabItem Header="Active">
                 <view:ActiveStartMenuShortcutsView x:Name="ActiveProgramShortcutsView"/>

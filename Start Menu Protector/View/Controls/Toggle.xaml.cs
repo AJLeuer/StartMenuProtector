@@ -5,7 +5,7 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Media;
 using StartMenuProtector.Configuration;
 
-namespace StartMenuProtector.View
+namespace StartMenuProtector.View.Controls
 {
     /// <summary>
     /// Interaction logic for Toggle.xaml

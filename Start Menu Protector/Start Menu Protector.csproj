@@ -164,6 +164,9 @@
     <Compile Include="Util\Timer.cs" />
     <Compile Include="Util\Util.cs" />
     <Compile Include="View\ActiveStartMenuShortcutsView.cs" />
+    <Compile Include="View\Controls\Toggle.xaml.cs">
+      <DependentUpon>Toggle.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\QuarantinedStartMenuShortcutsView.cs" />
     <Compile Include="View\StartMenuProtectorWindow.xaml.cs">
       <DependentUpon>StartMenuProtectorWindow.xaml</DependentUpon>
@@ -179,18 +182,15 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Control\StartMenuSentinel.cs" />
-    <Compile Include="View\Toggle.xaml.cs">
-      <DependentUpon>Toggle.xaml</DependentUpon>
-    </Compile>
+    <Page Include="View\Controls\Toggle.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\StartMenuProtectorWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
     <Page Include="View\StartMenuShortcutsView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="View\Toggle.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
